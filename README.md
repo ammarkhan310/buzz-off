@@ -4,7 +4,7 @@ The starter code for the major group project.
 Group members (3-5) (no Student IDs, only names):
 1. Keshopan Arunthavachelvan (kchelvan)
 2. Stefan Cross (Stef997)
-3. Group Member3 (github_username3)
+3. Ammar Khan (ammarkhan310)
 4. Group Member4 (github_username4)
 5. Group Member5 (github_username5)
 
