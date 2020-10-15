@@ -16,10 +16,6 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: MyHomePage(title: 'Buzz Off'),
-      routes: <String, WidgetBuilder>{
-        '/statistics': (BuildContext context) =>
-            StatisticsPage(title: 'Your Stats')
-      },
       debugShowCheckedModeBanner: false,
     );
   }
