@@ -12,7 +12,7 @@ samples, guidance on mobile development, and a full API reference.
 * Home
 * Statistics 
 * Profile 
-*Settings (Profile and settings could be merged)
+* Settings (Profile and settings could be merged)
 
 ### Mock-Ups
 Home Page mock-up:
@@ -26,18 +26,19 @@ Home Page mock-up:
 * Editable location below for quick switching
 
 ### Features
+(“*” means not decided)
 * Home
   * Colour metre/Mosquito level 
   * Editable Location
   * Editable Date
   * Short weather description
-  * Openable Map from location with scores overlaid over areas depending on what’s there? (Closer to a  large body of water? In the forest? City areas? South America?)* (“*” means not decided)
+  * Openable Map from location with scores overlaid over areas depending on what’s there? (Closer to a  large body of water? In the forest? City areas? South America?)* 
 * Statistics
   * A heat map of locations you have been bitten
   * The heat map of locations could switch to general mosquito level of locations*
   * A body map of where you have been bitten the most*
   * Body map would be clickable to add a log*
-  * Common mosquito avoidance tips/stats/info/???c
+  * Common mosquito avoidance tips/stats/info/???
 * Profile
   * Personal information (Basic for personalization & specific for things related to the apps purpose   ex. Blood type)
   * Ability to add personal log of past bites
