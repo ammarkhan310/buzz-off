@@ -1,6 +1,8 @@
+import 'package:app/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
 import 'package:app/statistics_page.dart';
+import 'package:app/test_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -38,7 +40,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [];
+  final List<Widget> _children = [
+    TestPage(Colors.red),
+    StatisticsPage(title: 'statistics'),
+    TestPage(Colors.blue),
+  ];
 
   void _setHomePageState() {
     setState(() {});
@@ -50,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(),
+      body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
         currentIndex: _currentIndex, // new
