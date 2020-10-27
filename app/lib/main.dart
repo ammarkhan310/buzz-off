@@ -38,6 +38,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
+
+  final List<String> _titles = [
+    "Buzz off",
+    "Statistics",
+    "Settings",
+    "Profile",
+  ];
+
   final List<Widget> _children = [];
 
   void _setHomePageState() {
@@ -48,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(_titles[_currentIndex]),
       ),
       body: Center(),
       bottomNavigationBar: BottomNavigationBar(
