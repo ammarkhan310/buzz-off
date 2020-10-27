@@ -42,8 +42,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<String> _titles = [
     "Buzz off",
     "Statistics",
-    "Settings",
     "Profile",
+    "Settings",
   ];
 
   final List<Widget> _children = [];
