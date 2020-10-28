@@ -1,3 +1,4 @@
+import 'package:app/home_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
 import 'package:app/statistics_page.dart';
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Settings",
   ];
 
-  final List<Widget> _children = [];
+  final List<Widget> _children = [HomeSlider()];
 
   void _setHomePageState() {
     setState(() {});
@@ -58,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(_titles[_currentIndex]),
       ),
-      body: Center(),
+      body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
         currentIndex: _currentIndex, // new
