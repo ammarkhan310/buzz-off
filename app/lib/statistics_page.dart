@@ -27,9 +27,6 @@ class _StatisticsPageState extends State<StatisticsPage> {
     ];
   
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Column(
         children: <Widget>[
           biteLogger().build(),

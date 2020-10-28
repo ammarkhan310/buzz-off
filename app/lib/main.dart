@@ -40,7 +40,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
-<<<<<<< HEAD
 
   final List<String> _titles = [
     "Buzz off",
@@ -48,15 +47,12 @@ class _MyHomePageState extends State<MyHomePage> {
     "Profile",
     "Settings",
   ];
-
-  final List<Widget> _children = [];
-=======
+  
   final List<Widget> _children = [
     TestPage(Colors.red),
     StatisticsPage(title: 'statistics'),
     TestPage(Colors.blue),
   ];
->>>>>>> added tab changing
 
   void _setHomePageState() {
     setState(() {});
