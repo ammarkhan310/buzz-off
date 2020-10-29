@@ -1,7 +1,8 @@
-import 'package:app/home_slider.dart';
+import 'package:app/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
 import 'package:app/statistics_page.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,6 +11,10 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Mobile Development Group Project',
       theme: ThemeData(
@@ -47,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Settings",
   ];
 
-  final List<Widget> _children = [HomeSlider()];
+  final List<Widget> _children = [HomePage()];
 
   void _setHomePageState() {
     setState(() {});
