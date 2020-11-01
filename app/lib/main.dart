@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
 import 'package:app/statistics_page.dart';
+import 'package:app/profile_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -46,7 +47,11 @@ class _MyHomePageState extends State<MyHomePage> {
     "Settings",
   ];
 
-  final List<Widget> _children = [];
+  final List<Widget> _children = [
+    ProfilePage(title: 'home'),
+    ProfilePage(title: 'statistics'),
+    ProfilePage(title: 'profile'),
+  ];
 
   void _setHomePageState() {
     setState(() {});
@@ -58,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(_titles[_currentIndex]),
       ),
-      body: Center(),
+      body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
         currentIndex: _currentIndex, // new
