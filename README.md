@@ -5,7 +5,7 @@ Group members (3-5) (no Student IDs, only names):
 1. Keshopan Arunthavachelvan (kchelvan)
 2. Stefan Cross (Stef997/sheldoncrosss)
 3. Ammar Khan (ammarkhan310)
-4. Group Member4 (github_username4)
+4. Ronald Sin (ronaldsin)
 5. Group Member5 (github_username5)
 
 ## Overview
