@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
 import 'package:app/statistics_page.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:app/mosquito_model/mosquito_db.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,15 +17,28 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MaterialApp(
-      title: 'Mobile Development Group Project',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Buzz Off'),
-      debugShowCheckedModeBanner: false,
-    );
+
+    return FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            print('Error initializing firebase');
+            return Text('Error initializing firebase');
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              title: 'Mobile Development Group Project',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+              ),
+              home: MyHomePage(title: 'Buzz Off'),
+              debugShowCheckedModeBanner: false,
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 }
 

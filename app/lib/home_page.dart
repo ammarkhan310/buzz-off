@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+import 'package:app/mosquito_model/mosquito_db.dart';
 
 class ExampleViewModel {
   final CustomSliderColors sliderColors;
@@ -47,18 +48,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          Center(
-            child: SleekCircularSlider(
-              //TODO - Insert mosquito levels here
-              onChangeStart: (double value) {},
-              onChangeEnd: (double value) {},
-
-              appearance: widget.viewModel.appearance,
-              min: widget.viewModel.min,
-              max: widget.viewModel.max,
-              initialValue: widget.viewModel.value,
-            ),
-          ),
+          Center(child: _buildSlider()),
           Center(
             child: Container(
               height: 175,
@@ -73,7 +63,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
           //TODO - Insert User's saved locations
           //TODO - Make the text clickable
           Center(
@@ -89,7 +78,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
           Center(
             child: Container(
               height: 525,
@@ -106,7 +94,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
           //TODO - Input weather conditions based on weather variables
           Center(
             child: Container(
@@ -129,6 +116,17 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _buildSlider() {
+    MosquitoDb();
+    return MosquitoDb().getMosquitoData(
+      context,
+      widget.viewModel.sliderColors,
+      widget.viewModel.appearance,
+      widget.viewModel.min,
+      widget.viewModel.max,
     );
   }
 }

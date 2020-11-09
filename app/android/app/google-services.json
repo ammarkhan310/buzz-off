@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "982305663480",
+    "firebase_url": "https://buzz-off-ee44e.firebaseio.com",
+    "project_id": "buzz-off-ee44e",
+    "storage_bucket": "buzz-off-ee44e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982305663480:android:b0aa27bc2ae71f675ace0d",
+        "android_client_info": {
+          "package_name": "com.mosquito.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "982305663480-dboavqoo9ekhesmnl7qoj1319s4un1bg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5njncpMAnFY4Ko9YZF8qyE-mA_UqPSBs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "982305663480-dboavqoo9ekhesmnl7qoj1319s4un1bg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
