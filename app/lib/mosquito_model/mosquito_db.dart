@@ -48,8 +48,6 @@ class MosquitoDb {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         reference: mosquitoInfoData.reference);
     return SleekCircularSlider(
-      onChangeStart: (double value) {},
-      onChangeEnd: (double value) {},
       appearance: appearance,
       min: min,
       max: max,
