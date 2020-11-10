@@ -1,11 +1,23 @@
 import 'package:app/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
-import 'package:app/statistics_page.dart';
+import 'package:app/statistics/view/statistics_page.dart';
 import 'package:app/test_page.dart';
 
+import 'package:provider/provider.dart';
+
+import 'statistics/model/biteModel.dart';
+
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => BiteListBLoC()),
+      ],
+    
+      child: MyApp()
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
