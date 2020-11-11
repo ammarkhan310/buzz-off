@@ -153,10 +153,15 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text('Profile'),
             onTap: () {
               Navigator.of(context).pop();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProfilePage()),
-              );
+              onItemTapped(2);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.trending_up),
+            title: Text('Statistics'),
+            onTap: () {
+              Navigator.of(context).pop();
+              onItemTapped(1);
             },
           ),
           ListTile(
