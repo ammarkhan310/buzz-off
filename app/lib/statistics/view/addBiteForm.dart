@@ -39,6 +39,7 @@ class _AddBiteFormState extends State<AddBiteForm> {
           // column of entry fields
           child: Column(
             children: [
+              Text('Bite location'),
               // drop down menu to select where you were bitten
               DropdownButtonFormField<String> (
                 value: _location,
