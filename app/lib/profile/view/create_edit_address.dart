@@ -1,4 +1,6 @@
+import 'package:app/data/constants.dart';
 import 'package:app/profile/model/address.dart';
+import 'package:app/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,33 +22,50 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
   @override
   Widget build(BuildContext context) {
     final AddressModel addressList = Provider.of<AddressModel>(context);
-    final formValues = [
+    final List<Map<String, String>> formValues = [
       {
         'label': 'Address',
-        'value': null,
+        'value': this.widget.data != null
+            ? this.widget.data.toMap()['address']
+            : null,
         'key': 'address',
+        'inputType': 'textfield',
       },
       {
         'label': 'City',
-        'value': null,
+        'value':
+            this.widget.data != null ? this.widget.data.toMap()['city'] : null,
         'key': 'city',
+        'inputType': 'textfield',
       },
       {
         'label': 'Province/State',
-        'value': null,
+        'value':
+            this.widget.data != null ? this.widget.data.toMap()['state'] : null,
         'key': 'state',
+        'inputType': 'textfield',
       },
       {
         'label': 'Postal Code/Zip Code',
-        'value': null,
+        'value': this.widget.data != null
+            ? this.widget.data.toMap()['postalCode']
+            : null,
         'key': 'postalCode',
+        'inputType': 'textfield',
       },
       {
         'label': 'Country',
-        'value': null,
+        'value': this.widget.data != null
+            ? this.widget.data.toMap()['country']
+            : null,
         'key': 'country',
+        'inputType': 'dropdown',
       },
     ];
+
+    final Map<String, List<String>> dropdownValues = {
+      'country': countries,
+    };
 
     return Scaffold(
       appBar: AppBar(
@@ -132,20 +151,64 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                           ),
                         ),
                   subtitle: index < formValues.length
-                      ? TextFormField(
-                          initialValue: this.widget.data != null
-                              ? this.widget.data.toMap()[key]
-                              : '',
-                          onSaved: (String value) {
-                            formValues[index]['value'] = value;
-                          },
-                          validator: (String value) {
-                            if (value.isEmpty) {
-                              return '${formValues[index]['label']} is required';
-                            }
-                            return null;
-                          },
-                        )
+                      ? formValues[index]['inputType'] == 'dropdown'
+                          ? DropdownButtonFormField(
+                              value: formValues[index]['value'],
+                              items: <String>[
+                                ...dropdownValues[key]
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (String value) {
+                                formValues[index]['value'] = value;
+                              },
+                              validator: (String value) {
+                                print(value);
+                                if (value == null || value.isEmpty) {
+                                  return '${formValues[index]['label']} is ' +
+                                      'required';
+                                }
+                                return null;
+                              },
+                            )
+                          : formValues[index]['inputType'] == 'number'
+                              ? TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  initialValue: this.widget.data != null
+                                      ? this.widget.data.toMap()[key]
+                                      : '',
+                                  onSaved: (String value) {
+                                    formValues[index]['value'] = value;
+                                  },
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return '${formValues[index]['label']} ' +
+                                          'is required';
+                                    } else if (!isNumeric(value)) {
+                                      return '${formValues[index]['label']} ' +
+                                          'must be a valid number';
+                                    }
+                                    return null;
+                                  },
+                                )
+                              : TextFormField(
+                                  initialValue: this.widget.data != null
+                                      ? this.widget.data.toMap()[key]
+                                      : '',
+                                  onSaved: (String value) {
+                                    formValues[index]['value'] = value;
+                                  },
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return '${formValues[index]['label']} ' +
+                                          'is required';
+                                    }
+                                    return null;
+                                  },
+                                )
                       : null,
                 ),
               );
