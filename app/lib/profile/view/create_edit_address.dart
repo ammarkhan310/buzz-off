@@ -112,16 +112,20 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                           ),
                         )
                       : FlatButton(
-                          onPressed: () {
-                            addressList.deleteAddressWithId(
-                                this.widget.data.toMap()['id']);
-                            Navigator.of(context).pop();
-                          },
+                          onPressed: this.widget.data != null
+                              ? () {
+                                  addressList.deleteAddressWithId(
+                                      this.widget.data.toMap()['id']);
+                                  Navigator.of(context).pop();
+                                }
+                              : null,
                           child: Text(
                             "Delete Address",
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.red,
+                              color: this.widget.data != null
+                                  ? Colors.red
+                                  : Colors.grey,
                             ),
                           ),
                         ),

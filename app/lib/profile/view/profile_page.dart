@@ -1,5 +1,5 @@
 import 'package:app/profile/model/address.dart';
-import 'package:app/profile/view/edit_address_form.dart';
+import 'package:app/profile/view/create_edit_address.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

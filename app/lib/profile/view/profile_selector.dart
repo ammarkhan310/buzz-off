@@ -1,5 +1,5 @@
 import 'package:app/profile/model/profile.dart';
-import 'package:app/profile/view/profile_page_edit.dart';
+import 'package:app/profile/view/create_edit_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

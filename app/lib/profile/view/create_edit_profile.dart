@@ -112,16 +112,20 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           ),
                         )
                       : FlatButton(
-                          onPressed: () {
-                            profileList.deleteProfileWithId(
-                                this.widget.data.toMap()['id']);
-                            Navigator.of(context).pop();
-                          },
+                          onPressed: this.widget.data != null
+                              ? () {
+                                  profileList.deleteProfileWithId(
+                                      this.widget.data.toMap()['id']);
+                                  Navigator.of(context).pop();
+                                }
+                              : null,
                           child: Text(
                             "Delete Profile",
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.red,
+                              color: this.widget.data != null
+                                  ? Colors.red
+                                  : Colors.grey,
                             ),
                           ),
                         ),
