@@ -98,14 +98,37 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(_titles[_currentIndex]), actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.settings),
-          onPressed: () {
-            _goToSettings();
-          },
-        ),
-      ]),
+      appBar: AppBar(title: Text(_titles[_currentIndex])),
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+            child: Text(
+              'Buzz Off',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.accessibility),
+            title: Text('Placeholder'),
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              Navigator.of(context).pop();
+              _goToSettings();
+            },
+          ),
+        ],
+      )),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
