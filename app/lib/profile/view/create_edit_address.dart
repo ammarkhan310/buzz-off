@@ -89,11 +89,19 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
 
                         if (widget.data == null) {
                           addressList.insertAddress(address);
+                          Navigator.of(context).pop(
+                            new SnackBar(
+                              content: Text('Added Address'),
+                            ),
+                          );
                         } else {
                           addressList.updateAddress(address);
+                          Navigator.of(context).pop(
+                            new SnackBar(
+                              content: Text('Updated Address'),
+                            ),
+                          );
                         }
-
-                        Navigator.of(context).pop();
                       }
                     },
                   );

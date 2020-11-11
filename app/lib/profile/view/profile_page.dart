@@ -40,8 +40,20 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: _profileList,
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/createEditAddress');
+        onPressed: () async {
+          final SnackBar snackbar = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CreateEditAddress(
+                title: 'Create Address',
+              ),
+            ),
+          );
+
+          if (snackbar != null) {
+            Scaffold.of(context).hideCurrentSnackBar();
+            Scaffold.of(context).showSnackBar(snackbar);
+          }
         },
         tooltip: 'Add Address',
         child: Icon(Icons.add),
@@ -257,11 +269,18 @@ class _ProfilePageState extends State<ProfilePage> {
     final AddressModel addressList =
         Provider.of<AddressModel>(context, listen: false);
     final Address selectedAddress = await addressList.getAddressWithId(id);
-    await Navigator.push(
+
+    final SnackBar snackbar = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              CreateEditAddress(title: 'Edit Address', data: selectedAddress)),
+        builder: (context) =>
+            CreateEditAddress(title: 'Create Address', data: selectedAddress),
+      ),
     );
+
+    if (snackbar != null) {
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(snackbar);
+    }
   }
 }

@@ -89,18 +89,18 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           country: formValues[4]['value'],
                         );
 
-                        if (widget.data != null) {
-                          profileList.updateAddress(profile);
-                          Navigator.of(context).pop(
-                            new SnackBar(
-                              content: Text('Updated Profile'),
-                            ),
-                          );
-                        } else {
+                        if (widget.data == null) {
                           profileList.insertProfile(profile);
                           Navigator.of(context).pop(
                             SnackBar(
                               content: Text('Created Profile'),
+                            ),
+                          );
+                        } else {
+                          profileList.updateAddress(profile);
+                          Navigator.of(context).pop(
+                            new SnackBar(
+                              content: Text('Updated Profile'),
                             ),
                           );
                         }
