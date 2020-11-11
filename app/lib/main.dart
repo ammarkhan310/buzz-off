@@ -1,10 +1,24 @@
+import 'package:app/model/address.dart';
+import 'package:app/model/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
-import 'package:app/statistics_page.dart';
 import 'package:app/profile_page.dart';
+import 'package:app/profile_page_edit.dart';
+import 'package:app/edit_address_form.dart';
+import 'package:app/choose_profile.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    // Initializes Providers and Consumer Listeners
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProfileModel()),
+        ChangeNotifierProvider(create: (_) => AddressModel()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -18,6 +32,17 @@ class MyApp extends StatelessWidget {
       ),
       home: MyHomePage(title: 'Buzz Off'),
       debugShowCheckedModeBanner: false,
+      routes: <String, WidgetBuilder>{
+        '/createEditProfile': (BuildContext context) {
+          return CreateEditProfile(title: 'Create/Edit Profile');
+        },
+        '/createEditAddress': (BuildContext context) {
+          return CreateEditAddress(title: 'Create/Edit Address');
+        },
+        '/chooseProfile': (BuildContext context) {
+          return SelectProfile(title: 'Choose Profile');
+        },
+      },
     );
   }
 }
@@ -40,17 +65,18 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
-  final List<String> _titles = [
-    "Buzz off",
-    "Statistics",
-    "Profile",
-    "Settings",
+  final List<Map> _titles = [
+    {'header': 'Buzz Off', 'showHeader': true},
+    {'header': 'Statistics', 'showHeader': true},
+    {'header': 'Profile', 'showHeader': false},
+    {'header': 'Settings', 'showHeader': true}
   ];
 
   final List<Widget> _children = [
     ProfilePage(title: 'home'),
     ProfilePage(title: 'statistics'),
     ProfilePage(title: 'profile'),
+    ProfilePage(title: 'statistics'),
   ];
 
   void _setHomePageState() {
@@ -60,9 +86,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_currentIndex]),
-      ),
+      appBar: _titles[_currentIndex]['showHeader']
+          ? AppBar(
+              title: Text(_titles[_currentIndex]['header']),
+            )
+          : null,
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
