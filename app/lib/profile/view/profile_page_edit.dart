@@ -1,35 +1,34 @@
-import 'package:app/model/address.dart';
+import 'package:app/profile/model/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// New Page to Create/Edit a New Address
-class CreateEditAddress extends StatefulWidget {
-  CreateEditAddress({Key key, this.title}) : super(key: key);
+// New Page to Create/Edit a Profile
+class CreateEditProfile extends StatefulWidget {
+  CreateEditProfile({Key key, this.title}) : super(key: key);
 
   final String title;
 
   @override
-  _CreateEditAddressState createState() => _CreateEditAddressState();
+  _CreateEditProfileState createState() => _CreateEditProfileState();
 }
 
-class _CreateEditAddressState extends State<CreateEditAddress> {
+class _CreateEditProfileState extends State<CreateEditProfile> {
   final _formKey = GlobalKey<FormState>();
 
-  String name = '';
   @override
   Widget build(BuildContext context) {
-    final AddressModel addressList = Provider.of<AddressModel>(context);
+    final ProfileModel profileList = Provider.of<ProfileModel>(context);
     final formValues = [
-      {'label': 'Address', 'value': null},
-      {'label': 'City', 'value': null},
-      {'label': 'Province/State', 'value': null},
-      {'label': 'Postal Code/Zip Code', 'value': null},
-      {'label': 'Country', 'value': null},
+      {'label': 'Name', 'value': null},
+      {'label': 'Gender', 'value': null},
+      {'label': 'Blood Type', 'value': null},
+      {'label': 'Age', 'value': null},
+      {'label': 'Current Country', 'value': null},
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create/Edit Address'),
+        title: Text('Create Profile'),
         actions: [
           Row(
             children: <Widget>[
@@ -42,15 +41,14 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
 
-                        Address address = Address(
-                          address: formValues[0]['value'],
-                          city: formValues[1]['value'],
-                          state: formValues[2]['value'],
-                          postalCode: formValues[3]['value'],
+                        Profile profile = Profile(
+                          name: formValues[0]['value'],
+                          gender: formValues[1]['value'],
+                          bloodType: formValues[2]['value'],
+                          age: formValues[3]['value'],
                           country: formValues[4]['value'],
                         );
-                        addressList.insertAddress(address);
-
+                        profileList.insertProfile(profile);
                         Navigator.of(context).pop();
                       }
                     },

@@ -1,34 +1,36 @@
-import 'package:app/model/profile.dart';
+import 'package:app/profile/model/address.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// New Page to Create/Edit a Profile
-class CreateEditProfile extends StatefulWidget {
-  CreateEditProfile({Key key, this.title}) : super(key: key);
+// New Page to Create/Edit a New Address
+class CreateEditAddress extends StatefulWidget {
+  CreateEditAddress({Key key, this.title, this.data}) : super(key: key);
 
   final String title;
+  final Address data;
 
   @override
-  _CreateEditProfileState createState() => _CreateEditProfileState();
+  _CreateEditAddressState createState() => _CreateEditAddressState();
 }
 
-class _CreateEditProfileState extends State<CreateEditProfile> {
+class _CreateEditAddressState extends State<CreateEditAddress> {
   final _formKey = GlobalKey<FormState>();
 
+  String name = '';
   @override
   Widget build(BuildContext context) {
-    final ProfileModel profileList = Provider.of<ProfileModel>(context);
+    final AddressModel addressList = Provider.of<AddressModel>(context);
     final formValues = [
-      {'label': 'Name', 'value': null},
-      {'label': 'Gender', 'value': null},
-      {'label': 'Blood Type', 'value': null},
-      {'label': 'Age', 'value': null},
-      {'label': 'Current Country', 'value': null},
+      {'label': 'Address', 'value': null},
+      {'label': 'City', 'value': null},
+      {'label': 'Province/State', 'value': null},
+      {'label': 'Postal Code/Zip Code', 'value': null},
+      {'label': 'Country', 'value': null},
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Profile'),
+        title: Text('Create/Edit Address'),
         actions: [
           Row(
             children: <Widget>[
@@ -41,14 +43,15 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
 
-                        Profile profile = Profile(
-                          name: formValues[0]['value'],
-                          gender: formValues[1]['value'],
-                          bloodType: formValues[2]['value'],
-                          age: formValues[3]['value'],
+                        Address address = Address(
+                          address: formValues[0]['value'],
+                          city: formValues[1]['value'],
+                          state: formValues[2]['value'],
+                          postalCode: formValues[3]['value'],
                           country: formValues[4]['value'],
                         );
-                        profileList.insertProfile(profile);
+                        addressList.insertAddress(address);
+
                         Navigator.of(context).pop();
                       }
                     },

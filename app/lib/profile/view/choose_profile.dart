@@ -1,4 +1,4 @@
-import 'package:app/model/profile.dart';
+import 'package:app/profile/model/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -1,4 +1,5 @@
-import 'package:app/model/address.dart';
+import 'package:app/profile/model/address.dart';
+import 'package:app/profile/view/edit_address_form.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -248,6 +249,19 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _editAddress(BuildContext context) async {
+    // Allows user to edit an address
+    final AddressModel addressList =
+        Provider.of<AddressModel>(context, listen: false);
+    final selectedAddress = await addressList.getAddressWithId('0');
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              CreateEditAddress(title: 'Edit Address', data: selectedAddress)),
     );
   }
 }

@@ -51,6 +51,22 @@ class AddressModel with ChangeNotifier {
     return addresses;
   }
 
+  // Fetches one address instance based on it's id key
+  Future<Address> getAddressWithId(String id) async {
+    final db = await DBUtils.init();
+    List<Map<String, dynamic>> maps = await db.query(
+      'address',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (maps.length > 0) {
+      return Address.fromMap(maps[0]);
+    } else {
+      return null;
+    }
+  }
+
   // Adds a new Address Object to the Database
   Future<int> insertAddress(Address address) async {
     final db = await DBUtils.init();
@@ -62,6 +78,19 @@ class AddressModel with ChangeNotifier {
     // Ensures that new address is reflected on the address list
     notifyListeners();
     return newAddress;
+  }
+
+  // Updates an address in the database
+  Future<int> updateAddress(Address address) async {
+    final db = await DBUtils.init();
+    final updatedAddress = await db.update(
+      'address',
+      address.toMap(),
+      where: 'id = ?',
+      whereArgs: [address.id],
+    );
+    notifyListeners();
+    return updatedAddress;
   }
 
   // Deletes Address with a given ID
