@@ -160,8 +160,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   '5',
                                   Icons.edit,
                                   () {
-                                    Navigator.pushNamed(
-                                        context, '/createEditAddress');
+                                    _editAddress(
+                                        context, addresses[index - 1].id);
                                   },
                                 )
                         ],
@@ -252,11 +252,11 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _editAddress(BuildContext context) async {
+  Future<void> _editAddress(BuildContext context, int id) async {
     // Allows user to edit an address
     final AddressModel addressList =
         Provider.of<AddressModel>(context, listen: false);
-    final selectedAddress = await addressList.getAddressWithId('0');
+    final Address selectedAddress = await addressList.getAddressWithId(1);
     await Navigator.push(
       context,
       MaterialPageRoute(

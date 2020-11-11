@@ -6,7 +6,13 @@ import 'db_utils.dart';
 // Address Model Definition
 class Address {
   // Constructor
-  Address({this.address, this.city, this.state, this.postalCode, this.country});
+  Address(
+      {this.id,
+      this.address,
+      this.city,
+      this.state,
+      this.postalCode,
+      this.country});
 
   int id;
   String address;
@@ -52,7 +58,7 @@ class AddressModel with ChangeNotifier {
   }
 
   // Fetches one address instance based on it's id key
-  Future<Address> getAddressWithId(String id) async {
+  Future<Address> getAddressWithId(int id) async {
     final db = await DBUtils.init();
     List<Map<String, dynamic>> maps = await db.query(
       'address',

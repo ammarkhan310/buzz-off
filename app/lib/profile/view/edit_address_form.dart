@@ -21,11 +21,31 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
   Widget build(BuildContext context) {
     final AddressModel addressList = Provider.of<AddressModel>(context);
     final formValues = [
-      {'label': 'Address', 'value': null},
-      {'label': 'City', 'value': null},
-      {'label': 'Province/State', 'value': null},
-      {'label': 'Postal Code/Zip Code', 'value': null},
-      {'label': 'Country', 'value': null},
+      {
+        'label': 'Address',
+        'value': null,
+        'key': 'address',
+      },
+      {
+        'label': 'City',
+        'value': null,
+        'key': 'city',
+      },
+      {
+        'label': 'Province/State',
+        'value': null,
+        'key': 'state',
+      },
+      {
+        'label': 'Postal Code/Zip Code',
+        'value': null,
+        'key': 'postalCode',
+      },
+      {
+        'label': 'Country',
+        'value': null,
+        'key': 'country',
+      },
     ];
 
     return Scaffold(
@@ -44,13 +64,21 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                         _formKey.currentState.save();
 
                         Address address = Address(
+                          id: this.widget.data != null
+                              ? this.widget.data.toMap()['id']
+                              : null,
                           address: formValues[0]['value'],
                           city: formValues[1]['value'],
                           state: formValues[2]['value'],
                           postalCode: formValues[3]['value'],
                           country: formValues[4]['value'],
                         );
-                        addressList.insertAddress(address);
+
+                        if (this.widget.data == null) {
+                          addressList.insertAddress(address);
+                        } else {
+                          addressList.updateAddress(address);
+                        }
 
                         Navigator.of(context).pop();
                       }
@@ -68,6 +96,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
+              String key = formValues[index]['key'];
+
               return Container(
                 padding: EdgeInsets.only(top: 24.0),
                 child: ListTile(
@@ -80,6 +110,9 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                     ),
                   ),
                   subtitle: TextFormField(
+                    initialValue: this.widget.data != null
+                        ? this.widget.data.toMap()[key]
+                        : '',
                     onSaved: (String value) {
                       formValues[index]['value'] = value;
                     },
