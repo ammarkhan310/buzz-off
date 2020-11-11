@@ -114,7 +114,7 @@ class BiteCard extends StatelessWidget {
             children: <Widget>[
               // update button
               IconButton(
-                icon: Icon(Icons.refresh),
+                icon: Icon(Icons.refresh_rounded),
                 onPressed: () => _showUpdateBiteForm(context),
               ),
 
