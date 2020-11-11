@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:app/statistics/view/statistics_page.dart';
 import 'package:app/test_page.dart';
 import 'statistics/model/biteModel.dart';
+import 'package:app/settings/settings_page.dart';
 import 'package:app/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -51,6 +52,8 @@ class MyApp extends StatelessWidget {
                 primarySwatch: Colors.blue,
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.system,
               home: MyHomePage(title: 'Buzz Off'),
               debugShowCheckedModeBanner: false,
               routes: <String, WidgetBuilder>{
@@ -107,14 +110,70 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  void _goToSettings() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SettingsPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _titles[_currentIndex]['showHeader']
           ? AppBar(
               title: Text(_titles[_currentIndex]['header']),
-            )
+              actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () {
+                      _goToSettings();
+                    },
+                  ),
+                ])
           : null,
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+            child: Text(
+              'Buzz Off',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.account_box),
+            title: Text('Profile'),
+            onTap: () {
+              Navigator.of(context).pop();
+              onItemTapped(2);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.trending_up),
+            title: Text('Statistics'),
+            onTap: () {
+              Navigator.of(context).pop();
+              onItemTapped(1);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              Navigator.of(context).pop();
+              _goToSettings();
+            },
+          ),
+        ],
+      )),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
