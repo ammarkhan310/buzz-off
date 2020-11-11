@@ -187,7 +187,6 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                                 formValues[index]['value'] = value;
                               },
                               validator: (String value) {
-                                print(value);
                                 if (value == null || value.isEmpty) {
                                   return '${formValues[index]['label']} is ' +
                                       'required';

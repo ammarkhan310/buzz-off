@@ -89,13 +89,21 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           country: formValues[4]['value'],
                         );
 
-                        if (widget.data == null) {
-                          profileList.insertProfile(profile);
-                        } else {
+                        if (widget.data != null) {
                           profileList.updateAddress(profile);
+                          Navigator.of(context).pop(
+                            new SnackBar(
+                              content: Text('Updated Profile'),
+                            ),
+                          );
+                        } else {
+                          profileList.insertProfile(profile);
+                          Navigator.of(context).pop(
+                            SnackBar(
+                              content: Text('Created Profile'),
+                            ),
+                          );
                         }
-
-                        Navigator.of(context).pop();
                       }
                     },
                   );
@@ -177,19 +185,19 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                       ? formValues[index]['inputType'] == 'dropdown'
                           ? DropdownButtonFormField(
                               value: formValues[index]['value'],
-                              items: <String>[
-                                ...dropdownValues[key]
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                              items: <String>[...dropdownValues[key]]
+                                  .map<DropdownMenuItem<String>>(
+                                (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                },
+                              ).toList(),
                               onChanged: (String value) {
                                 formValues[index]['value'] = value;
                               },
                               validator: (String value) {
-                                print(value);
                                 if (value == null || value.isEmpty) {
                                   return '${formValues[index]['label']} is ' +
                                       'required';

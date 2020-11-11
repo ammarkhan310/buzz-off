@@ -173,7 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
               itemCount: addresses.length + 1,
             );
           } else {
-            return Text("Data Loading......");
+            return Text('Data Loading...');
           }
         },
       ),

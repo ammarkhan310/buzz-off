@@ -26,8 +26,20 @@ class _SelectProfileState extends State<SelectProfile> {
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.add),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/createEditProfile');
+                    onPressed: () async {
+                      final SnackBar snackbar = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateEditProfile(
+                            title: 'Create Profile',
+                          ),
+                        ),
+                      );
+
+                      if (snackbar != null) {
+                        Scaffold.of(context).hideCurrentSnackBar();
+                        Scaffold.of(context).showSnackBar(snackbar);
+                      }
                     },
                   );
                 },
@@ -123,11 +135,20 @@ class _SelectProfileState extends State<SelectProfile> {
     final ProfileModel profileList =
         Provider.of<ProfileModel>(context, listen: false);
     final Profile selectedAddress = await profileList.getProfileById(id);
-    await Navigator.push(
+
+    final SnackBar snackbar = await Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) =>
-              CreateEditProfile(title: 'Edit Address', data: selectedAddress)),
+        builder: (context) => CreateEditProfile(
+          title: 'Edit Address',
+          data: selectedAddress,
+        ),
+      ),
     );
+
+    if (snackbar != null) {
+      Scaffold.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).showSnackBar(snackbar);
+    }
   }
 }
