@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
       ]),
-      body: Center(),
+      body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
         currentIndex: _currentIndex, // new
