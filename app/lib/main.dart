@@ -7,6 +7,10 @@ import 'package:app/profile_page_edit.dart';
 import 'package:app/edit_address_form.dart';
 import 'package:app/choose_profile.dart';
 import 'package:provider/provider.dart';
+import 'package:app/statistics/view/statistics_page.dart';
+import 'package:app/test_page.dart';
+
+import 'statistics/model/biteModel.dart';
 
 void main() {
   runApp(
@@ -15,6 +19,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileModel()),
         ChangeNotifierProvider(create: (_) => AddressModel()),
+        ChangeNotifierProvider(create: (_) => BiteListBLoC()),
       ],
       child: MyApp(),
     ),
@@ -73,10 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   final List<Widget> _children = [
-    ProfilePage(title: 'home'),
-    ProfilePage(title: 'statistics'),
+    TestPage(Colors.red),
+    StatisticsPage(title: 'statistics'),
     ProfilePage(title: 'profile'),
-    ProfilePage(title: 'statistics'),
   ];
 
   void _setHomePageState() {
