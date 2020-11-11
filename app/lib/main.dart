@@ -1,9 +1,14 @@
-import 'package:app/profile_page.dart';
+import 'package:app/profile/model/address.dart';
+import 'package:app/profile/model/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
+import 'package:app/profile/view/profile_page.dart';
+import 'package:app/profile/view/create_edit_profile.dart';
+import 'package:app/profile/view/create_edit_address.dart';
+import 'package:app/profile/view/profile_selector.dart';
+import 'package:provider/provider.dart';
 import 'package:app/statistics/view/statistics_page.dart';
 import 'package:app/test_page.dart';
-import 'package:provider/provider.dart';
 import 'statistics/model/biteModel.dart';
 import 'package:app/home_page.dart';
 import 'package:flutter/services.dart';
@@ -12,12 +17,14 @@ import 'package:app/mosquito_model/mosquito_db.dart';
 
 void main() {
   runApp(
+    // Initializes Providers and Consumer Listeners
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ProfileModel()),
+        ChangeNotifierProvider(create: (_) => AddressModel()),
         ChangeNotifierProvider(create: (_) => BiteListBLoC()),
       ],
-    
-      child: MyApp()
+      child: MyApp(),
     ),
   );
 }
@@ -46,6 +53,17 @@ class MyApp extends StatelessWidget {
               ),
               home: MyHomePage(title: 'Buzz Off'),
               debugShowCheckedModeBanner: false,
+              routes: <String, WidgetBuilder>{
+                '/createEditProfile': (BuildContext context) {
+                  return CreateEditProfile(title: 'Create/Edit Profile');
+                },
+                '/createEditAddress': (BuildContext context) {
+                  return CreateEditAddress(title: 'Create/Edit Address');
+                },
+                '/chooseProfile': (BuildContext context) {
+                  return SelectProfile(title: 'Choose Profile');
+                },
+              },
             );
           } else {
             return CircularProgressIndicator();
@@ -72,17 +90,17 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _currentIndex = 0;
 
-  final List<String> _titles = [
-    "Buzz off",
-    "Statistics",
-    "Profile",
-    "Settings",
+  final List<Map> _titles = [
+    {'header': 'Buzz Off', 'showHeader': true},
+    {'header': 'Statistics', 'showHeader': true},
+    {'header': 'Profile', 'showHeader': false},
+    {'header': 'Settings', 'showHeader': true}
   ];
-  
+
   final List<Widget> _children = [
-    HomePage(), 
+    HomePage(),
     StatisticsPage(title: 'statistics'),
-    TestPage(Colors.blue),
+    ProfilePage(title: 'profile'),
   ];
 
   void _setHomePageState() {
@@ -92,9 +110,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_currentIndex]),
-      ),
+      appBar: _titles[_currentIndex]['showHeader']
+          ? AppBar(
+              title: Text(_titles[_currentIndex]['header']),
+            )
+          : null,
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
