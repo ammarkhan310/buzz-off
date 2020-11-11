@@ -50,7 +50,9 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create/Edit Address'),
+        title: Text(
+          this.widget.data != null ? 'Edit Address' : 'Create Address',
+        ),
         actions: [
           Row(
             children: <Widget>[

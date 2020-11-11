@@ -17,7 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Profile'),
+        title: Text('User Profile'),
         actions: [
           Row(
             children: <Widget>[

@@ -50,7 +50,9 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Profile'),
+        title: Text(
+          this.widget.data != null ? 'Edit Profile' : 'Create Profile',
+        ),
         actions: [
           Row(
             children: <Widget>[
