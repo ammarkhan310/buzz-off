@@ -1,9 +1,23 @@
+import 'package:app/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
-import 'package:app/statistics_page.dart';
+import 'package:app/statistics/view/statistics_page.dart';
+import 'package:app/test_page.dart';
+
+import 'package:provider/provider.dart';
+
+import 'statistics/model/biteModel.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => BiteListBLoC()),
+      ],
+    
+      child: MyApp()
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -45,8 +59,12 @@ class _MyHomePageState extends State<MyHomePage> {
     "Profile",
     "Settings",
   ];
-
-  final List<Widget> _children = [];
+  
+  final List<Widget> _children = [
+    TestPage(Colors.red),
+    StatisticsPage(title: 'statistics'),
+    TestPage(Colors.blue),
+  ];
 
   void _setHomePageState() {
     setState(() {});
@@ -58,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(_titles[_currentIndex]),
       ),
-      body: Center(),
+      body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
         currentIndex: _currentIndex, // new
