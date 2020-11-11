@@ -41,6 +41,8 @@ class MyApp extends StatelessWidget {
                 primarySwatch: Colors.blue,
                 visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
+              darkTheme: ThemeData.dark(),
+              themeMode: ThemeMode.system,
               home: MyHomePage(title: 'Buzz Off'),
               debugShowCheckedModeBanner: false,
             );
