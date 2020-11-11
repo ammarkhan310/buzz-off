@@ -25,7 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 builder: (BuildContext context) {
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
-                    icon: Icon(Icons.swap_horiz_outlined),
+                    icon: Icon(Icons.swap_horiz),
                     onPressed: () {
                       Navigator.pushNamed(context, '/chooseProfile');
                     },

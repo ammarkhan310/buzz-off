@@ -123,8 +123,52 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: _titles[_currentIndex]['showHeader']
           ? AppBar(
               title: Text(_titles[_currentIndex]['header']),
-            )
+              actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.settings),
+                    onPressed: () {
+                      _goToSettings();
+                    },
+                  ),
+                ])
           : null,
+      drawer: Drawer(
+          child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+            child: Text(
+              'Buzz Off',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.account_box),
+            title: Text('Profile'),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text('Settings'),
+            onTap: () {
+              Navigator.of(context).pop();
+              _goToSettings();
+            },
+          ),
+        ],
+      )),
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
