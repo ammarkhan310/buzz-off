@@ -51,3 +51,13 @@ String toMonthName(monthNum) {
 String toDateString(DateTime date) {
   return '${toMonthName(date.month)} ${toOrdinal(date.day)}';
 }
+
+// Checks to see if a string is a valid number
+// function obtained from
+// https://www.codegrepper.com/code-examples/dart/checking+if+a+value+is+numeric+in+dart
+bool isNumeric(String result) {
+  if (result == null) {
+    return false;
+  }
+  return double.tryParse(result) != null;
+}
