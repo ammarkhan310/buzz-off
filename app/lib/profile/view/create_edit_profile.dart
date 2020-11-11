@@ -25,39 +25,31 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     final List<Map<String, String>> formValues = [
       {
         'label': 'Name',
-        'value':
-            this.widget.data != null ? this.widget.data.toMap()['name'] : null,
+        'value': widget.data != null ? widget.data.toMap()['name'] : null,
         'key': 'name',
         'inputType': 'textfield',
       },
       {
         'label': 'Gender',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['gender']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['gender'] : null,
         'key': 'gender',
         'inputType': 'textfield',
       },
       {
         'label': 'Blood Type',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['bloodType']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['bloodType'] : null,
         'key': 'bloodType',
         'inputType': 'dropdown',
       },
       {
         'label': 'Age',
-        'value':
-            this.widget.data != null ? this.widget.data.toMap()['age'] : null,
+        'value': widget.data != null ? widget.data.toMap()['age'] : null,
         'key': 'age',
         'inputType': 'number',
       },
       {
         'label': 'Current Country',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['country']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['country'] : null,
         'key': 'country',
         'inputType': 'dropdown',
       },
@@ -72,7 +64,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          this.widget.data != null ? 'Edit Profile' : 'Create Profile',
+          widget.data != null ? 'Edit Profile' : 'Create Profile',
         ),
         actions: [
           Row(
@@ -87,8 +79,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                         _formKey.currentState.save();
 
                         Profile profile = Profile(
-                          id: this.widget.data != null
-                              ? this.widget.data.toMap()['id']
+                          id: widget.data != null
+                              ? widget.data.toMap()['id']
                               : null,
                           name: formValues[0]['value'],
                           gender: formValues[1]['value'],
@@ -97,7 +89,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           country: formValues[4]['value'],
                         );
 
-                        if (this.widget.data == null) {
+                        if (widget.data == null) {
                           profileList.insertProfile(profile);
                         } else {
                           profileList.updateAddress(profile);
@@ -135,18 +127,47 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           ),
                         )
                       : FlatButton(
-                          onPressed: this.widget.data != null
+                          onPressed: widget.data != null
                               ? () {
-                                  profileList.deleteProfileWithId(
-                                      this.widget.data.toMap()['id']);
-                                  Navigator.of(context).pop();
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext dialogContext) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          'Delete Profile?',
+                                        ),
+                                        content: Text(
+                                          'Are you sure you want to delete ' +
+                                              'this profile?',
+                                        ),
+                                        actions: [
+                                          RaisedButton(
+                                            child: Text('Delete'),
+                                            onPressed: () {
+                                              profileList.deleteProfileWithId(
+                                                widget.data.toMap()['id'],
+                                              );
+                                              Navigator.of(dialogContext).pop();
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          RaisedButton(
+                                            child: Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.of(dialogContext).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
                               : null,
                           child: Text(
                             "Delete Profile",
                             style: TextStyle(
                               fontSize: 16,
-                              color: this.widget.data != null
+                              color: widget.data != null
                                   ? Colors.red
                                   : Colors.grey,
                             ),
@@ -179,8 +200,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           : formValues[index]['inputType'] == 'number'
                               ? TextFormField(
                                   keyboardType: TextInputType.number,
-                                  initialValue: this.widget.data != null
-                                      ? this.widget.data.toMap()[key]
+                                  initialValue: widget.data != null
+                                      ? widget.data.toMap()[key]
                                       : '',
                                   onSaved: (String value) {
                                     formValues[index]['value'] = value;
@@ -197,8 +218,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                   },
                                 )
                               : TextFormField(
-                                  initialValue: this.widget.data != null
-                                      ? this.widget.data.toMap()[key]
+                                  initialValue: widget.data != null
+                                      ? widget.data.toMap()[key]
                                       : '',
                                   onSaved: (String value) {
                                     formValues[index]['value'] = value;
