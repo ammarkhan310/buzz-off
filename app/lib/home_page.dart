@@ -2,6 +2,7 @@
 * Home page's layout widgets and appearance values
 */
 
+import 'package:app/mosquito_model/mosquito_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
@@ -48,36 +49,23 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          Center(child: _buildSlider()),
-          Center(
-            child: Container(
-              height: 175,
-              width: 175,
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: Image(
-                  image: AssetImage('assets/mosquito.png'),
-                  height: 45,
-                  width: 45,
-                ),
-              ),
-            ),
+          /*Test function testing cloud database insert, button appears at the top
+          *of the home page, comment out when not debugging*/
+          FlatButton(
+            onPressed: () {
+              _insertMosquitoData(
+                MosquitoInfo(
+                    docReference: '02',
+                    location: 'Toronto',
+                    weather: 'Night time & cloudy',
+                    rating: 7),
+              );
+            },
+            child: Text('Test Cloud DB Insert'),
           ),
-          //TODO - Insert User's saved locations
-          //TODO - Make the text clickable
-          Center(
-            child: Container(
-              height: 250,
-              width: 300,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Text(
-                  "Location: Insert user's saved location",
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                ),
-              ),
-            ),
-          ),
+          /*Label for the text box containinig the weather conditions summary
+          * of the current location
+          */
           Center(
             child: Container(
               height: 525,
@@ -101,33 +89,67 @@ class _HomePageState extends State<HomePage> {
               width: 250,
               child: Align(
                 alignment: Alignment.topCenter,
-                child: Text(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit,'
-                  'sed do eiusmod tempor incididunt ut labore et dolore magna'
-                  'aliqua. Ut enim ad minim veniam, quis nostrud exercitation'
-                  'ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-                  style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      fontSize: 10,
-                      color: Colors.grey),
+                child: _buildLocationWeather(),
+              ),
+            ),
+          ),
+          //Build mosquito slider containing the current rating for the location
+          Center(child: _buildSlider()),
+          //Image of a mosquito displayed inside the ratings slider
+          Center(
+            child: Container(
+              height: 175,
+              width: 175,
+              child: Align(
+                alignment: Alignment.topCenter,
+                child: Image(
+                  image: AssetImage('assets/mosquito.png'),
+                  height: 45,
+                  width: 45,
                 ),
               ),
             ),
-          )
+          ),
+          //Text displaying the ratings location
+          //TODO - Insert User's saved locations
+          //TODO - Make the text clickable
+          Center(
+            child: Container(
+              height: 250,
+              width: 300,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: _buildRatingLocation(),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 
+  //TODO - Finish inserting data from weather api
+  void _insertMosquitoData(MosquitoInfo info) {
+    print("Inserting ${info.toString()} into mosquito-info collection");
+    MosquitoDb().insertMosquitoData(info);
+  }
+
+  Widget _buildLocationWeather() {
+    return MosquitoDb().getLocationWeather(context);
+  }
+
   Widget _buildSlider() {
-    MosquitoDb();
-    return MosquitoDb().getMosquitoData(
+    return MosquitoDb().getMosquitoSlider(
       context,
       widget.viewModel.sliderColors,
       widget.viewModel.appearance,
       widget.viewModel.min,
       widget.viewModel.max,
     );
+  }
+
+  Widget _buildRatingLocation() {
+    return MosquitoDb().getRatingLocation(context);
   }
 }
 
