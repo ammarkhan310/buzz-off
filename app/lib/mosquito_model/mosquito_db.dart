@@ -6,6 +6,10 @@ import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 class MosquitoDb {
   String _selectedType = 'All';
 
+  CollectionReference getDbInstance() {
+    return FirebaseFirestore.instance.collection('mosquito-info');
+  }
+
   Future<QuerySnapshot> getMosquitoInfo() async {
     if (_selectedType == 'All') {
       return await FirebaseFirestore.instance.collection('mosquito-info').get();
@@ -17,7 +21,7 @@ class MosquitoDb {
     }
   }
 
-  FutureBuilder<QuerySnapshot> getMosquitoData(
+  FutureBuilder<QuerySnapshot> getMosquitoSlider(
       BuildContext context,
       CustomSliderColors sliderColor,
       CircularSliderAppearance appearance,
@@ -38,6 +42,57 @@ class MosquitoDb {
     );
   }
 
+  FutureBuilder<QuerySnapshot> getRatingLocation(BuildContext context) {
+    return FutureBuilder<QuerySnapshot>(
+      future: getMosquitoInfo(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return LinearProgressIndicator();
+        } else {
+          return _buildLocationText(snapshot.data.docs.first);
+        }
+      },
+    );
+  }
+
+  FutureBuilder<QuerySnapshot> getLocationWeather(BuildContext context) {
+    return FutureBuilder<QuerySnapshot>(
+      future: getMosquitoInfo(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return LinearProgressIndicator();
+        } else {
+          return _buildLocationWeather(snapshot.data.docs.first);
+        }
+      },
+    );
+  }
+
+  void insertMosquitoData(MosquitoInfo info) async {
+    CollectionReference db = getDbInstance();
+    await db.doc(info.docReference.toString()).set(info.toMap(info));
+  }
+
+  Widget _buildLocationText(DocumentSnapshot mosquitoInfoData) {
+    MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
+        docReference: mosquitoInfoData.reference.toString());
+    return Text(
+      'Location: ${mosquitoInfo.location}',
+      style: TextStyle(
+          fontStyle: FontStyle.italic, fontSize: 10, color: Colors.grey),
+    );
+  }
+
+  Widget _buildLocationWeather(DocumentSnapshot mosquitoInfoData) {
+    MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
+        docReference: mosquitoInfoData.reference.toString());
+    return Text(
+      '\n ${mosquitoInfo.weather}',
+      style: TextStyle(
+          fontStyle: FontStyle.italic, fontSize: 10, color: Colors.grey),
+    );
+  }
+
   Widget _buildSlider(
       CustomSliderColors sliderColor,
       CircularSliderAppearance appearance,
@@ -46,7 +101,7 @@ class MosquitoDb {
       BuildContext context,
       DocumentSnapshot mosquitoInfoData) {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
-        reference: mosquitoInfoData.reference);
+        docReference: mosquitoInfoData.reference.toString());
     return SleekCircularSlider(
       appearance: appearance,
       min: min,
