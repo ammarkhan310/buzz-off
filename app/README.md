@@ -48,3 +48,24 @@ Home Page mock-up:
   * Change theme
   * Check documentation
   * Turn on/off certain features*
+
+### How to use
+* Home
+
+* Statistics
+  * Tap the person image to get to the add entries page
+    * Input info for bite location, size of bite, date bitten
+    * Tap floating save button to confirm data and add to database
+  
+  * On entries cards
+    * Tap the circle refresh button to update data for that card
+      * Input info for bite location, size of bite, date bitten
+      * Tap floating save button to confirm data and update database for that entry
+
+    * Tap trash icon to delete that entry
+      * Will be asked to confrim delete
+      * Tap yes to delete that entry in the database
+* Profile
+
+* Settings
+
