@@ -7,10 +7,12 @@ class MosquitoDb {
   String _selectedType = 'All';
 
   CollectionReference getDbInstance() {
+    print("Getting mosquito-info collection");
     return FirebaseFirestore.instance.collection('mosquito-info');
   }
 
   Future<QuerySnapshot> getMosquitoInfo() async {
+    print("Returning info on all queried selected mosquito types");
     if (_selectedType == 'All') {
       return await FirebaseFirestore.instance.collection('mosquito-info').get();
     } else {
@@ -27,6 +29,7 @@ class MosquitoDb {
       CircularSliderAppearance appearance,
       double min,
       double max) {
+    print('Building home page mosquito slider with cloud-db instance');
     return FutureBuilder<QuerySnapshot>(
       future: getMosquitoInfo(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -43,6 +46,7 @@ class MosquitoDb {
   }
 
   FutureBuilder<QuerySnapshot> getRatingLocation(BuildContext context) {
+    print('Building home page rating location text with cloud-db instance');
     return FutureBuilder<QuerySnapshot>(
       future: getMosquitoInfo(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -56,6 +60,7 @@ class MosquitoDb {
   }
 
   FutureBuilder<QuerySnapshot> getLocationWeather(BuildContext context) {
+    print('Building home page location weather text with cloud-db instance');
     return FutureBuilder<QuerySnapshot>(
       future: getMosquitoInfo(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
