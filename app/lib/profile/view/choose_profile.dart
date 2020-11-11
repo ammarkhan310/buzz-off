@@ -1,4 +1,5 @@
 import 'package:app/profile/model/profile.dart';
+import 'package:app/profile/view/profile_page_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -54,21 +55,30 @@ class _SelectProfileState extends State<SelectProfile> {
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: index % 2 == 0
-                      ? Color.fromRGBO(255, 255, 255, 100)
-                      : Color.fromRGBO(220, 220, 220, 100),
+                  color: index != 0 ? Colors.white : Colors.transparent,
                   child: ListTile(
-                    title: Container(
-                        child: DataRow(
-                      '${addresses[index].name}',
-                      () {
-                        Navigator.pushNamed(context, '/createEditAddress');
-                      },
-                    )),
+                    title: index == 0
+                        ? Text(
+                            'Profiles',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey,
+                            ),
+                          )
+                        : Container(
+                            child: DataRowWithIconSuffix(
+                              '${addresses[index - 1].name}',
+                              Icons.edit,
+                              () {
+                                _editProfile(context, addresses[index - 1].id);
+                              },
+                            ),
+                          ),
                   ),
                 );
               },
-              itemCount: addresses.length,
+              itemCount: addresses.length + 1,
             );
           } else {
             return Text("Data Loading......");
@@ -78,27 +88,46 @@ class _SelectProfileState extends State<SelectProfile> {
     );
   }
 
-  Widget DataRow(header, onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 16.0,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              header,
-              style: TextStyle(
-                fontSize: 20,
+  Widget DataRowWithIconSuffix(header, icon, onTap) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            header,
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.blueGrey,
+            ),
+          ),
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              padding: EdgeInsets.only(
+                right: 12.0,
+              ),
+              child: Icon(
+                icon,
                 color: Colors.blueGrey,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Future<void> _editProfile(BuildContext context, int id) async {
+    // Allows user to edit a profile
+    final ProfileModel profileList =
+        Provider.of<ProfileModel>(context, listen: false);
+    final Profile selectedAddress = await profileList.getProfileById(id);
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) =>
+              CreateEditProfile(title: 'Edit Address', data: selectedAddress)),
     );
   }
 }

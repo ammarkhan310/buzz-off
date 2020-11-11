@@ -256,7 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
     // Allows user to edit an address
     final AddressModel addressList =
         Provider.of<AddressModel>(context, listen: false);
-    final Address selectedAddress = await addressList.getAddressWithId(1);
+    final Address selectedAddress = await addressList.getAddressWithId(id);
     await Navigator.push(
       context,
       MaterialPageRoute(

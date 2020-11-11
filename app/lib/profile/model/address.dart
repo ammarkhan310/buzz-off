@@ -6,13 +6,14 @@ import 'db_utils.dart';
 // Address Model Definition
 class Address {
   // Constructor
-  Address(
-      {this.id,
-      this.address,
-      this.city,
-      this.state,
-      this.postalCode,
-      this.country});
+  Address({
+    this.id,
+    this.address,
+    this.city,
+    this.state,
+    this.postalCode,
+    this.country,
+  });
 
   int id;
   String address;

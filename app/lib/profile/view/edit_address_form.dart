@@ -96,37 +96,55 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
-              String key = formValues[index]['key'];
+              String key =
+                  index < formValues.length ? formValues[index]['key'] : null;
 
               return Container(
                 padding: EdgeInsets.only(top: 24.0),
                 child: ListTile(
-                  title: Text(
-                    formValues[index]['label'],
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey,
-                    ),
-                  ),
-                  subtitle: TextFormField(
-                    initialValue: this.widget.data != null
-                        ? this.widget.data.toMap()[key]
-                        : '',
-                    onSaved: (String value) {
-                      formValues[index]['value'] = value;
-                    },
-                    validator: (String value) {
-                      if (value.isEmpty) {
-                        return '${formValues[index]['label']} is required';
-                      }
-                      return null;
-                    },
-                  ),
+                  title: index < formValues.length
+                      ? Text(
+                          formValues[index]['label'],
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blueGrey,
+                          ),
+                        )
+                      : FlatButton(
+                          onPressed: () {
+                            addressList.deleteAddressWithId(
+                                this.widget.data.toMap()['id']);
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "Delete Address",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.red,
+                            ),
+                          ),
+                        ),
+                  subtitle: index < formValues.length
+                      ? TextFormField(
+                          initialValue: this.widget.data != null
+                              ? this.widget.data.toMap()[key]
+                              : '',
+                          onSaved: (String value) {
+                            formValues[index]['value'] = value;
+                          },
+                          validator: (String value) {
+                            if (value.isEmpty) {
+                              return '${formValues[index]['label']} is required';
+                            }
+                            return null;
+                          },
+                        )
+                      : null,
                 ),
               );
             },
-            itemCount: formValues.length,
+            itemCount: formValues.length + 1,
           ),
         ),
       ),
