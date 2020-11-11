@@ -5,18 +5,14 @@ import 'package:app/statistics/view/statistics_page.dart';
 import 'package:app/test_page.dart';
 
 import 'package:provider/provider.dart';
-
 import 'statistics/model/biteModel.dart';
+import 'package:app/settings/settings_page.dart';
 
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => BiteListBLoC()),
-      ],
-    
-      child: MyApp()
-    ),
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_) => BiteListBLoC()),
+    ], child: MyApp()),
   );
 }
 
@@ -29,6 +25,8 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.system,
       home: MyHomePage(title: 'Buzz Off'),
       debugShowCheckedModeBanner: false,
     );
@@ -59,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "Profile",
     "Settings",
   ];
-  
+
   final List<Widget> _children = [
     TestPage(Colors.red),
     StatisticsPage(title: 'statistics'),
@@ -70,13 +68,25 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  void _goToSettings() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SettingsPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_titles[_currentIndex]),
-      ),
-      body: _children[_currentIndex],
+      appBar: AppBar(title: Text(_titles[_currentIndex]), actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {
+            _goToSettings();
+          },
+        ),
+      ]),
+      body: Center(),
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
         currentIndex: _currentIndex, // new
