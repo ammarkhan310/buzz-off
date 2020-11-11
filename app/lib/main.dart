@@ -9,8 +9,11 @@ import 'package:app/choose_profile.dart';
 import 'package:provider/provider.dart';
 import 'package:app/statistics/view/statistics_page.dart';
 import 'package:app/test_page.dart';
-
 import 'statistics/model/biteModel.dart';
+import 'package:app/home_page.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:app/mosquito_model/mosquito_db.dart';
 
 void main() {
   runApp(
@@ -29,26 +32,43 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Mobile Development Group Project',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Buzz Off'),
-      debugShowCheckedModeBanner: false,
-      routes: <String, WidgetBuilder>{
-        '/createEditProfile': (BuildContext context) {
-          return CreateEditProfile(title: 'Create/Edit Profile');
-        },
-        '/createEditAddress': (BuildContext context) {
-          return CreateEditAddress(title: 'Create/Edit Address');
-        },
-        '/chooseProfile': (BuildContext context) {
-          return SelectProfile(title: 'Choose Profile');
-        },
-      },
-    );
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    return FutureBuilder(
+        future: Firebase.initializeApp(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            print('Error initializing firebase');
+            return Text('Error initializing firebase');
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return MaterialApp(
+              title: 'Mobile Development Group Project',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+              ),
+              home: MyHomePage(title: 'Buzz Off'),
+              debugShowCheckedModeBanner: false,
+              routes: <String, WidgetBuilder>{
+                '/createEditProfile': (BuildContext context) {
+                  return CreateEditProfile(title: 'Create/Edit Profile');
+                },
+                '/createEditAddress': (BuildContext context) {
+                  return CreateEditAddress(title: 'Create/Edit Address');
+                },
+                '/chooseProfile': (BuildContext context) {
+                  return SelectProfile(title: 'Choose Profile');
+                },
+              },
+            );
+          } else {
+            return CircularProgressIndicator();
+          }
+        });
   }
 }
 
@@ -78,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   final List<Widget> _children = [
-    TestPage(Colors.red),
+    HomePage(),
     StatisticsPage(title: 'statistics'),
     ProfilePage(title: 'profile'),
   ];
