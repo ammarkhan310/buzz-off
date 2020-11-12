@@ -20,6 +20,12 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _dobController = new TextEditingController(
+      text: widget.data != null
+          ? formatDate(DateTime.parse(widget.data.toMap()['dob']))
+          : '',
+    );
+
     final ProfileModel profileList = Provider.of<ProfileModel>(context);
 
     final List<Map<String, String>> formValues = [
@@ -42,10 +48,10 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
         'inputType': 'dropdown',
       },
       {
-        'label': 'Age',
-        'value': widget.data != null ? widget.data.toMap()['age'] : null,
-        'key': 'age',
-        'inputType': 'number',
+        'label': 'Date of Birth',
+        'value': widget.data != null ? widget.data.toMap()['dob'] : null,
+        'key': 'dob',
+        'inputType': 'date',
       },
       {
         'label': 'Current Country',
@@ -74,7 +80,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.save),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
 
@@ -85,19 +91,19 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           name: formValues[0]['value'],
                           gender: formValues[1]['value'],
                           bloodType: formValues[2]['value'],
-                          age: formValues[3]['value'],
+                          dob: formValues[3]['value'],
                           country: formValues[4]['value'],
                         );
 
                         if (widget.data == null) {
-                          profileList.insertProfile(profile);
+                          await profileList.insertProfile(profile);
                           Navigator.of(context).pop(
                             SnackBar(
                               content: Text('Created Profile'),
                             ),
                           );
                         } else {
-                          profileList.updateAddress(profile);
+                          await profileList.updateProfile(profile);
                           Navigator.of(context).pop(
                             new SnackBar(
                               content: Text('Updated Profile'),
@@ -225,21 +231,54 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                     return null;
                                   },
                                 )
-                              : TextFormField(
-                                  initialValue: widget.data != null
-                                      ? widget.data.toMap()[key]
-                                      : '',
-                                  onSaved: (String value) {
-                                    formValues[index]['value'] = value;
-                                  },
-                                  validator: (String value) {
-                                    if (value.isEmpty) {
-                                      return '${formValues[index]['label']} ' +
-                                          'is required';
-                                    }
-                                    return null;
-                                  },
-                                )
+                              : formValues[index]['inputType'] == 'date'
+                                  ? TextFormField(
+                                      controller: _dobController,
+                                      readOnly: true,
+                                      onTap: () {
+                                        // Displays Date Picker
+                                        showDatePicker(
+                                          context: context,
+                                          initialDate: widget.data != null
+                                              ? DateTime.parse(
+                                                  formValues[index]['value'])
+                                              : new DateTime.now(),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime.now(),
+                                        ).then((value) {
+                                          _dobController.text =
+                                              '${toMonthName(value.month)} ' +
+                                                  '${value.day}, ${value.year}';
+                                          formValues[3]['value'] =
+                                              value.toIso8601String();
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                        suffixIcon: Icon(Icons.calendar_today),
+                                      ),
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return '${formValues[index]['label']} ' +
+                                              'is required';
+                                        }
+                                        return null;
+                                      },
+                                    )
+                                  : TextFormField(
+                                      initialValue: widget.data != null
+                                          ? widget.data.toMap()[key]
+                                          : '',
+                                      onSaved: (String value) {
+                                        formValues[index]['value'] = value;
+                                      },
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return '${formValues[index]['label']} ' +
+                                              'is required';
+                                        }
+                                        return null;
+                                      },
+                                    )
                       : null,
                 ),
               );

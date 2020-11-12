@@ -16,7 +16,7 @@ class DBUtils {
                 'city TEXT, state TEXT, postalCode TEXT, country TEXT)');
         await db.execute(
             'CREATE TABLE profiles(id INTEGER PRIMARY KEY, name TEXT, ' +
-                'gender TEXT, bloodType TEXT, age TEXT, country TEXT)');
+                'gender TEXT, bloodType TEXT, dob TEXT, country TEXT)');
       },
       version: 1,
     );

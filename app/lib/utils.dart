@@ -61,3 +61,7 @@ bool isNumeric(String result) {
   }
   return double.tryParse(result) != null;
 }
+
+String formatDate(date) {
+  return '${toMonthName(date.month)} ' + '${date.day}, ${date.year} ';
+}
