@@ -72,76 +72,71 @@ class _SelectProfileState extends State<SelectProfile> {
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Row(
-                    children: <Widget>[
-                      index == 0
-                          ? Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(top: 12.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      color: Color.fromRGBO(220, 220, 220, 100),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 16.0,
-                                        vertical: 16.0,
+                  child: index == 0
+                      ? Expanded(
+                          child: Container(
+                            padding: EdgeInsets.only(top: 12.0),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  color: Color.fromRGBO(220, 220, 220, 100),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16.0,
+                                    vertical: 16.0,
+                                  ),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text(
+                                        'Profiles',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blueGrey),
                                       ),
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            'Profiles',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blueGrey),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            )
-                          : Expanded(
-                              child: GestureDetector(
-                                onTap: () async {
-                                  await activeUserModel
-                                      .updateActiveUser(profiles[index - 1].id);
-                                  Navigator.of(context).pop(
-                                    SnackBar(
-                                      content: Text('Switched Active Profile'),
-                                    ),
-                                  );
-                                },
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      color: Colors.white,
-                                      child: DataRowWithIconSuffix(
-                                        '${profiles[index - 1].name}',
-                                        Icons.edit,
-                                        () {
-                                          _editProfile(
-                                              context, profiles[index - 1].id);
-                                        },
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 12.0,
-                                      ),
-                                      child: Divider(
-                                        height: 0.5,
-                                        color:
-                                            Color.fromRGBO(180, 180, 180, 100),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
+                              ],
                             ),
-                    ],
-                  ),
+                          ),
+                        )
+                      : Expanded(
+                          child: GestureDetector(
+                            onTap: () async {
+                              await activeUserModel
+                                  .updateActiveUser(profiles[index - 1].id);
+                              Navigator.of(context).pop(
+                                SnackBar(
+                                  content: Text('Switched Active Profile'),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  color: Colors.white,
+                                  child: DataRowWithIconSuffix(
+                                    '${profiles[index - 1].name}',
+                                    Icons.edit,
+                                    () {
+                                      _editProfile(
+                                          context, profiles[index - 1].id);
+                                    },
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.0,
+                                  ),
+                                  child: Divider(
+                                    height: 0.5,
+                                    color: Color.fromRGBO(180, 180, 180, 100),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
                 );
               },
               itemCount: profiles.length + 1,

@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
               theme: themeProvider.getDarkMode()
                   ? ThemeData.dark()
                   : ThemeData(
-                      primarySwatch: Colors.blue,
+                      primarySwatch: Colors.green,
                       visualDensity: VisualDensity.adaptivePlatformDensity,
                     ),
               home: MyHomePage(title: 'Buzz Off'),

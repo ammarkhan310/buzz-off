@@ -109,142 +109,141 @@ class _ProfilePageState extends State<ProfilePage> {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
                         color: Color.fromRGBO(245, 245, 245, 100),
-                        child: ListTile(
-                          title: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                index == 0
-                                    ? Container(
-                                        padding: EdgeInsets.only(top: 12.0),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Container(
-                                              color: Color.fromRGBO(
-                                                  220, 220, 220, 100),
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 16.0,
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Details',
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              index == 0
+                                  ? Container(
+                                      padding: EdgeInsets.only(top: 12.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            color: Color.fromRGBO(
+                                                220, 220, 220, 100),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 16.0,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Details',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.blueGrey),
+                                                ),
+                                                FlatButton(
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  padding: EdgeInsets.only(
+                                                      left: 90.0),
+                                                  child: Text(
+                                                    activeUserData != null
+                                                        ? 'Edit'
+                                                        : 'Create Profile',
                                                     style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blueGrey),
-                                                  ),
-                                                  FlatButton(
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    padding: EdgeInsets.only(
-                                                        left: 90.0),
-                                                    child: Text(
-                                                      activeUserData != null
-                                                          ? 'Edit'
-                                                          : 'Create Profile',
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blue,
-                                                      ),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
                                                     ),
-                                                    onPressed: () async {
-                                                      final SnackBar snackbar =
-                                                          await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              CreateEditProfile(
-                                                            title:
-                                                                'Create Profile',
-                                                            data:
-                                                                activeUserData,
-                                                          ),
+                                                  ),
+                                                  onPressed: () async {
+                                                    final SnackBar snackbar =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CreateEditProfile(
+                                                          title:
+                                                              'Create Profile',
+                                                          data: activeUserData,
                                                         ),
-                                                      );
+                                                      ),
+                                                    );
 
-                                                      if (snackbar != null) {
-                                                        Scaffold.of(context)
-                                                            .hideCurrentSnackBar();
-                                                        Scaffold.of(context)
-                                                            .showSnackBar(
-                                                                snackbar);
-                                                      }
-                                                    },
-                                                  )
-                                                ],
-                                              ),
+                                                    if (snackbar != null) {
+                                                      Scaffold.of(context)
+                                                          .hideCurrentSnackBar();
+                                                      Scaffold.of(context)
+                                                          .showSnackBar(
+                                                              snackbar);
+                                                    }
+                                                  },
+                                                )
+                                              ],
                                             ),
-                                            Container(
-                                              color: Colors.white,
-                                              child: Column(
-                                                children: <Widget>[
-                                                  DataRow('Name',
-                                                      '${activeUserData != null ? activeUserData.name : '-'}'),
-                                                  DataRow('Gender',
-                                                      '${activeUserData != null ? activeUserData.gender : '-'}'),
-                                                  DataRow('Blood Type',
-                                                      '${activeUserData != null ? activeUserData.bloodType : '-'}'),
-                                                  DataRow('Age',
-                                                      '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
-                                                  DataRow('Country',
-                                                      '${activeUserData != null ? activeUserData.country : '-'}'),
-                                                ],
-                                              ),
+                                          ),
+                                          Container(
+                                            color: Colors.white,
+                                            child: Column(
+                                              children: <Widget>[
+                                                DataRow('Name',
+                                                    '${activeUserData != null ? activeUserData.name : '-'}'),
+                                                DataRow('Gender',
+                                                    '${activeUserData != null ? activeUserData.gender : '-'}'),
+                                                DataRow('Blood Type',
+                                                    '${activeUserData != null ? activeUserData.bloodType : '-'}'),
+                                                DataRow('Age',
+                                                    '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
+                                                DataRow('Country',
+                                                    '${activeUserData != null ? activeUserData.country : '-'}'),
+                                              ],
                                             ),
-                                            Container(
-                                              color: Color.fromRGBO(
-                                                  220, 220, 220, 100),
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 8.0,
-                                                horizontal: 16.0,
-                                              ),
-                                              margin: EdgeInsets.only(top: 12),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Saved Addresses',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blueGrey),
-                                                  ),
-                                                  Text(
-                                                    'Mosquito Level',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blueGrey),
-                                                  ),
-                                                ],
-                                              ),
+                                          ),
+                                          Container(
+                                            color: Color.fromRGBO(
+                                                220, 220, 220, 100),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 8.0,
+                                              horizontal: 16.0,
                                             ),
-                                          ],
-                                        ),
-                                      )
-                                    : DataRowWithIconPrefix(
-                                        '${addresses[index - 1].address}',
-                                        '5',
-                                        Icons.edit,
-                                        () {
-                                          _editAddress(
-                                              context, addresses[index - 1].id);
-                                        },
-                                      )
-                              ],
-                            ),
+                                            margin: EdgeInsets.only(top: 12),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Saved Addresses',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.blueGrey),
+                                                ),
+                                                Text(
+                                                  'Mosquito Level',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.blueGrey),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  : DataRowWithIconPrefix(
+                                      '${addresses[index - 1].address}',
+                                      '5',
+                                      Icons.edit,
+                                      () {
+                                        _editAddress(
+                                            context, addresses[index - 1].id);
+                                      },
+                                    )
+                            ],
                           ),
                         ),
                       );

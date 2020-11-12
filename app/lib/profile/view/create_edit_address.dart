@@ -114,14 +114,15 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
       body: Form(
         key: _formKey,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          margin: EdgeInsets.all(12.0),
+          color: Colors.white,
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
               String key =
                   index < formValues.length ? formValues[index]['key'] : null;
 
               return Container(
-                padding: EdgeInsets.only(top: 24.0),
+                padding: EdgeInsets.only(top: 24.0, left: 12.0, right: 12.0),
                 child: ListTile(
                   title: index < formValues.length
                       ? Text(
