@@ -203,41 +203,21 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                                 return null;
                               },
                             )
-                          : formValues[index]['inputType'] == 'number'
-                              ? TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  initialValue: widget.data != null
-                                      ? widget.data.toMap()[key]
-                                      : '',
-                                  onSaved: (String value) {
-                                    formValues[index]['value'] = value;
-                                  },
-                                  validator: (String value) {
-                                    if (value.isEmpty) {
-                                      return '${formValues[index]['label']} ' +
-                                          'is required';
-                                    } else if (!isNumeric(value)) {
-                                      return '${formValues[index]['label']} ' +
-                                          'must be a valid number';
-                                    }
-                                    return null;
-                                  },
-                                )
-                              : TextFormField(
-                                  initialValue: widget.data != null
-                                      ? widget.data.toMap()[key]
-                                      : '',
-                                  onSaved: (String value) {
-                                    formValues[index]['value'] = value;
-                                  },
-                                  validator: (String value) {
-                                    if (value.isEmpty) {
-                                      return '${formValues[index]['label']} ' +
-                                          'is required';
-                                    }
-                                    return null;
-                                  },
-                                )
+                          : TextFormField(
+                              initialValue: widget.data != null
+                                  ? widget.data.toMap()[key]
+                                  : '',
+                              onSaved: (String value) {
+                                formValues[index]['value'] = value;
+                              },
+                              validator: (String value) {
+                                if (value.isEmpty) {
+                                  return '${formValues[index]['label']} ' +
+                                      'is required';
+                                }
+                                return null;
+                              },
+                            )
                       : null,
                 ),
               );

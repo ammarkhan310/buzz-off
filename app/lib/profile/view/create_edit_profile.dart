@@ -254,9 +254,40 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                 return null;
                               },
                             )
-                          : formValues[index]['inputType'] == 'number'
+                          : formValues[index]['inputType'] == 'date'
                               ? TextFormField(
-                                  keyboardType: TextInputType.number,
+                                  controller: _dobController,
+                                  readOnly: true,
+                                  onTap: () {
+                                    // Displays Date Picker
+                                    showDatePicker(
+                                      context: context,
+                                      initialDate: widget.data != null
+                                          ? DateTime.parse(
+                                              formValues[index]['value'])
+                                          : new DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now(),
+                                    ).then((value) {
+                                      _dobController.text =
+                                          '${toMonthName(value.month)} ' +
+                                              '${value.day}, ${value.year}';
+                                      formValues[3]['value'] =
+                                          value.toIso8601String();
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    suffixIcon: Icon(Icons.calendar_today),
+                                  ),
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return '${formValues[index]['label']} ' +
+                                          'is required';
+                                    }
+                                    return null;
+                                  },
+                                )
+                              : TextFormField(
                                   initialValue: widget.data != null
                                       ? widget.data.toMap()[key]
                                       : '',
@@ -267,61 +298,10 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                     if (value.isEmpty) {
                                       return '${formValues[index]['label']} ' +
                                           'is required';
-                                    } else if (!isNumeric(value)) {
-                                      return '${formValues[index]['label']} ' +
-                                          'must be a valid number';
                                     }
                                     return null;
                                   },
                                 )
-                              : formValues[index]['inputType'] == 'date'
-                                  ? TextFormField(
-                                      controller: _dobController,
-                                      readOnly: true,
-                                      onTap: () {
-                                        // Displays Date Picker
-                                        showDatePicker(
-                                          context: context,
-                                          initialDate: widget.data != null
-                                              ? DateTime.parse(
-                                                  formValues[index]['value'])
-                                              : new DateTime.now(),
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime.now(),
-                                        ).then((value) {
-                                          _dobController.text =
-                                              '${toMonthName(value.month)} ' +
-                                                  '${value.day}, ${value.year}';
-                                          formValues[3]['value'] =
-                                              value.toIso8601String();
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        suffixIcon: Icon(Icons.calendar_today),
-                                      ),
-                                      validator: (String value) {
-                                        if (value.isEmpty) {
-                                          return '${formValues[index]['label']} ' +
-                                              'is required';
-                                        }
-                                        return null;
-                                      },
-                                    )
-                                  : TextFormField(
-                                      initialValue: widget.data != null
-                                          ? widget.data.toMap()[key]
-                                          : '',
-                                      onSaved: (String value) {
-                                        formValues[index]['value'] = value;
-                                      },
-                                      validator: (String value) {
-                                        if (value.isEmpty) {
-                                          return '${formValues[index]['label']} ' +
-                                              'is required';
-                                        }
-                                        return null;
-                                      },
-                                    )
                       : null,
                 ),
               );
