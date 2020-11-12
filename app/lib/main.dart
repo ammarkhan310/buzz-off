@@ -1,5 +1,6 @@
 import 'package:app/profile/model/address.dart';
 import 'package:app/profile/model/profile.dart';
+import 'package:app/settings/themeChanger.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
 import 'package:app/profile/view/profile_page.dart';
@@ -24,6 +25,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => ProfileModel()),
         ChangeNotifierProvider(create: (_) => AddressModel()),
         ChangeNotifierProvider(create: (_) => BiteListBLoC()),
+        ChangeNotifierProvider(create: (_) => ThemeChanger()),
       ],
       child: MyApp(),
     ),
@@ -33,6 +35,7 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeChanger>(context);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -48,12 +51,12 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             return MaterialApp(
               title: 'Mobile Development Group Project',
-              theme: ThemeData(
-                primarySwatch: Colors.blue,
-                visualDensity: VisualDensity.adaptivePlatformDensity,
-              ),
-              darkTheme: ThemeData.dark(),
-              themeMode: ThemeMode.system,
+              theme: themeProvider.getDarkMode()
+                  ? ThemeData.dark()
+                  : ThemeData(
+                      primarySwatch: Colors.blue,
+                      visualDensity: VisualDensity.adaptivePlatformDensity,
+                    ),
               home: MyHomePage(title: 'Buzz Off'),
               debugShowCheckedModeBanner: false,
               routes: <String, WidgetBuilder>{

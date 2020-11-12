@@ -5,25 +5,53 @@ class DocumentationPage extends StatefulWidget {
   _DocumentationPageState createState() => _DocumentationPageState();
 }
 
+//page to show the credits, FAQ and other information about the app
 class _DocumentationPageState extends State<DocumentationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          title: Text('Docs'),
-          floating: true,
-          flexibleSpace: Container(),
-          expandedHeight: 200,
+      appBar: AppBar(title: Text('Docs')),
+      body: Container(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
+          child: ListView(children: <Widget>[
+            Text(
+              'Buzz Off',
+              textAlign: TextAlign.center,
+              textScaleFactor: 1.5,
+            ),
+            Text(
+              'ver. 0.1-alpha',
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              '\nThe Buzz Off app is a project in association with Ontario Tech University. '
+              'Thank you to the creators of the original images/works/ideas used in the app as '
+              'referenced below.',
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              '\nCredits',
+              textAlign: TextAlign.center,
+              textScaleFactor: 1.2,
+            ),
+            Text(
+              '\nreferences go here',
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              '\nFAQ',
+              textAlign: TextAlign.center,
+              textScaleFactor: 1.2,
+            ),
+            Text(
+              '\nHow do I add a bite?'
+              '\nTo add a bite, go to the statistics page and...',
+              textAlign: TextAlign.center,
+            ),
+          ]),
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => ListTile(title: Text('Placeholder #$index')),
-            childCount: 20,
-          ),
-        ),
-      ],
-    ));
+      ),
+    );
   }
 }
