@@ -1,4 +1,5 @@
 import 'package:app/data/constants.dart';
+import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/profile.dart';
 import 'package:app/utils.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     );
 
     final ProfileModel profileList = Provider.of<ProfileModel>(context);
+    final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     final List<Map<String, String>> formValues = [
       {
@@ -96,7 +98,18 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                         );
 
                         if (widget.data == null) {
-                          await profileList.insertProfile(profile);
+                          var newProfileId =
+                              await profileList.insertProfile(profile);
+                          await activeUserModel.getActiveUserId().then(
+                                (activeUser) => {
+                                  if (activeUser.profileId == null)
+                                    {
+                                      activeUserModel
+                                          .updateActiveUser(newProfileId)
+                                    }
+                                },
+                              );
+
                           Navigator.of(context).pop(
                             SnackBar(
                               content: Text('Created Profile'),
@@ -157,10 +170,39 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                         actions: [
                                           RaisedButton(
                                             child: Text('Delete'),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               profileList.deleteProfileWithId(
                                                 widget.data.toMap()['id'],
                                               );
+                                              await activeUserModel
+                                                  .getActiveUserId()
+                                                  .then(
+                                                    (activeUser) => {
+                                                      if (activeUser
+                                                              .profileId ==
+                                                          widget.data
+                                                              .toMap()['id'])
+                                                        {
+                                                          profileList
+                                                              .getAllProfiles()
+                                                              .then((profiles) {
+                                                            if (profiles
+                                                                    .length >
+                                                                0) {
+                                                              activeUserModel
+                                                                  .updateActiveUser(
+                                                                      profiles[
+                                                                              0]
+                                                                          .id);
+                                                            } else {
+                                                              activeUserModel
+                                                                  .updateActiveUser(
+                                                                      null);
+                                                            }
+                                                          })
+                                                        }
+                                                    },
+                                                  );
                                               Navigator.of(dialogContext).pop();
                                               Navigator.of(context).pop();
                                             },
