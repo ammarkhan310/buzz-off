@@ -60,6 +60,7 @@ class _SelectProfileState extends State<SelectProfile> {
     final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     return Container(
+      color: Color.fromRGBO(245, 245, 245, 100),
       child: FutureBuilder(
         future: profilesList.getAllProfiles(),
         builder: (context, snapshot) {
@@ -67,39 +68,79 @@ class _SelectProfileState extends State<SelectProfile> {
             List profiles = snapshot.data;
 
             return ListView.builder(
+              padding: EdgeInsets.all(0.0),
               itemBuilder: (BuildContext context, int index) {
                 return Container(
-                  color: index != 0 ? Colors.white : Colors.transparent,
-                  child: ListTile(
-                    title: index == 0
-                        ? Text(
-                            'Profiles',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blueGrey,
-                            ),
-                          )
-                        : GestureDetector(
-                            onTap: () async {
-                              await activeUserModel
-                                  .updateActiveUser(profiles[index - 1].id);
-                              Navigator.of(context).pop(
-                                SnackBar(
-                                  content: Text('Switched Active Profile'),
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Row(
+                    children: <Widget>[
+                      index == 0
+                          ? Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(top: 12.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      color: Color.fromRGBO(220, 220, 220, 100),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16.0,
+                                        vertical: 16.0,
+                                      ),
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(
+                                            'Profiles',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blueGrey),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                            child: Container(
-                              child: DataRowWithIconSuffix(
-                                '${profiles[index - 1].name}',
-                                Icons.edit,
-                                () {
-                                  _editProfile(context, profiles[index - 1].id);
+                              ),
+                            )
+                          : Expanded(
+                              child: GestureDetector(
+                                onTap: () async {
+                                  await activeUserModel
+                                      .updateActiveUser(profiles[index - 1].id);
+                                  Navigator.of(context).pop(
+                                    SnackBar(
+                                      content: Text('Switched Active Profile'),
+                                    ),
+                                  );
                                 },
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      color: Colors.white,
+                                      child: DataRowWithIconSuffix(
+                                        '${profiles[index - 1].name}',
+                                        Icons.edit,
+                                        () {
+                                          _editProfile(
+                                              context, profiles[index - 1].id);
+                                        },
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12.0,
+                                      ),
+                                      child: Divider(
+                                        height: 0.5,
+                                        color:
+                                            Color.fromRGBO(180, 180, 180, 100),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
+                    ],
                   ),
                 );
               },
@@ -115,7 +156,11 @@ class _SelectProfileState extends State<SelectProfile> {
 
   Widget DataRowWithIconSuffix(header, icon, onTap) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16.0),
+      padding: EdgeInsets.only(
+        top: 16.0,
+        bottom: 16.0,
+        left: 16.0,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
