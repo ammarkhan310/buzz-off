@@ -23,6 +23,23 @@ class MosquitoDb {
     }
   }
 
+  Future<QueryDocumentSnapshot> getLastDoc() async {
+    var snapshot;
+    await getMosquitoInfo().then((value) => snapshot = value);
+    return snapshot.docs.first;
+  }
+
+  Future<List<String>> getInfoList() async {
+    List<String> infoList = [];
+    var mosquitoInfoData = await getLastDoc();
+    MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
+        docReference: mosquitoInfoData.reference.toString());
+    infoList.add(mosquitoInfo.location);
+    infoList.add(mosquitoInfo.rating.toString());
+    infoList.add(mosquitoInfo.weather);
+    return infoList;
+  }
+
   FutureBuilder<QuerySnapshot> getMosquitoSlider(
       BuildContext context,
       CustomSliderColors sliderColor,

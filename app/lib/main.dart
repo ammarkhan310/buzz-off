@@ -1,3 +1,4 @@
+import 'package:app/mosquito_model/mosquito_db.dart';
 import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/address.dart';
 import 'package:app/profile/model/profile.dart';
@@ -10,13 +11,14 @@ import 'package:app/profile/view/create_edit_address.dart';
 import 'package:app/profile/view/profile_selector.dart';
 import 'package:provider/provider.dart';
 import 'package:app/statistics/view/statistics_page.dart';
-import 'package:app/test_page.dart';
 import 'statistics/model/biteModel.dart';
 import 'package:app/settings/settings_page.dart';
 import 'package:app/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:app/mosquito_model/mosquito_db.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:app/notifications.dart';
 
 void main() {
   runApp(
@@ -35,6 +37,25 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  final _notifications = Notifications();
+
+  String _title = '';
+  String _body = '';
+  String _payload = '';
+
+  Future<void> _displayNotification() async {
+    tz.initializeTimeZones();
+    _notifications.init();
+
+    var when = tz.TZDateTime.now(tz.local).add(const Duration(seconds: 10));
+    List<String> infoList = await MosquitoDb().getInfoList();
+    await _notifications.sendNotificationLater(
+        infoList[0],
+        'Location Rating: ${infoList[1]} Weather Conditions: ${infoList[2]}',
+        when,
+        _payload);
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChanger>(context);
@@ -51,6 +72,7 @@ class MyApp extends StatelessWidget {
             return Text('Error initializing firebase');
           }
           if (snapshot.connectionState == ConnectionState.done) {
+            _displayNotification();
             return MaterialApp(
               title: 'Mobile Development Group Project',
               theme: themeProvider.getDarkMode()
