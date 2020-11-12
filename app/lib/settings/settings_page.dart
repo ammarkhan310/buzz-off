@@ -1,6 +1,7 @@
+import 'package:app/settings/themeChanger.dart';
 import 'package:flutter/material.dart';
 import 'package:app/settings/documentation_page.dart';
-import 'package:app/settings/themes.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   final String title;
@@ -19,23 +20,11 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  List<Themes> themes;
-  String selectedTheme = 'Light Mode';
-
-  void initState() {
-    super.initState();
-    selectedTheme = 'Light Mode';
-    themes = Themes.getThemes();
-  }
-
-  setTheme(Themes themes) {
-    setState(() {
-      selectedTheme = themes.themeName;
-    });
-  }
+  static int selectedRadio = 0;
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeChanger>(context);
     String chosenLocation = ('Default (Canada)');
     return Scaffold(
       appBar: AppBar(
@@ -44,22 +33,41 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(padding: const EdgeInsets.all(10), children: <Widget>[
         ListTile(
             title: Text('Theme'),
-            subtitle: Text(selectedTheme),
+            subtitle: Text('Light Mode'),
             onTap: () {
-              themeAlert(context);
+              themeAlert(context, selectedRadio);
             }),
+        Padding(
+          padding: const EdgeInsets.only(left: 15.0),
+          child: Row(
+            children: [
+              Text('Dark Mode'),
+              Switch(
+                //the bool value returned is used in ThemeChanger to check if
+                //the theme should be changed
+                value: themeProvider.getDarkMode(),
+                onChanged: (value) {
+                  setState(() {
+                    themeProvider.makeDark(value);
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
         ListTile(
+            //currently the location picker is using placeholders
             title: Text('Location'),
             subtitle: Text(chosenLocation),
             onTap: () {
               locationDialog(context);
             }),
         ListTile(
+            //planned to take the user to the Android System notification
+            //settings where they can see all the nofication channels
             title: Text('Manage Notifications'),
             trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {
-              print('pressed');
-            }),
+            onTap: () {}),
         ListTile(
             title: Text('Documentation'),
             trailing: Icon(Icons.keyboard_arrow_right),
@@ -71,11 +79,12 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 }
 
-Widget themeAlert(BuildContext context) {
+//pops up an alert dialog that gives the option between light and dark mode for
+//the app theme
+Widget themeAlert(BuildContext context, int selectedRadio) {
   showDialog<void>(
     context: context,
     builder: (BuildContext context) {
-      int selectedRadio = 0;
       return AlertDialog(
         title: Text('Theme'),
         shape:
@@ -106,6 +115,7 @@ Widget themeAlert(BuildContext context) {
   );
 }
 
+//currently using placeholders for locations
 Widget locationDialog(BuildContext context) {
   showDialog<void>(
     context: context,
