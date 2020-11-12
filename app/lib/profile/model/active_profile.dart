@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'profileDB_utils.dart';
 
-// ActiveUser Model Definition
+// Active User Model Definition
 class ActiveUser {
   // Constructor
   ActiveUser({
@@ -19,7 +19,7 @@ class ActiveUser {
     this.profileId = map['profileId'];
   }
 
-  // Maps the respective values of the address to an output map
+  // Maps the respective values of the active user to an output map
   Map<String, dynamic> toMap() {
     return {
       'id': this.id,
@@ -49,7 +49,7 @@ class ActiveUserModel with ChangeNotifier {
   // Updates the current active user profile
   Future<int> updateActiveUser(int profileId) async {
     final db = await DBUtils.init();
-    final updatedAddress = await db.update(
+    final updatedActiveProfile = await db.update(
       'active_profile',
       {
         'id': 1,
@@ -59,6 +59,6 @@ class ActiveUserModel with ChangeNotifier {
       whereArgs: [1],
     );
     notifyListeners();
-    return updatedAddress;
+    return updatedActiveProfile;
   }
 }
