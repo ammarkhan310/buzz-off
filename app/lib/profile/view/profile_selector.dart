@@ -84,7 +84,11 @@ class _SelectProfileState extends State<SelectProfile> {
                             onTap: () async {
                               await activeUserModel
                                   .updateActiveUser(profiles[index - 1].id);
-                              Navigator.of(context).pop();
+                              Navigator.of(context).pop(
+                                SnackBar(
+                                  content: Text('Switched Active Profile'),
+                                ),
+                              );
                             },
                             child: Container(
                               child: DataRowWithIconSuffix(

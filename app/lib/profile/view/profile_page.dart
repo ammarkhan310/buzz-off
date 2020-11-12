@@ -1,6 +1,8 @@
 import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/address.dart';
 import 'package:app/profile/model/profile.dart';
+import 'package:app/profile/view/create_edit_profile.dart';
+import 'package:app/profile/view/profile_selector.dart';
 import 'package:app/utils.dart';
 import 'package:app/profile/view/create_edit_address.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +33,20 @@ class _ProfilePageState extends State<ProfilePage> {
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.swap_horiz_outlined),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/chooseProfile');
+                    onPressed: () async {
+                      final SnackBar snackbar = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectProfile(
+                            title: 'Profile Selector',
+                          ),
+                        ),
+                      );
+
+                      if (snackbar != null) {
+                        Scaffold.of(context).hideCurrentSnackBar();
+                        Scaffold.of(context).showSnackBar(snackbar);
+                      }
                     },
                   );
                 },
@@ -77,11 +91,13 @@ class _ProfilePageState extends State<ProfilePage> {
         if (snapshot.hasData) {
           var activeUserId = snapshot.data.profileId;
           var activeUserData;
-          profileList.getProfileById(activeUserId).then(
-            (profileData) {
-              activeUserData = profileData;
-            },
-          );
+          if (activeUserId != null) {
+            profileList.getProfileById(activeUserId).then(
+              (profileData) {
+                activeUserData = profileData;
+              },
+            );
+          }
 
           return Container(
             child: FutureBuilder(
@@ -93,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
-                        color: Color.fromRGBO(255, 255, 255, 100),
+                        color: Color.fromRGBO(245, 245, 245, 100),
                         child: ListTile(
                           title: Container(
                             child: Column(
@@ -129,7 +145,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     padding: EdgeInsets.only(
                                                         left: 90.0),
                                                     child: Text(
-                                                      'Edit',
+                                                      activeUserData != null
+                                                          ? 'Edit'
+                                                          : 'Create Profile',
                                                       style: TextStyle(
                                                         fontSize: 18,
                                                         fontWeight:
@@ -137,28 +155,47 @@ class _ProfilePageState extends State<ProfilePage> {
                                                         color: Colors.blue,
                                                       ),
                                                     ),
-                                                    onPressed: () {
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          '/createEditProfile');
+                                                    onPressed: () async {
+                                                      final SnackBar snackbar =
+                                                          await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              CreateEditProfile(
+                                                            title:
+                                                                'Create Profile',
+                                                            data:
+                                                                activeUserData,
+                                                          ),
+                                                        ),
+                                                      );
+
+                                                      if (snackbar != null) {
+                                                        Scaffold.of(context)
+                                                            .hideCurrentSnackBar();
+                                                        Scaffold.of(context)
+                                                            .showSnackBar(
+                                                                snackbar);
+                                                      }
                                                     },
                                                   )
                                                 ],
                                               ),
                                             ),
                                             Container(
-                                              color: Color.fromRGBO(
-                                                  255, 255, 255, 100),
+                                              color: Colors.white,
                                               child: Column(
                                                 children: <Widget>[
+                                                  DataRow('Name',
+                                                      '${activeUserData != null ? activeUserData.name : '-'}'),
                                                   DataRow('Gender',
-                                                      '${activeUserData != null ? activeUserData.gender : 'N/A'}'),
+                                                      '${activeUserData != null ? activeUserData.gender : '-'}'),
                                                   DataRow('Blood Type',
-                                                      '${activeUserData != null ? activeUserData.bloodType : 'N/A'}'),
+                                                      '${activeUserData != null ? activeUserData.bloodType : '-'}'),
                                                   DataRow('Age',
-                                                      '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : 'N/A'}'),
+                                                      '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
                                                   DataRow('Country',
-                                                      '${activeUserData != null ? activeUserData.country : 'N/A'}'),
+                                                      '${activeUserData != null ? activeUserData.country : '-'}'),
                                                 ],
                                               ),
                                             ),
@@ -236,20 +273,28 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            header,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.blueGrey,
+          Container(
+            padding: EdgeInsets.only(right: 8),
+            child: Text(
+              header,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.blueGrey,
+              ),
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey,
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerRight,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                ),
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
@@ -261,6 +306,7 @@ class _ProfilePageState extends State<ProfilePage> {
         vertical: 16.0,
         horizontal: 16.0,
       ),
+      color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
