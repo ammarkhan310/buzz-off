@@ -13,9 +13,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text('User Profile'),
         actions: [
@@ -51,8 +53,8 @@ class _ProfilePageState extends State<ProfilePage> {
           );
 
           if (snackbar != null) {
-            Scaffold.of(context).hideCurrentSnackBar();
-            Scaffold.of(context).showSnackBar(snackbar);
+            _scaffoldKey.currentState.hideCurrentSnackBar();
+            _scaffoldKey.currentState.showSnackBar(snackbar);
           }
         },
         tooltip: 'Add Address',
@@ -279,8 +281,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
 
     if (snackbar != null) {
-      Scaffold.of(context).hideCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(snackbar);
+      _scaffoldKey.currentState.hideCurrentSnackBar();
+      _scaffoldKey.currentState.showSnackBar(snackbar);
     }
   }
 }
