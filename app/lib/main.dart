@@ -1,3 +1,4 @@
+import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/address.dart';
 import 'package:app/profile/model/profile.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ProfileModel()),
         ChangeNotifierProvider(create: (_) => AddressModel()),
+        ChangeNotifierProvider(create: (_) => ActiveUserModel()),
         ChangeNotifierProvider(create: (_) => BiteListBLoC()),
       ],
       child: MyApp(),
