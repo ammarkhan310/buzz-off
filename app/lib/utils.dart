@@ -65,3 +65,8 @@ bool isNumeric(String result) {
 String formatDate(date) {
   return '${toMonthName(date.month)} ' + '${date.day}, ${date.year} ';
 }
+
+// Returns current age when given a date
+String calculateAge(DateTime date) {
+  return (DateTime.now().year - date.year).toString();
+}

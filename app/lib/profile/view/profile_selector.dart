@@ -1,3 +1,4 @@
+import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/profile.dart';
 import 'package:app/profile/view/create_edit_profile.dart';
 import 'package:flutter/material.dart';
@@ -56,13 +57,14 @@ class _SelectProfileState extends State<SelectProfile> {
 
   Widget _profileList(BuildContext context) {
     final ProfileModel profilesList = context.watch<ProfileModel>();
+    final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     return Container(
       child: FutureBuilder(
         future: profilesList.getAllProfiles(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List addresses = snapshot.data;
+            List profiles = snapshot.data;
 
             return ListView.builder(
               itemBuilder: (BuildContext context, int index) {
@@ -78,22 +80,29 @@ class _SelectProfileState extends State<SelectProfile> {
                               color: Colors.blueGrey,
                             ),
                           )
-                        : Container(
-                            child: DataRowWithIconSuffix(
-                              '${addresses[index - 1].name}',
-                              Icons.edit,
-                              () {
-                                _editProfile(context, addresses[index - 1].id);
-                              },
+                        : GestureDetector(
+                            onTap: () async {
+                              await activeUserModel
+                                  .updateActiveUser(profiles[index - 1].id);
+                              Navigator.of(context).pop();
+                            },
+                            child: Container(
+                              child: DataRowWithIconSuffix(
+                                '${profiles[index - 1].name}',
+                                Icons.edit,
+                                () {
+                                  _editProfile(context, profiles[index - 1].id);
+                                },
+                              ),
                             ),
                           ),
                   ),
                 );
               },
-              itemCount: addresses.length + 1,
+              itemCount: profiles.length + 1,
             );
           } else {
-            return Text("Data Loading......");
+            return Text('Fetching Data...');
           }
         },
       ),
