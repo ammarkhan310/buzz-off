@@ -25,39 +25,31 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
     final List<Map<String, String>> formValues = [
       {
         'label': 'Address',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['address']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['address'] : null,
         'key': 'address',
         'inputType': 'textfield',
       },
       {
         'label': 'City',
-        'value':
-            this.widget.data != null ? this.widget.data.toMap()['city'] : null,
+        'value': widget.data != null ? widget.data.toMap()['city'] : null,
         'key': 'city',
         'inputType': 'textfield',
       },
       {
         'label': 'Province/State',
-        'value':
-            this.widget.data != null ? this.widget.data.toMap()['state'] : null,
+        'value': widget.data != null ? widget.data.toMap()['state'] : null,
         'key': 'state',
         'inputType': 'textfield',
       },
       {
         'label': 'Postal Code/Zip Code',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['postalCode']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['postalCode'] : null,
         'key': 'postalCode',
         'inputType': 'textfield',
       },
       {
         'label': 'Country',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['country']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['country'] : null,
         'key': 'country',
         'inputType': 'dropdown',
       },
@@ -70,7 +62,7 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          this.widget.data != null ? 'Edit Address' : 'Create Address',
+          widget.data != null ? 'Edit Address' : 'Create Address',
         ),
         actions: [
           Row(
@@ -85,8 +77,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                         _formKey.currentState.save();
 
                         Address address = Address(
-                          id: this.widget.data != null
-                              ? this.widget.data.toMap()['id']
+                          id: widget.data != null
+                              ? widget.data.toMap()['id']
                               : null,
                           address: formValues[0]['value'],
                           city: formValues[1]['value'],
@@ -95,13 +87,21 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                           country: formValues[4]['value'],
                         );
 
-                        if (this.widget.data == null) {
+                        if (widget.data == null) {
                           addressList.insertAddress(address);
+                          Navigator.of(context).pop(
+                            new SnackBar(
+                              content: Text('Added Address'),
+                            ),
+                          );
                         } else {
                           addressList.updateAddress(address);
+                          Navigator.of(context).pop(
+                            new SnackBar(
+                              content: Text('Updated Address'),
+                            ),
+                          );
                         }
-
-                        Navigator.of(context).pop();
                       }
                     },
                   );
@@ -133,18 +133,47 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                           ),
                         )
                       : FlatButton(
-                          onPressed: this.widget.data != null
+                          onPressed: widget.data != null
                               ? () {
-                                  addressList.deleteAddressWithId(
-                                      this.widget.data.toMap()['id']);
-                                  Navigator.of(context).pop();
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext dialogContext) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          'Remove Address?',
+                                        ),
+                                        content: Text(
+                                          'Are you sure you want to remove ' +
+                                              'this address from your profile?',
+                                        ),
+                                        actions: [
+                                          RaisedButton(
+                                            child: Text('Delete'),
+                                            onPressed: () {
+                                              addressList.deleteAddressWithId(
+                                                widget.data.toMap()['id'],
+                                              );
+                                              Navigator.of(dialogContext).pop();
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          RaisedButton(
+                                            child: Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.of(dialogContext).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
                               : null,
                           child: Text(
                             "Delete Address",
                             style: TextStyle(
                               fontSize: 16,
-                              color: this.widget.data != null
+                              color: widget.data != null
                                   ? Colors.red
                                   : Colors.grey,
                             ),
@@ -166,7 +195,6 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                                 formValues[index]['value'] = value;
                               },
                               validator: (String value) {
-                                print(value);
                                 if (value == null || value.isEmpty) {
                                   return '${formValues[index]['label']} is ' +
                                       'required';
@@ -177,8 +205,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                           : formValues[index]['inputType'] == 'number'
                               ? TextFormField(
                                   keyboardType: TextInputType.number,
-                                  initialValue: this.widget.data != null
-                                      ? this.widget.data.toMap()[key]
+                                  initialValue: widget.data != null
+                                      ? widget.data.toMap()[key]
                                       : '',
                                   onSaved: (String value) {
                                     formValues[index]['value'] = value;
@@ -195,8 +223,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                                   },
                                 )
                               : TextFormField(
-                                  initialValue: this.widget.data != null
-                                      ? this.widget.data.toMap()[key]
+                                  initialValue: widget.data != null
+                                      ? widget.data.toMap()[key]
                                       : '',
                                   onSaved: (String value) {
                                     formValues[index]['value'] = value;

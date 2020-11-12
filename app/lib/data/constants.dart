@@ -23,7 +23,7 @@ const countries = [
   "Andorra",
   "Angola",
   "Anguilla",
-  "Antigua &amp; Barbuda",
+  "Antigua Barbuda",
   "Argentina",
   "Armenia",
   "Aruba",

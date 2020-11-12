@@ -20,44 +20,42 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _dobController = new TextEditingController(
+      text: widget.data != null
+          ? formatDate(DateTime.parse(widget.data.toMap()['dob']))
+          : '',
+    );
+
     final ProfileModel profileList = Provider.of<ProfileModel>(context);
 
     final List<Map<String, String>> formValues = [
       {
         'label': 'Name',
-        'value':
-            this.widget.data != null ? this.widget.data.toMap()['name'] : null,
+        'value': widget.data != null ? widget.data.toMap()['name'] : null,
         'key': 'name',
         'inputType': 'textfield',
       },
       {
         'label': 'Gender',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['gender']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['gender'] : null,
         'key': 'gender',
         'inputType': 'textfield',
       },
       {
         'label': 'Blood Type',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['bloodType']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['bloodType'] : null,
         'key': 'bloodType',
         'inputType': 'dropdown',
       },
       {
-        'label': 'Age',
-        'value':
-            this.widget.data != null ? this.widget.data.toMap()['age'] : null,
-        'key': 'age',
-        'inputType': 'number',
+        'label': 'Date of Birth',
+        'value': widget.data != null ? widget.data.toMap()['dob'] : null,
+        'key': 'dob',
+        'inputType': 'date',
       },
       {
         'label': 'Current Country',
-        'value': this.widget.data != null
-            ? this.widget.data.toMap()['country']
-            : null,
+        'value': widget.data != null ? widget.data.toMap()['country'] : null,
         'key': 'country',
         'inputType': 'dropdown',
       },
@@ -72,7 +70,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          this.widget.data != null ? 'Edit Profile' : 'Create Profile',
+          widget.data != null ? 'Edit Profile' : 'Create Profile',
         ),
         actions: [
           Row(
@@ -82,28 +80,36 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.save),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         _formKey.currentState.save();
 
                         Profile profile = Profile(
-                          id: this.widget.data != null
-                              ? this.widget.data.toMap()['id']
+                          id: widget.data != null
+                              ? widget.data.toMap()['id']
                               : null,
                           name: formValues[0]['value'],
                           gender: formValues[1]['value'],
                           bloodType: formValues[2]['value'],
-                          age: formValues[3]['value'],
+                          dob: formValues[3]['value'],
                           country: formValues[4]['value'],
                         );
 
-                        if (this.widget.data == null) {
-                          profileList.insertProfile(profile);
+                        if (widget.data == null) {
+                          await profileList.insertProfile(profile);
+                          Navigator.of(context).pop(
+                            SnackBar(
+                              content: Text('Created Profile'),
+                            ),
+                          );
                         } else {
-                          profileList.updateAddress(profile);
+                          await profileList.updateProfile(profile);
+                          Navigator.of(context).pop(
+                            new SnackBar(
+                              content: Text('Updated Profile'),
+                            ),
+                          );
                         }
-
-                        Navigator.of(context).pop();
                       }
                     },
                   );
@@ -135,18 +141,47 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           ),
                         )
                       : FlatButton(
-                          onPressed: this.widget.data != null
+                          onPressed: widget.data != null
                               ? () {
-                                  profileList.deleteProfileWithId(
-                                      this.widget.data.toMap()['id']);
-                                  Navigator.of(context).pop();
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext dialogContext) {
+                                      return AlertDialog(
+                                        title: Text(
+                                          'Delete Profile?',
+                                        ),
+                                        content: Text(
+                                          'Are you sure you want to delete ' +
+                                              'this profile?',
+                                        ),
+                                        actions: [
+                                          RaisedButton(
+                                            child: Text('Delete'),
+                                            onPressed: () {
+                                              profileList.deleteProfileWithId(
+                                                widget.data.toMap()['id'],
+                                              );
+                                              Navigator.of(dialogContext).pop();
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          RaisedButton(
+                                            child: Text('Cancel'),
+                                            onPressed: () {
+                                              Navigator.of(dialogContext).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
                               : null,
                           child: Text(
                             "Delete Profile",
                             style: TextStyle(
                               fontSize: 16,
-                              color: this.widget.data != null
+                              color: widget.data != null
                                   ? Colors.red
                                   : Colors.grey,
                             ),
@@ -156,19 +191,19 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                       ? formValues[index]['inputType'] == 'dropdown'
                           ? DropdownButtonFormField(
                               value: formValues[index]['value'],
-                              items: <String>[
-                                ...dropdownValues[key]
-                              ].map<DropdownMenuItem<String>>((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
+                              items: <String>[...dropdownValues[key]]
+                                  .map<DropdownMenuItem<String>>(
+                                (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                },
+                              ).toList(),
                               onChanged: (String value) {
                                 formValues[index]['value'] = value;
                               },
                               validator: (String value) {
-                                print(value);
                                 if (value == null || value.isEmpty) {
                                   return '${formValues[index]['label']} is ' +
                                       'required';
@@ -179,8 +214,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           : formValues[index]['inputType'] == 'number'
                               ? TextFormField(
                                   keyboardType: TextInputType.number,
-                                  initialValue: this.widget.data != null
-                                      ? this.widget.data.toMap()[key]
+                                  initialValue: widget.data != null
+                                      ? widget.data.toMap()[key]
                                       : '',
                                   onSaved: (String value) {
                                     formValues[index]['value'] = value;
@@ -196,21 +231,54 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                     return null;
                                   },
                                 )
-                              : TextFormField(
-                                  initialValue: this.widget.data != null
-                                      ? this.widget.data.toMap()[key]
-                                      : '',
-                                  onSaved: (String value) {
-                                    formValues[index]['value'] = value;
-                                  },
-                                  validator: (String value) {
-                                    if (value.isEmpty) {
-                                      return '${formValues[index]['label']} ' +
-                                          'is required';
-                                    }
-                                    return null;
-                                  },
-                                )
+                              : formValues[index]['inputType'] == 'date'
+                                  ? TextFormField(
+                                      controller: _dobController,
+                                      readOnly: true,
+                                      onTap: () {
+                                        // Displays Date Picker
+                                        showDatePicker(
+                                          context: context,
+                                          initialDate: widget.data != null
+                                              ? DateTime.parse(
+                                                  formValues[index]['value'])
+                                              : new DateTime.now(),
+                                          firstDate: DateTime(1900),
+                                          lastDate: DateTime.now(),
+                                        ).then((value) {
+                                          _dobController.text =
+                                              '${toMonthName(value.month)} ' +
+                                                  '${value.day}, ${value.year}';
+                                          formValues[3]['value'] =
+                                              value.toIso8601String();
+                                        });
+                                      },
+                                      decoration: InputDecoration(
+                                        suffixIcon: Icon(Icons.calendar_today),
+                                      ),
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return '${formValues[index]['label']} ' +
+                                              'is required';
+                                        }
+                                        return null;
+                                      },
+                                    )
+                                  : TextFormField(
+                                      initialValue: widget.data != null
+                                          ? widget.data.toMap()[key]
+                                          : '',
+                                      onSaved: (String value) {
+                                        formValues[index]['value'] = value;
+                                      },
+                                      validator: (String value) {
+                                        if (value.isEmpty) {
+                                          return '${formValues[index]['label']} ' +
+                                              'is required';
+                                        }
+                                        return null;
+                                      },
+                                    )
                       : null,
                 ),
               );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'dart:async';
-import 'db_utils.dart';
+import 'profileDB_utils.dart';
 
 // Profile Model Definition
 class Profile {
@@ -11,7 +11,7 @@ class Profile {
     this.name,
     this.gender,
     this.bloodType,
-    this.age,
+    this.dob,
     this.country,
   });
 
@@ -19,7 +19,7 @@ class Profile {
   String name;
   String gender;
   String bloodType;
-  String age;
+  String dob;
   String country;
 
   // Assigns values from input map to objects variables
@@ -28,7 +28,7 @@ class Profile {
     this.name = map['name'];
     this.gender = map['gender'];
     this.bloodType = map['bloodType'];
-    this.age = map['age'];
+    this.dob = map['dob'];
     this.country = map['country'];
   }
 
@@ -39,7 +39,7 @@ class Profile {
       'name': this.name,
       'gender': this.gender,
       'bloodType': this.bloodType,
-      'age': this.age,
+      'dob': this.dob,
       'country': this.country,
     };
   }
@@ -88,16 +88,16 @@ class ProfileModel with ChangeNotifier {
   }
 
   // Updates an address in the database
-  Future<int> updateAddress(Profile profile) async {
+  Future<int> updateProfile(Profile profile) async {
     final db = await DBUtils.init();
-    final updatedAddress = await db.update(
+    final updatedProfile = await db.update(
       'profiles',
       profile.toMap(),
       where: 'id = ?',
       whereArgs: [profile.id],
     );
     notifyListeners();
-    return updatedAddress;
+    return updatedProfile;
   }
 
   // Deletes Profile with a given id
