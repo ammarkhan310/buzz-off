@@ -58,6 +58,7 @@ class ActiveUserModel with ChangeNotifier {
       where: 'id = ?',
       whereArgs: [1],
     );
+    notifyListeners();
     return updatedAddress;
   }
 }
