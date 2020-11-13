@@ -50,8 +50,8 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           /*Test function testing cloud database insert, button appears at the top
-          *of the home page, comment out when not debugging*/
-          /*FlatButton(
+          of the home page, comment out when not debugging
+          FlatButton(
             onPressed: () {
               _insertMosquitoData(
                 MosquitoInfo(
