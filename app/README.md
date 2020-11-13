@@ -19,7 +19,8 @@ Home Page mock-up:
 * Could possibly include a date somewhere for future or past results?
 * If anyone’s talented maybe even animate the mosquito?
 
-(Will add image links in a bit)
+Light Mock Up - https://i.imgur.com/IFHWbB6.png
+Dark Mock Up - https://i.imgur.com/05w8HO4.png
 
 * Clickable text box for the description of weather conditions
 * Color metre for the mosquito level indicator
