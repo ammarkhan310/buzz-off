@@ -1,8 +1,12 @@
+// List of genders
+// TODO: Expand list of genders to include more genders
 const genders = [
   'Male',
   'Female',
+  'Other',
 ];
 
+// List of blood types
 const bloodTypes = [
   'A+',
   'A-',
