@@ -65,12 +65,15 @@ class MyApp extends StatelessWidget {
     ]);
 
     return FutureBuilder(
+        //Initialize cloud database
         future: Firebase.initializeApp(),
         builder: (context, snapshot) {
+          //Notify if there is an error within the database
           if (snapshot.hasError) {
             print('Error initializing firebase');
             return Text('Error initializing firebase');
           }
+          //Wait for database connection
           if (snapshot.connectionState == ConnectionState.done) {
             _displayNotification();
             return MaterialApp(
@@ -118,8 +121,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  //Index for current page showing
   int _currentIndex = 0;
 
+  //Titles of the pages that can be shown
   final List<Map> _titles = [
     {'header': 'Buzz Off', 'showHeader': true},
     {'header': 'Statistics', 'showHeader': true},
@@ -127,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
     {'header': 'Settings', 'showHeader': true}
   ];
 
+  //List of pages that can be inserted as the children for the main body
   final List<Widget> _children = [
     HomePage(),
     StatisticsPage(title: 'statistics'),
@@ -159,6 +165,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ])
           : null,
+      //Hamburger menu below
       drawer: Drawer(
           child: ListView(
         padding: EdgeInsets.zero,
