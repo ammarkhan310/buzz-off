@@ -1,11 +1,11 @@
 import 'package:app/data/constants.dart';
 import 'package:app/profile/model/address.dart';
-import 'package:app/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // New Page to Create/Edit a New Address
 class CreateEditAddress extends StatefulWidget {
+  // Constructor
   CreateEditAddress({Key key, this.title, this.data}) : super(key: key);
 
   final String title;
@@ -21,7 +21,9 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
   String name = '';
   @override
   Widget build(BuildContext context) {
+    // Variable Declaration
     final AddressModel addressList = Provider.of<AddressModel>(context);
+    // Defines form data
     final List<Map<String, String>> formValues = [
       {
         'label': 'Address',
@@ -60,6 +62,7 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
     };
 
     return Scaffold(
+      // Renders an App bar
       appBar: AppBar(
         title: Text(
           widget.data != null ? 'Edit Address' : 'Create Address',
@@ -69,6 +72,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
             children: <Widget>[
               Builder(
                 builder: (BuildContext context) {
+                  // Renders a save icon in the app bar to allow the user to
+                  // save their address
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.save),
@@ -87,6 +92,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                           country: formValues[4]['value'],
                         );
 
+                        // Returns to the previous screen and returns a snackbar
+                        // to be displayed on the previous screen
                         if (widget.data == null) {
                           addressList.insertAddress(address);
                           Navigator.of(context).pop(
@@ -118,6 +125,7 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
           color: Colors.white,
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
+              // Gets current key of the form element
               String key =
                   index < formValues.length ? formValues[index]['key'] : null;
 
@@ -125,6 +133,7 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                 padding: EdgeInsets.only(top: 24.0, left: 12.0, right: 12.0),
                 child: ListTile(
                   title: index < formValues.length
+                      // Returns a form widget header text
                       ? Text(
                           formValues[index]['label'],
                           style: TextStyle(
@@ -133,6 +142,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                             color: Colors.blueGrey,
                           ),
                         )
+                      // Shows a dialog indicating that the user is about to
+                      // delete their address
                       : FlatButton(
                           onPressed: widget.data != null
                               ? () {
@@ -180,6 +191,8 @@ class _CreateEditAddressState extends State<CreateEditAddress> {
                             ),
                           ),
                         ),
+                  // Renders a form input depending on the type of the
+                  // current form key
                   subtitle: index < formValues.length
                       ? formValues[index]['inputType'] == 'dropdown'
                           ? DropdownButtonFormField(

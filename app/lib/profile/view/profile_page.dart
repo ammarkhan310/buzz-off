@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
+  // Constructor
   final String title;
 
   ProfilePage({Key key, this.title}) : super(key: key);
@@ -18,9 +19,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // Variable Declaration
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    // Renders an App bar
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -30,6 +33,8 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               Builder(
                 builder: (BuildContext context) {
+                  // Renders an icon in the app bar to allow the user to
+                  // switch the current active user
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.swap_horiz_outlined),
@@ -43,6 +48,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       );
 
+                      // Displays a snackbar indicating that the current active
+                      // user has changed
                       if (snackbar != null) {
                         Scaffold.of(context).hideCurrentSnackBar();
                         Scaffold.of(context).showSnackBar(snackbar);
@@ -55,9 +62,11 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
       ),
+      // Renders the profile data to the screen
       body: Builder(
         builder: _profileList,
       ),
+      // Renders an add icon to allow the user to create a new address
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final SnackBar snackbar = await Navigator.push(
@@ -69,6 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
 
+          // Displays a snackbar indicating that a new address has been created
           if (snackbar != null) {
             _scaffoldKey.currentState.hideCurrentSnackBar();
             _scaffoldKey.currentState.showSnackBar(snackbar);
@@ -81,14 +91,17 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _profileList(BuildContext context) {
+    // Variable Declaration
     final AddressModel addressList = context.watch<AddressModel>();
     final ProfileModel profileList = context.watch<ProfileModel>();
     final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     return FutureBuilder(
+      // Fetches current active user
       future: activeUserModel.getActiveUserId(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          // Fetches profile data for the current active user
           var activeUserId = snapshot.data.profileId;
           var activeUserData;
           if (activeUserId != null) {
@@ -100,6 +113,7 @@ class _ProfilePageState extends State<ProfilePage> {
           }
 
           return Container(
+            // Fetches all address on the local database
             child: FutureBuilder(
               future: addressList.getAllAddresses(),
               builder: (context, snapshot) {
@@ -116,6 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               index == 0
+                                  // Renders profile information header
                                   ? Container(
                                       padding: EdgeInsets.only(top: 12.0),
                                       child: Column(
@@ -139,6 +154,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                           FontWeight.bold,
                                                       color: Colors.blueGrey),
                                                 ),
+                                                // Allows user to quickly edit
+                                                // current active user's profile
+                                                // data
                                                 FlatButton(
                                                   highlightColor:
                                                       Colors.transparent,
@@ -170,6 +188,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       ),
                                                     );
 
+                                                    // Renders a snackbar
+                                                    // indicating the active
+                                                    // profile was edited
                                                     if (snackbar != null) {
                                                       Scaffold.of(context)
                                                           .hideCurrentSnackBar();
@@ -182,6 +203,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                               ],
                                             ),
                                           ),
+                                          // Renders profile information of the
+                                          // current active user to the screen
                                           Container(
                                             color: Colors.white,
                                             child: Column(
@@ -199,6 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                               ],
                                             ),
                                           ),
+                                          // Renders Address information header
                                           Container(
                                             color: Color.fromRGBO(
                                                 220, 220, 220, 100),
@@ -234,6 +258,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ],
                                       ),
                                     )
+                                  // Renders all addresses on local database
                                   : DataRowWithIconPrefix(
                                       '${addresses[index - 1].address}',
                                       '5',
@@ -263,6 +288,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // Data row widget used in profile information
   Widget DataRow(header, value) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -299,6 +325,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // Renders a Data Row Widget used in list of addresses which includes an icon
   Widget DataRowWithIconPrefix(header, value, icon, onTap) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -350,6 +377,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Provider.of<AddressModel>(context, listen: false);
     final Address selectedAddress = await addressList.getAddressWithId(id);
 
+    // Navigates to the create address form, with the selected address object
     final SnackBar snackbar = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -358,6 +386,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
 
+    // Returns a snackbar indicating that an address was updated
     if (snackbar != null) {
       _scaffoldKey.currentState.hideCurrentSnackBar();
       _scaffoldKey.currentState.showSnackBar(snackbar);

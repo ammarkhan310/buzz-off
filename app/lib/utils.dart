@@ -48,10 +48,12 @@ String toMonthName(monthNum) {
   }
 }
 
+// Formats a date into an ordinal string format
 String toDateString(DateTime date) {
   return '${toMonthName(date.month)} ${toOrdinal(date.day)}';
 }
 
+// Formats a date into a string format
 String formatDate(date) {
   return '${toMonthName(date.month)} ' + '${date.day}, ${date.year} ';
 }
