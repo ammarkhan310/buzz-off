@@ -9,8 +9,7 @@ class Notifications {
   var _notificationId = 100;
   final channelId = 'BuzzOff';
   final channelName = 'Mosquito Notifications';
-  final channelDescription =
-      'Buzz Off Mosquito Related Notifications Intended To Keep You Safe & Bite Free';
+  final channelDescription = 'Here To Keep You Safe & Bite Free';
   NotificationDetails _platformChannelInfo;
 
   var _notificationPlugin;
