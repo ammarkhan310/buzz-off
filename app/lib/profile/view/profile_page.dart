@@ -1,12 +1,15 @@
 import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/address.dart';
 import 'package:app/profile/model/profile.dart';
+import 'package:app/profile/view/create_edit_profile.dart';
+import 'package:app/profile/view/profile_selector.dart';
 import 'package:app/utils.dart';
 import 'package:app/profile/view/create_edit_address.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
+  // Constructor
   final String title;
 
   ProfilePage({Key key, this.title}) : super(key: key);
@@ -16,9 +19,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  // Variable Declaration
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    // Renders an App bar
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -28,11 +33,27 @@ class _ProfilePageState extends State<ProfilePage> {
             children: <Widget>[
               Builder(
                 builder: (BuildContext context) {
+                  // Renders an icon in the app bar to allow the user to
+                  // switch the current active user
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.swap_horiz_outlined),
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/chooseProfile');
+                    onPressed: () async {
+                      final SnackBar snackbar = await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectProfile(
+                            title: 'Profile Selector',
+                          ),
+                        ),
+                      );
+
+                      // Displays a snackbar indicating that the current active
+                      // user has changed
+                      if (snackbar != null) {
+                        Scaffold.of(context).hideCurrentSnackBar();
+                        Scaffold.of(context).showSnackBar(snackbar);
+                      }
                     },
                   );
                 },
@@ -41,9 +62,11 @@ class _ProfilePageState extends State<ProfilePage> {
           )
         ],
       ),
+      // Renders the profile data to the screen
       body: Builder(
         builder: _profileList,
       ),
+      // Renders an add icon to allow the user to create a new address
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final SnackBar snackbar = await Navigator.push(
@@ -55,6 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
 
+          // Displays a snackbar indicating that a new address has been created
           if (snackbar != null) {
             _scaffoldKey.currentState.hideCurrentSnackBar();
             _scaffoldKey.currentState.showSnackBar(snackbar);
@@ -67,23 +91,29 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _profileList(BuildContext context) {
+    // Variable Declaration
     final AddressModel addressList = context.watch<AddressModel>();
     final ProfileModel profileList = context.watch<ProfileModel>();
     final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     return FutureBuilder(
+      // Fetches current active user
       future: activeUserModel.getActiveUserId(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          // Fetches profile data for the current active user
           var activeUserId = snapshot.data.profileId;
           var activeUserData;
-          profileList.getProfileById(activeUserId).then(
-            (profileData) {
-              activeUserData = profileData;
-            },
-          );
+          if (activeUserId != null) {
+            profileList.getProfileById(activeUserId).then(
+              (profileData) {
+                activeUserData = profileData;
+              },
+            );
+          }
 
           return Container(
+            // Fetches all address on the local database
             child: FutureBuilder(
               future: addressList.getAllAddresses(),
               builder: (context, snapshot) {
@@ -93,121 +123,152 @@ class _ProfilePageState extends State<ProfilePage> {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
-                        color: Color.fromRGBO(255, 255, 255, 100),
-                        child: ListTile(
-                          title: Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                index == 0
-                                    ? Container(
-                                        padding: EdgeInsets.only(top: 12.0),
-                                        child: Column(
-                                          children: <Widget>[
-                                            Container(
-                                              color: Color.fromRGBO(
-                                                  220, 220, 220, 100),
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 16.0,
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Details',
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        color: Color.fromRGBO(245, 245, 245, 100),
+                        child: Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              index == 0
+                                  // Renders profile information header
+                                  ? Container(
+                                      padding: EdgeInsets.only(top: 12.0),
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            color: Color.fromRGBO(
+                                                220, 220, 220, 100),
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 16.0,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Details',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.blueGrey),
+                                                ),
+                                                // Allows user to quickly edit
+                                                // current active user's profile
+                                                // data
+                                                FlatButton(
+                                                  highlightColor:
+                                                      Colors.transparent,
+                                                  padding: EdgeInsets.only(
+                                                      left: 90.0),
+                                                  child: Text(
+                                                    activeUserData != null
+                                                        ? 'Edit'
+                                                        : 'Create Profile',
                                                     style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blueGrey),
-                                                  ),
-                                                  FlatButton(
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    padding: EdgeInsets.only(
-                                                        left: 90.0),
-                                                    child: Text(
-                                                      'Edit',
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blue,
-                                                      ),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
                                                     ),
-                                                    onPressed: () {
-                                                      Navigator.pushNamed(
-                                                          context,
-                                                          '/createEditProfile');
-                                                    },
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                              color: Color.fromRGBO(
-                                                  255, 255, 255, 100),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  DataRow('Gender',
-                                                      '${activeUserData != null ? activeUserData.gender : 'N/A'}'),
-                                                  DataRow('Blood Type',
-                                                      '${activeUserData != null ? activeUserData.bloodType : 'N/A'}'),
-                                                  DataRow('Age',
-                                                      '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : 'N/A'}'),
-                                                  DataRow('Country',
-                                                      '${activeUserData != null ? activeUserData.country : 'N/A'}'),
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                              color: Color.fromRGBO(
-                                                  220, 220, 220, 100),
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 8.0,
-                                                horizontal: 16.0,
-                                              ),
-                                              margin: EdgeInsets.only(top: 12),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Text(
-                                                    'Saved Addresses',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blueGrey),
                                                   ),
-                                                  Text(
-                                                    'Mosquito Level',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        color: Colors.blueGrey),
-                                                  ),
-                                                ],
-                                              ),
+                                                  onPressed: () async {
+                                                    final SnackBar snackbar =
+                                                        await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CreateEditProfile(
+                                                          title:
+                                                              'Create Profile',
+                                                          data: activeUserData,
+                                                        ),
+                                                      ),
+                                                    );
+
+                                                    // Renders a snackbar
+                                                    // indicating the active
+                                                    // profile was edited
+                                                    if (snackbar != null) {
+                                                      Scaffold.of(context)
+                                                          .hideCurrentSnackBar();
+                                                      Scaffold.of(context)
+                                                          .showSnackBar(
+                                                              snackbar);
+                                                    }
+                                                  },
+                                                )
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      )
-                                    : DataRowWithIconPrefix(
-                                        '${addresses[index - 1].address}',
-                                        '5',
-                                        Icons.edit,
-                                        () {
-                                          _editAddress(
-                                              context, addresses[index - 1].id);
-                                        },
-                                      )
-                              ],
-                            ),
+                                          ),
+                                          // Renders profile information of the
+                                          // current active user to the screen
+                                          Container(
+                                            color: Colors.white,
+                                            child: Column(
+                                              children: <Widget>[
+                                                DataRow('Name',
+                                                    '${activeUserData != null ? activeUserData.name : '-'}'),
+                                                DataRow('Gender',
+                                                    '${activeUserData != null ? activeUserData.gender : '-'}'),
+                                                DataRow('Blood Type',
+                                                    '${activeUserData != null ? activeUserData.bloodType : '-'}'),
+                                                DataRow('Age',
+                                                    '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
+                                                DataRow('Country',
+                                                    '${activeUserData != null ? activeUserData.country : '-'}'),
+                                              ],
+                                            ),
+                                          ),
+                                          // Renders Address information header
+                                          Container(
+                                            color: Color.fromRGBO(
+                                                220, 220, 220, 100),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 8.0,
+                                              horizontal: 16.0,
+                                            ),
+                                            margin: EdgeInsets.only(top: 12),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: <Widget>[
+                                                Text(
+                                                  'Saved Addresses',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.blueGrey),
+                                                ),
+                                                Text(
+                                                  'Mosquito Level',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.blueGrey),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  // Renders all addresses on local database
+                                  : DataRowWithIconPrefix(
+                                      '${addresses[index - 1].address}',
+                                      '5',
+                                      Icons.edit,
+                                      () {
+                                        _editAddress(
+                                            context, addresses[index - 1].id);
+                                      },
+                                    )
+                            ],
                           ),
                         ),
                       );
@@ -227,6 +288,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  // Data row widget used in profile information
   Widget DataRow(header, value) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -236,31 +298,41 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            header,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.blueGrey,
+          Container(
+            padding: EdgeInsets.only(right: 8),
+            child: Text(
+              header,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.blueGrey,
+              ),
             ),
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey,
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerRight,
+              child: Text(
+                value,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                ),
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
+  // Renders a Data Row Widget used in list of addresses which includes an icon
   Widget DataRowWithIconPrefix(header, value, icon, onTap) {
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 16.0,
         horizontal: 16.0,
       ),
+      color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -305,6 +377,7 @@ class _ProfilePageState extends State<ProfilePage> {
         Provider.of<AddressModel>(context, listen: false);
     final Address selectedAddress = await addressList.getAddressWithId(id);
 
+    // Navigates to the create address form, with the selected address object
     final SnackBar snackbar = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -313,6 +386,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
 
+    // Returns a snackbar indicating that an address was updated
     if (snackbar != null) {
       _scaffoldKey.currentState.hideCurrentSnackBar();
       _scaffoldKey.currentState.showSnackBar(snackbar);

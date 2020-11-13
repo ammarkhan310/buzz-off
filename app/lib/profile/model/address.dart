@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'dart:async';
 import 'profileDB_utils.dart';
+import 'dart:async';
 
 // Address Model Definition
 class Address {

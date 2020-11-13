@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import 'dart:async';
 import 'profileDB_utils.dart';
+import 'dart:async';
 
 // Profile Model Definition
 class Profile {
@@ -11,16 +11,16 @@ class Profile {
     this.name,
     this.gender,
     this.bloodType,
-    this.dob,
     this.country,
+    this.dob,
   });
 
   int id;
   String name;
   String gender;
   String bloodType;
-  String dob;
   String country;
+  String dob;
 
   // Assigns values from input map to objects variables
   Profile.fromMap(Map<String, dynamic> map) {
@@ -28,8 +28,8 @@ class Profile {
     this.name = map['name'];
     this.gender = map['gender'];
     this.bloodType = map['bloodType'];
-    this.dob = map['dob'];
     this.country = map['country'];
+    this.dob = map['dob'];
   }
 
   // Maps the respective values of the profile to an output map
@@ -39,13 +39,13 @@ class Profile {
       'name': this.name,
       'gender': this.gender,
       'bloodType': this.bloodType,
-      'dob': this.dob,
       'country': this.country,
+      'dob': this.dob,
     };
   }
 }
 
-// Profile Model Class used to modify values in database
+// Profile Model Class used to modify values in local database
 class ProfileModel with ChangeNotifier {
   // Fetches all Profile Objects in Database
   Future<List<Profile>> getAllProfiles() async {
@@ -87,7 +87,7 @@ class ProfileModel with ChangeNotifier {
     return newProfile;
   }
 
-  // Updates an address in the database
+  // Updates a profile in the database
   Future<int> updateProfile(Profile profile) async {
     final db = await DBUtils.init();
     final updatedProfile = await db.update(

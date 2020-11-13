@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'profileDB_utils.dart';
+import 'dart:async';
 
 // Active User Model Definition
 class ActiveUser {
@@ -28,7 +28,7 @@ class ActiveUser {
   }
 }
 
-// ActiveUser Model Class used to modify values in database
+// Active User Model Class used to modify values in local database
 class ActiveUserModel with ChangeNotifier {
   // Fetches the current active user profile
   Future<ActiveUser> getActiveUserId() async {

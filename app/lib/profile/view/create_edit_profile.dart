@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 // New Page to Create/Edit a Profile
 class CreateEditProfile extends StatefulWidget {
+  // Constructor
   CreateEditProfile({Key key, this.title, this.data}) : super(key: key);
 
   final String title;
@@ -21,6 +22,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    // Variable Declaration
     final TextEditingController _dobController = new TextEditingController(
       text: widget.data != null
           ? formatDate(DateTime.parse(widget.data.toMap()['dob']))
@@ -30,6 +32,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     final ProfileModel profileList = Provider.of<ProfileModel>(context);
     final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
+    // Defines form data
     final List<Map<String, String>> formValues = [
       {
         'label': 'Name',
@@ -70,6 +73,7 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
     };
 
     return Scaffold(
+      // Renders an App bar
       appBar: AppBar(
         title: Text(
           widget.data != null ? 'Edit Profile' : 'Create Profile',
@@ -79,6 +83,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
             children: <Widget>[
               Builder(
                 builder: (BuildContext context) {
+                  // Renders a save icon in the app bar to allow the user to
+                  // save their profile
                   return IconButton(
                     padding: const EdgeInsets.only(right: 12.0, top: 4.0),
                     icon: Icon(Icons.save),
@@ -97,6 +103,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                           country: formValues[4]['value'],
                         );
 
+                        // Returns to the previous screen and returns a snackbar
+                        // to be displayed on the previous screen
                         if (widget.data == null) {
                           var newProfileId =
                               await profileList.insertProfile(profile);
@@ -135,16 +143,19 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
       body: Form(
         key: _formKey,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          margin: EdgeInsets.all(12.0),
+          color: Colors.white,
           child: ListView.builder(
             itemBuilder: (BuildContext context, int index) {
+              // Gets current key of the form element
               String key =
                   index < formValues.length ? formValues[index]['key'] : null;
 
               return Container(
-                padding: EdgeInsets.only(top: 24.0),
+                padding: EdgeInsets.only(top: 24.0, left: 12.0, right: 12.0),
                 child: ListTile(
                   title: index < formValues.length
+                      // Returns a form widget header text
                       ? Text(
                           formValues[index]['label'],
                           style: TextStyle(
@@ -153,6 +164,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                             color: Colors.blueGrey,
                           ),
                         )
+                      // Shows a dialog indicating that the user is about to
+                      // delete their profile
                       : FlatButton(
                           onPressed: widget.data != null
                               ? () {
@@ -229,6 +242,8 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                             ),
                           ),
                         ),
+                  // Renders a form input depending on the type of the
+                  // current form key
                   subtitle: index < formValues.length
                       ? formValues[index]['inputType'] == 'dropdown'
                           ? DropdownButtonFormField(
@@ -253,9 +268,40 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                 return null;
                               },
                             )
-                          : formValues[index]['inputType'] == 'number'
+                          : formValues[index]['inputType'] == 'date'
                               ? TextFormField(
-                                  keyboardType: TextInputType.number,
+                                  controller: _dobController,
+                                  readOnly: true,
+                                  onTap: () {
+                                    // Displays Date Picker
+                                    showDatePicker(
+                                      context: context,
+                                      initialDate: widget.data != null
+                                          ? DateTime.parse(
+                                              formValues[index]['value'])
+                                          : new DateTime.now(),
+                                      firstDate: DateTime(1900),
+                                      lastDate: DateTime.now(),
+                                    ).then((value) {
+                                      _dobController.text =
+                                          '${toMonthName(value.month)} ' +
+                                              '${value.day}, ${value.year}';
+                                      formValues[3]['value'] =
+                                          value.toIso8601String();
+                                    });
+                                  },
+                                  decoration: InputDecoration(
+                                    suffixIcon: Icon(Icons.calendar_today),
+                                  ),
+                                  validator: (String value) {
+                                    if (value.isEmpty) {
+                                      return '${formValues[index]['label']} ' +
+                                          'is required';
+                                    }
+                                    return null;
+                                  },
+                                )
+                              : TextFormField(
                                   initialValue: widget.data != null
                                       ? widget.data.toMap()[key]
                                       : '',
@@ -266,61 +312,10 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
                                     if (value.isEmpty) {
                                       return '${formValues[index]['label']} ' +
                                           'is required';
-                                    } else if (!isNumeric(value)) {
-                                      return '${formValues[index]['label']} ' +
-                                          'must be a valid number';
                                     }
                                     return null;
                                   },
                                 )
-                              : formValues[index]['inputType'] == 'date'
-                                  ? TextFormField(
-                                      controller: _dobController,
-                                      readOnly: true,
-                                      onTap: () {
-                                        // Displays Date Picker
-                                        showDatePicker(
-                                          context: context,
-                                          initialDate: widget.data != null
-                                              ? DateTime.parse(
-                                                  formValues[index]['value'])
-                                              : new DateTime.now(),
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime.now(),
-                                        ).then((value) {
-                                          _dobController.text =
-                                              '${toMonthName(value.month)} ' +
-                                                  '${value.day}, ${value.year}';
-                                          formValues[3]['value'] =
-                                              value.toIso8601String();
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        suffixIcon: Icon(Icons.calendar_today),
-                                      ),
-                                      validator: (String value) {
-                                        if (value.isEmpty) {
-                                          return '${formValues[index]['label']} ' +
-                                              'is required';
-                                        }
-                                        return null;
-                                      },
-                                    )
-                                  : TextFormField(
-                                      initialValue: widget.data != null
-                                          ? widget.data.toMap()[key]
-                                          : '',
-                                      onSaved: (String value) {
-                                        formValues[index]['value'] = value;
-                                      },
-                                      validator: (String value) {
-                                        if (value.isEmpty) {
-                                          return '${formValues[index]['label']} ' +
-                                              'is required';
-                                        }
-                                        return null;
-                                      },
-                                    )
                       : null,
                 ),
               );
