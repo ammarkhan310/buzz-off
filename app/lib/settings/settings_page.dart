@@ -37,13 +37,18 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  setSelectedTheme(ThemeModel theme) {
+  setSelectedTheme(ThemeModel theme, ThemeChanger themeProvider) {
     setState(() {
       selectedTheme = theme;
+      if (selectedTheme.name == 'Dark Mode') {
+        themeProvider.makeDark(true);
+      } else if (selectedTheme.name == 'Light Mode') {
+        themeProvider.makeDark(false);
+      }
     });
   }
 
-  List<Widget> createRadioListThemes() {
+  List<Widget> createRadioListThemes(ThemeChanger themeChanger) {
     List<Widget> widgets = [];
     for (ThemeModel theme in _theme) {
       widgets.add(
@@ -53,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text(theme.name),
           onChanged: (currentTheme) {
             print("Current Theme ${currentTheme.name}");
-            setSelectedTheme(currentTheme);
+            setSelectedTheme(currentTheme, themeChanger);
           },
           selected: selectedTheme == theme,
         ),
@@ -75,17 +80,12 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Text('Theme'),
             subtitle: Text('Light Mode'),
             onTap: () {
-              themeAlert(context, selectedRadio);
+              themeAlert(context, selectedRadio, themeProvider);
 
               //current problem is that this function is only called on onTop
               //and since the user selects the theme after the on top, to actually
               //change the theme, they have to tap on it again.
               print('Radio: ${selectedTheme.name}');
-              if (selectedTheme.name == 'Dark Mode') {
-                themeProvider.makeDark(true);
-              } else if (selectedTheme.name == 'Light Mode') {
-                themeProvider.makeDark(false);
-              }
             }),
         ListTile(
             //currently the location picker is using placeholders
@@ -112,7 +112,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   //pops up an alert dialog that gives the option between light and dark mode for
   //the app theme
-  Widget themeAlert(BuildContext context, int selectedRadio) {
+  Widget themeAlert(
+      BuildContext context, int selectedRadio, ThemeChanger themeChanger) {
     showDialog<void>(
       context: context,
       builder: (BuildContext context) {
@@ -124,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
               builder: (BuildContext context, StateSetter setState) {
             return Column(
               mainAxisSize: MainAxisSize.min,
-              children: createRadioListThemes(),
+              children: createRadioListThemes(themeChanger),
             );
           }),
         );
