@@ -6,11 +6,13 @@ import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 class MosquitoDb {
   String _selectedType = 'All';
 
+  //Retrieve an instance of the database
   CollectionReference getDbInstance() {
     print("Getting mosquito-info collection");
     return FirebaseFirestore.instance.collection('mosquito-info');
   }
 
+  //Recieve an instance of queried information selected by _selectedType
   Future<QuerySnapshot> getMosquitoInfo() async {
     print("Returning info on all queried selected mosquito types");
     if (_selectedType == 'All') {
@@ -23,15 +25,19 @@ class MosquitoDb {
     }
   }
 
-  Future<QueryDocumentSnapshot> getLastDoc() async {
+  /*Retrieve the first doc on the stack of documents used as the recent mosuqito 
+  * location currently */
+  Future<QueryDocumentSnapshot> getFirstDoc() async {
     var snapshot;
     await getMosquitoInfo().then((value) => snapshot = value);
     return snapshot.docs.first;
   }
 
+  /* Get a list of information from the first document with it values 
+  * (location, rating, weather) */
   Future<List<String>> getInfoList() async {
     List<String> infoList = [];
-    var mosquitoInfoData = await getLastDoc();
+    var mosquitoInfoData = await getFirstDoc();
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
     infoList.add(mosquitoInfo.location);
@@ -40,6 +46,7 @@ class MosquitoDb {
     return infoList;
   }
 
+  //Retrieve the built mosquito slider for the home page with recent db values
   FutureBuilder<QuerySnapshot> getMosquitoSlider(
       BuildContext context,
       CustomSliderColors sliderColor,
@@ -62,6 +69,7 @@ class MosquitoDb {
     );
   }
 
+  //Retrieve the built location text for the home page with recent db values
   FutureBuilder<QuerySnapshot> getRatingLocation(BuildContext context) {
     print('Building home page rating location text with cloud-db instance');
     return FutureBuilder<QuerySnapshot>(
@@ -76,6 +84,8 @@ class MosquitoDb {
     );
   }
 
+  /*Retrieve the built location weather description for the home page with 
+  * recent db values */
   FutureBuilder<QuerySnapshot> getLocationWeather(BuildContext context) {
     print('Building home page location weather text with cloud-db instance');
     return FutureBuilder<QuerySnapshot>(
@@ -90,11 +100,13 @@ class MosquitoDb {
     );
   }
 
+  //Insert values into the cloud database instance
   void insertMosquitoData(MosquitoInfo info) async {
     CollectionReference db = getDbInstance();
     await db.doc(info.docReference.toString()).set(info.toMap(info));
   }
 
+  //Build the locatiion text for the home page with recent db values
   Widget _buildLocationText(DocumentSnapshot mosquitoInfoData) {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
@@ -105,6 +117,7 @@ class MosquitoDb {
     );
   }
 
+  //Build the locatiion weather description for homepage with recent db values
   Widget _buildLocationWeather(DocumentSnapshot mosquitoInfoData) {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
@@ -115,6 +128,7 @@ class MosquitoDb {
     );
   }
 
+  //Build the mosquito rating slider for the home page with recent db values
   Widget _buildSlider(
       CustomSliderColors sliderColor,
       CircularSliderAppearance appearance,

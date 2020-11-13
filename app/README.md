@@ -19,7 +19,8 @@ Home Page mock-up:
 * Could possibly include a date somewhere for future or past results?
 * If anyone’s talented maybe even animate the mosquito?
 
-(Will add image links in a bit)
+Light Mock Up - https://i.imgur.com/IFHWbB6.png
+Dark Mock Up - https://i.imgur.com/05w8HO4.png
 
 * Clickable text box for the description of weather conditions
 * Color metre for the mosquito level indicator
@@ -51,6 +52,13 @@ Home Page mock-up:
 
 ### How to use
 * Home
+    * Cloud Database functionality
+        * Weather conditions text is built from _buildLocationWeather
+        * Mosquito rating is built from  _buildSlider 
+        * Location text is built from  _buildSlider
+        * A test cloud db insert function using dummy api data is present in home_page.dart as the first child in the scaffold's stack
+    * Notifications
+        * Appear 10's after the app intended as a low priority/silent notification
 
 * Statistics
   * Tap the person image to get to the add entries page
