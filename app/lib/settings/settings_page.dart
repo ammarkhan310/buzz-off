@@ -36,6 +36,8 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: Text('Light Mode'),
             onTap: () {
               themeAlert(context, selectedRadio);
+              //plan to take the new value of selectedRadio and use that to
+              //call themeProvider.getDarkMode(true) if selectedRadio = 2
             }),
         Padding(
           padding: const EdgeInsets.only(left: 15.0),
