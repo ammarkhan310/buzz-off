@@ -83,78 +83,74 @@ class _SelectProfileState extends State<SelectProfile> {
                   padding: EdgeInsets.symmetric(horizontal: 12.0),
                   child: index == 0
                       // Renders profile list header
-                      ? Expanded(
-                          child: Container(
-                            padding: EdgeInsets.only(top: 12.0),
-                            child: Column(
-                              children: <Widget>[
-                                Container(
-                                  color: Color.fromRGBO(220, 220, 220, 100),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16.0,
-                                    vertical: 16.0,
-                                  ),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        'Profiles',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueGrey),
-                                      ),
-                                    ],
-                                  ),
+                      ? Container(
+                          padding: EdgeInsets.only(top: 12.0),
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                color: Color.fromRGBO(220, 220, 220, 100),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 16.0,
                                 ),
-                              ],
-                            ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      'Profiles',
+                                      style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueGrey),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         )
                       // Allows user to switch between profiles by tapping on
                       // the profile data row
-                      : Expanded(
-                          child: GestureDetector(
-                            onTap: () async {
-                              // Updates current active user and returns a
-                              // snackbar to indicate that the active profile
-                              // has changed
-                              // Returns to the previous screen
-                              await activeUserModel
-                                  .updateActiveUser(profiles[index - 1].id);
-                              Navigator.of(context).pop(
-                                SnackBar(
-                                  content: Text('Switched Active Profile'),
+                      : GestureDetector(
+                          onTap: () async {
+                            // Updates current active user and returns a
+                            // snackbar to indicate that the active profile
+                            // has changed
+                            // Returns to the previous screen
+                            await activeUserModel
+                                .updateActiveUser(profiles[index - 1].id);
+                            Navigator.of(context).pop(
+                              SnackBar(
+                                content: Text('Switched Active Profile'),
+                              ),
+                            );
+                          },
+                          // Renders a profile name data row
+                          child: Column(
+                            children: <Widget>[
+                              // Pressing the edit button allows the user to
+                              // edit the selected profile
+                              Container(
+                                color: Colors.white,
+                                child: DataRowWithIconSuffix(
+                                  '${profiles[index - 1].name}',
+                                  Icons.edit,
+                                  () {
+                                    _editProfile(
+                                        context, profiles[index - 1].id);
+                                  },
                                 ),
-                              );
-                            },
-                            // Renders a profile name data row
-                            child: Column(
-                              children: <Widget>[
-                                // Pressing the edit button allows the user to
-                                // edit the selected profile
-                                Container(
-                                  color: Colors.white,
-                                  child: DataRowWithIconSuffix(
-                                    '${profiles[index - 1].name}',
-                                    Icons.edit,
-                                    () {
-                                      _editProfile(
-                                          context, profiles[index - 1].id);
-                                    },
-                                  ),
+                              ),
+                              // Renders a divider
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 12.0,
                                 ),
-                                // Renders a divider
-                                Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 12.0,
-                                  ),
-                                  child: Divider(
-                                    height: 0.5,
-                                    color: Color.fromRGBO(180, 180, 180, 100),
-                                  ),
-                                )
-                              ],
-                            ),
+                                child: Divider(
+                                  height: 0.5,
+                                  color: Color.fromRGBO(180, 180, 180, 100),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                 );
@@ -181,11 +177,13 @@ class _SelectProfileState extends State<SelectProfile> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            header,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.blueGrey,
+          Expanded(
+            child: Text(
+              header,
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.blueGrey,
+              ),
             ),
           ),
           GestureDetector(
