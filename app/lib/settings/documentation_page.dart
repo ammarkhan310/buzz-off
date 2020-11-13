@@ -36,7 +36,9 @@ class _DocumentationPageState extends State<DocumentationPage> {
               textScaleFactor: 1.2,
             ),
             Text(
-              '\nreferences go here',
+              '\nIcons made by "https://www.flaticon.com/authors/kiranshastry" Kiranshastry from https://www.flaticon.com/'
+              '\nCharacter pack by'
+              '\nKenney Vleugels (www.kenney.nl) || License (CC0): http://creativecommons.org/publicdomain/zero/1.0/',
               textAlign: TextAlign.center,
             ),
             Text(
