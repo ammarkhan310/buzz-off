@@ -20,7 +20,47 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  static int selectedRadio = 0;
+  ThemeModel selectedTheme;
+  List<ThemeModel> _theme;
+  int selectedRadio;
+
+  @override
+  void initState() {
+    super.initState();
+    selectedRadio = 0;
+    _theme = ThemeModel.getTheme();
+  }
+
+  setSelectedRadioTile(int val) {
+    setState(() {
+      selectedRadio = val;
+    });
+  }
+
+  setSelectedTheme(ThemeModel theme) {
+    setState(() {
+      selectedTheme = theme;
+    });
+  }
+
+  List<Widget> createRadioListThemes() {
+    List<Widget> widgets = [];
+    for (ThemeModel theme in _theme) {
+      widgets.add(
+        RadioListTile(
+          value: theme,
+          groupValue: selectedTheme,
+          title: Text(theme.name),
+          onChanged: (currentTheme) {
+            print("Current Theme ${currentTheme.name}");
+            setSelectedTheme(currentTheme);
+          },
+          selected: selectedTheme == theme,
+        ),
+      );
+    }
+    return widgets;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,25 +76,17 @@ class _SettingsPageState extends State<SettingsPage> {
             subtitle: Text('Light Mode'),
             onTap: () {
               themeAlert(context, selectedRadio);
+
+              //current problem is that this function is only called on onTop
+              //and since the user selects the theme after the on top, to actually
+              //change the theme, they have to tap on it again.
+              print('Radio: ${selectedTheme.name}');
+              if (selectedTheme.name == 'Dark Mode') {
+                themeProvider.makeDark(true);
+              } else if (selectedTheme.name == 'Light Mode') {
+                themeProvider.makeDark(false);
+              }
             }),
-        Padding(
-          padding: const EdgeInsets.only(left: 15.0),
-          child: Row(
-            children: [
-              Text('Dark Mode'),
-              Switch(
-                //the bool value returned is used in ThemeChanger to check if
-                //the theme should be changed
-                value: themeProvider.getDarkMode(),
-                onChanged: (value) {
-                  setState(() {
-                    themeProvider.makeDark(value);
-                  });
-                },
-              ),
-            ],
-          ),
-        ),
         ListTile(
             //currently the location picker is using placeholders
             title: Text('Location'),
@@ -77,42 +109,41 @@ class _SettingsPageState extends State<SettingsPage> {
       ]),
     );
   }
+
+  //pops up an alert dialog that gives the option between light and dark mode for
+  //the app theme
+  Widget themeAlert(BuildContext context, int selectedRadio) {
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Theme'),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: createRadioListThemes(),
+            );
+          }),
+        );
+      },
+    );
+  }
 }
 
-//pops up an alert dialog that gives the option between light and dark mode for
-//the app theme
-Widget themeAlert(BuildContext context, int selectedRadio) {
-  showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Theme'),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return Column(mainAxisSize: MainAxisSize.min, children: [
-            RadioListTile<int>(
-              value: 1,
-              title: Text('Light Mode'),
-              groupValue: selectedRadio,
-              onChanged: (value) {
-                setState(() => selectedRadio = value);
-              },
-            ),
-            RadioListTile<int>(
-              value: 2,
-              title: Text('Dark Mode'),
-              groupValue: selectedRadio,
-              onChanged: (value) {
-                setState(() => selectedRadio = value);
-              },
-            )
-          ]);
-        }),
-      );
-    },
-  );
+class ThemeModel {
+  String name;
+  int index;
+  ThemeModel({this.name, this.index});
+
+  static List<ThemeModel> getTheme() {
+    return <ThemeModel>[
+      ThemeModel(name: "Light Mode", index: 1),
+      ThemeModel(name: "Dark Mode", index: 2),
+    ];
+  }
 }
 
 //currently using placeholders for locations
