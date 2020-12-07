@@ -3,11 +3,13 @@
 */
 
 import 'package:app/mosquito_model/mosquito_info.dart';
+import 'package:app/weather_api/weather_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:app/mosquito_model/mosquito_db.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app/weather_api/weather.dart';
 
 class ExampleViewModel {
   final CustomSliderColors sliderColors;
@@ -26,6 +28,8 @@ class ExampleViewModel {
 }
 
 class HomePage extends StatefulWidget {
+  final String apiKey = '9a5b29b67deeee8118ff67d1c94ebaf8';
+
   final ExampleViewModel viewModel =
       ExampleViewModel(sliderColors: customColors, appearance: appearance);
 
@@ -50,19 +54,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          /*Test function testing cloud database insert, button appears at the top
-          *of the home page, comment out when not debugging*/
           FlatButton(
-            onPressed: () {
-              _insertMosquitoData(
-                MosquitoInfo(
-                    docReference: '02',
-                    location: 'Toronto',
-                    weather: 'Night time & cloudy',
-                    rating: 7),
-              );
+            onPressed: () async {
+              List<WeatherInfo> info = await loadApiInfo();
+              for (var item in info) {
+                print(item.toString());
+              }
             },
-            child: Text('Test Cloud DB Insert'),
+            child: Text('Load api info'),
           ),
           /*Label for the text box containinig the weather conditions summary
           * of the current location
@@ -127,6 +126,13 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  Future<List<WeatherInfo>> loadApiInfo() async {
+    List<WeatherInfo> info =
+        await Weather().loadWeather('Toronto', widget.apiKey);
+
+    return info;
   }
 
   //TODO - Finish inserting data from weather api
