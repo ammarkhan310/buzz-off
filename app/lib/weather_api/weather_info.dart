@@ -16,7 +16,7 @@ class WeatherInfo {
     return WeatherInfo(
       city: map['name'],
       country: map['sys']['country'],
-      temp: map['main']['temp'],
+      temp: map['main']['temp'].toInt(),
       humidity: map['main']['humidity'],
       weather: map['weather'][0]['main'],
     );

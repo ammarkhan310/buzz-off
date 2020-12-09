@@ -49,6 +49,13 @@ class HomePage extends StatefulWidget {
  * User location string
  */
 class _HomePageState extends State<HomePage> {
+  List<WeatherInfo> weatherInfo;
+
+  @override
+  void initState(){
+    init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,6 +70,19 @@ class _HomePageState extends State<HomePage> {
             },
             child: Text('Load api info'),
           ),
+
+          Align(
+            alignment: Alignment.topRight,
+            child: FlatButton(
+              onPressed: () {
+                setState(() {
+                  
+                });
+              },
+              child: Text('Refresh page'),
+            ),
+          ),
+
           /*Label for the text box containinig the weather conditions summary
           * of the current location
           */
@@ -128,6 +148,20 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void init() async{
+    print("initializing");
+    weatherInfo = await loadApiInfo();
+
+    _insertMosquitoData(MosquitoInfo( 
+      location: weatherInfo[0].city,
+      weather: weatherInfo[0].weather,
+      rating: 0
+    ));
+
+    print('refresh');
+    setState(() {});
+  }
+
   Future<List<WeatherInfo>> loadApiInfo() async {
     List<WeatherInfo> info =
         await Weather().loadWeather('Toronto', widget.apiKey);
@@ -152,7 +186,7 @@ class _HomePageState extends State<HomePage> {
         if (!snapshot.hasData) {
           return LinearProgressIndicator();
         } else {
-          return _buildLocationWeather(snapshot.data.docs.first);
+          return _buildLocationWeather(snapshot.data.docs.last);
         }
       },
     );
