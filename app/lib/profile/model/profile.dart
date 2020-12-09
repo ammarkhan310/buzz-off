@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'profileDB_utils.dart';
@@ -82,6 +83,11 @@ class ProfileModel with ChangeNotifier {
       address.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    // send new profiles to be stored in cloud
+    CollectionReference profiles = Firestore.instance.collection('profile');
+    var newDocument = await profiles.add(address.toMap());
+
     // Ensures that the new profile is reflected in the profile list
     notifyListeners();
     return newProfile;
