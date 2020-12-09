@@ -8,11 +8,12 @@ import '../model/bite.dart';
 // this page allows the user to add new bite to the database
 class AddBiteForm extends StatefulWidget {
   String title;
+  String bodyPart;
 
-  AddBiteForm({Key key, this.title}) : super(key: key);
+  AddBiteForm({Key key, this.title, this.bodyPart}) : super(key: key);
 
   @override
-  _AddBiteFormState createState() => _AddBiteFormState();
+  _AddBiteFormState createState() => _AddBiteFormState(bodyPart: bodyPart);
 }
 
 
@@ -21,9 +22,11 @@ class _AddBiteFormState extends State<AddBiteForm> {
 
   var tec = TextEditingController(); // text controller for the size
 
-  String _location = 'head';
+  String bodyPart;
   int _size;
   DateTime _date = DateTime.now(); // set initial date to now
+
+  _AddBiteFormState({this.bodyPart});
 
   @override
   Widget build(BuildContext context) {
@@ -39,33 +42,6 @@ class _AddBiteFormState extends State<AddBiteForm> {
           // column of entry fields
           child: Column(
             children: [
-              Text('Bite location'),
-              // drop down menu to select where you were bitten
-              DropdownButtonFormField<String> (
-                value: _location,
-                icon: Icon(Icons.arrow_downward),
-
-                // set location when a list is interacted with
-                onChanged: (String newLocation) { 
-                  setState(() {
-                    _location = newLocation;
-                  });
-                },
-
-                // set items in dropdown list
-                items: <String>[ 
-                  'head',
-                  'body',
-                  'arm',
-                  'leg',
-                ].map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>( 
-                    value: value,
-                    child: Text(value),
-                  ); 
-                }).toList(),
-              ),
-
               // text form field to input user rating
               TextFormField(
                 decoration: const InputDecoration(
@@ -109,12 +85,12 @@ class _AddBiteFormState extends State<AddBiteForm> {
     final BiteListBLoC biteListBLoC = Provider.of<BiteListBLoC>(context, listen: false);
 
     // if all entries have been filled in
-    if(_location != null && _size !=null && _date != null){
+    if(bodyPart != null && _size !=null && _date != null){
       // create bite object based on user inputed info
       Bite bite = Bite(  
         _date,
         _size,
-        _location,
+        bodyPart,
       );
 
       print('New bite created: ${bite}');
