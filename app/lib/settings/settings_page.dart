@@ -2,6 +2,7 @@ import 'package:app/settings/themeChanger.dart';
 import 'package:flutter/material.dart';
 import 'package:app/settings/documentation_page.dart';
 import 'package:provider/provider.dart';
+import 'package:android_intent/android_intent.dart';
 
 class SettingsPage extends StatefulWidget {
   final String title;
@@ -20,15 +21,17 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  ThemeModel selectedTheme;
+  ThemeModel selectedTheme = ThemeModel();
   List<ThemeModel> _theme;
   int selectedRadio;
+  String themeName;
 
   @override
   void initState() {
     super.initState();
-    selectedRadio = 0;
+    selectedRadio = 1;
     _theme = ThemeModel.getTheme();
+    themeName = 'Light Mode';
   }
 
   setSelectedRadioTile(int val) {
@@ -44,6 +47,16 @@ class _SettingsPageState extends State<SettingsPage> {
         themeProvider.makeDark(true);
       } else if (selectedTheme.name == 'Light Mode') {
         themeProvider.makeDark(false);
+      }
+    });
+  }
+
+  setThemeName(ThemeChanger themeProvider) {
+    setState(() {
+      if (themeProvider.whatTheme()) {
+        themeName = 'Dark Mode';
+      } else {
+        themeName = 'Light Mode';
       }
     });
   }
@@ -67,10 +80,19 @@ class _SettingsPageState extends State<SettingsPage> {
     return widgets;
   }
 
+  void _openNotificationSettings() {
+    final AndroidIntent intent = AndroidIntent(
+      action: 'action_application_details_settings',
+      data: 'package:com.mosquito.app',
+    );
+    intent.launch();
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChanger>(context);
     String chosenLocation = ('Default (Canada)');
+    setThemeName(themeProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Settings'),
@@ -78,14 +100,10 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(padding: const EdgeInsets.all(10), children: <Widget>[
         ListTile(
             title: Text('Theme'),
-            subtitle: Text('Light Mode'),
+            subtitle: Text('$themeName'),
             onTap: () {
               themeAlert(context, selectedRadio, themeProvider);
-
-              //current problem is that this function is only called on onTop
-              //and since the user selects the theme after the on top, to actually
-              //change the theme, they have to tap on it again.
-              print('Radio: ${selectedTheme.name}');
+              print('Radio: $themeName');
             }),
         ListTile(
             //currently the location picker is using placeholders
@@ -99,7 +117,9 @@ class _SettingsPageState extends State<SettingsPage> {
             //settings where they can see all the nofication channels
             title: Text('Manage Notifications'),
             trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {}),
+            onTap: () {
+              _openNotificationSettings();
+            }),
         ListTile(
             title: Text('Documentation'),
             trailing: Icon(Icons.keyboard_arrow_right),

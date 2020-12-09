@@ -9,4 +9,8 @@ class ThemeChanger with ChangeNotifier {
     this.darkMode = darkMode;
     notifyListeners();
   }
+
+  bool whatTheme() {
+    return darkMode;
+  }
 }

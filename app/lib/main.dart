@@ -19,8 +19,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:app/notifications.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
+Future main() async {
+  final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
+    translationLoader: FileTranslationLoader(
+        useCountryCode: false,
+        fallbackFile: 'en',
+        basePath: 'assets/flutter_i18n'),
+  );
+  WidgetsFlutterBinding.ensureInitialized();
+  await flutterI18nDelegate.load(null);
   runApp(
     // Initializes Providers and Consumer Listeners
     MultiProvider(
@@ -31,13 +42,16 @@ void main() {
         ChangeNotifierProvider(create: (_) => BiteListBLoC()),
         ChangeNotifierProvider(create: (_) => ThemeChanger()),
       ],
-      child: MyApp(),
+      child: MyApp(flutterI18nDelegate),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
+  final FlutterI18nDelegate flutterI18nDelegate;
   final _notifications = Notifications();
+
+  MyApp(this.flutterI18nDelegate);
 
   String _title = '';
   String _body = '';
@@ -85,6 +99,11 @@ class MyApp extends StatelessWidget {
                       visualDensity: VisualDensity.adaptivePlatformDensity,
                     ),
               home: MyHomePage(title: 'Buzz Off'),
+              localizationsDelegates: [
+                flutterI18nDelegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
               debugShowCheckedModeBanner: false,
               routes: <String, WidgetBuilder>{
                 '/createEditProfile': (BuildContext context) {
@@ -170,21 +189,27 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          DrawerHeader(
+          UserAccountsDrawerHeader(
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
-            child: Text(
-              'Buzz Off',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-              ),
+            accountEmail: Text('place_holder@buzzOff.ca'),
+            accountName: Text('Place Holder'),
+            currentAccountPicture: CircleAvatar(
+              child: Text('PH'),
             ),
+            otherAccountsPictures: [
+              CircleAvatar(
+                child: Text('A2'),
+              ),
+              CircleAvatar(
+                child: Text('A3'),
+              ),
+            ],
           ),
           ListTile(
             leading: Icon(Icons.account_box),
-            title: Text('Profile'),
+            title: Text(FlutterI18n.translate(context, "drawer.profile")),
             onTap: () {
               Navigator.of(context).pop();
               onItemTapped(2);
@@ -192,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           ListTile(
             leading: Icon(Icons.trending_up),
-            title: Text('Statistics'),
+            title: Text(FlutterI18n.translate(context, "drawer.statistics")),
             onTap: () {
               Navigator.of(context).pop();
               onItemTapped(1);
@@ -200,11 +225,36 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           ListTile(
             leading: Icon(Icons.settings),
-            title: Text('Settings'),
+            title: Text(FlutterI18n.translate(context, "drawer.settings")),
             onTap: () {
               Navigator.of(context).pop();
               _goToSettings();
             },
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 350.0, left: 120.0),
+            child: Row(
+              children: [
+                FlatButton(
+                  child: Text('EN'),
+                  onPressed: () async {
+                    print('Switching to english');
+                    Locale newLocale = Locale('en');
+                    await FlutterI18n.refresh(context, newLocale);
+                    setState(() {});
+                  },
+                ),
+                FlatButton(
+                  child: Text('FR'),
+                  onPressed: () async {
+                    print('Switching to french');
+                    Locale newLocale = Locale('fr');
+                    await FlutterI18n.refresh(context, newLocale);
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       )),
