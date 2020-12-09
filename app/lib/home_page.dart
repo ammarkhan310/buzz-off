@@ -10,6 +10,8 @@ import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:app/mosquito_model/mosquito_db.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/weather_api/weather.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class ExampleViewModel {
   final CustomSliderColors sliderColors;
@@ -50,14 +52,18 @@ class HomePage extends StatefulWidget {
  */
 class _HomePageState extends State<HomePage> {
   List<WeatherInfo> weatherInfo;
+  String city = 'Oshawa';
+  String prov = 'ON';
 
   @override
   void initState(){
+    _updateLocationOneTime();
     init();
   }
 
   @override
   Widget build(BuildContext context) {
+    Geolocator.checkPermission();
     return Scaffold(
       body: Stack(
         children: [
@@ -80,6 +86,16 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               child: Text('Refresh page'),
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.topCenter,
+            child: FlatButton(
+              onPressed: () {
+                _updateLocationOneTime();
+              },
+              child: Text('Check location'),
             ),
           ),
 
@@ -158,13 +174,32 @@ class _HomePageState extends State<HomePage> {
       rating: 0
     ));
 
-    print('refresh');
-    setState(() {});
+    setState(() {
+      
+    });
+  }
+
+  void _updateLocationOneTime(){
+    print('update location');
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position userLocation) async{
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+          userLocation.latitude, userLocation.longitude);
+
+        setState(() {
+          city = placemarks[0].locality;
+          init();
+          print('City: ' + city);
+        });
+        
+    });
+
+  
   }
 
   Future<List<WeatherInfo>> loadApiInfo() async {
     List<WeatherInfo> info =
-        await Weather().loadWeather('Toronto', widget.apiKey);
+        await Weather().loadWeather(city, widget.apiKey);
 
     return info;
   }
@@ -215,7 +250,7 @@ class _HomePageState extends State<HomePage> {
         if (!snapshot.hasData) {
           return LinearProgressIndicator();
         } else {
-          return _buildLocationText(snapshot.data.docs.first);
+          return _buildLocationText(snapshot.data.docs.last);
         }
       },
     );
@@ -226,6 +261,7 @@ class _HomePageState extends State<HomePage> {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
 
+    print('Location: ${mosquitoInfo.location}');
     return Text(
       'Location: ${mosquitoInfo.location}',
       style: TextStyle(
