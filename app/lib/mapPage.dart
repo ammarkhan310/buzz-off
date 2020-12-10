@@ -22,6 +22,8 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   LatLng centre;
   String locality;
+  List<Marker> markers = [];
+  MapController _mapController = MapController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,24 @@ class _MapPageState extends State<MapPage> {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           userLocation.latitude, userLocation.longitude);
       centre = LatLng(userLocation.latitude, userLocation.longitude);
+      _mapController.move(
+          LatLng(userLocation.latitude, userLocation.longitude), 13.0);
+      Marker newMarker = Marker(
+        width: 45.0,
+        height: 45.0,
+        point: centre,
+        builder: (context) => Container(
+          child: IconButton(
+            icon: Icon(Icons.location_on),
+            color: Colors.blue,
+            iconSize: 45.0,
+            onPressed: () {
+              print('Marker clicked');
+            },
+          ),
+        ),
+      );
+      markers.add(newMarker);
       locality = placemarks[0].locality;
       print("Build map centred at: $centre");
       buildMap(centre);
@@ -60,6 +80,7 @@ class _MapPageState extends State<MapPage> {
           minZoom: 13.0,
           center: centre,
         ),
+        mapController: _mapController,
         layers: [
           TileLayerOptions(
             urlTemplate:
@@ -70,23 +91,7 @@ class _MapPageState extends State<MapPage> {
               'id': 'mapbox.mapbox-streets-v8'
             },
           ),
-          MarkerLayerOptions(markers: [
-            Marker(
-              width: 45.0,
-              height: 45.0,
-              point: centre,
-              builder: (context) => Container(
-                child: IconButton(
-                  icon: Icon(Icons.location_on),
-                  color: Colors.blue,
-                  iconSize: 45.0,
-                  onPressed: () {
-                    print('Marker clicked');
-                  },
-                ),
-              ),
-            ),
-          ]),
+          MarkerLayerOptions(markers: markers),
         ],
       ),
       floatingActionButton: FloatingActionButton(

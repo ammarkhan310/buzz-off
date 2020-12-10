@@ -119,7 +119,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          //TODO - Input weather conditions based on weather variables
           Center(
             child: Container(
               height: 500,
@@ -148,8 +147,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           //Text displaying the ratings location
-          //TODO - Insert User's saved locations
-          //TODO - Make the text clickable
           Center(
             child: Container(
               height: 250,
@@ -167,7 +164,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     );
-                    city = newLoc;
+
+                    var info = MosquitoInfo(
+                        weather: weatherInfo[0].weather,
+                        location: newLoc,
+                        rating: 6);
+                    _insertMosquitoData(info);
+                    getRatingLocation();
                     setState(() {});
                   },
                   child: getRatingLocation(),
