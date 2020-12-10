@@ -71,6 +71,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
+          /*
           FlatButton(
             onPressed: () async {
               List<WeatherInfo> info = await loadApiInfo();
@@ -100,7 +101,7 @@ class _HomePageState extends State<HomePage> {
               child: Text('Check location'),
             ),
           ),
-
+          */
           /*Label for the text box containinig the weather conditions summary
           * of the current location
           */
@@ -167,7 +168,7 @@ class _HomePageState extends State<HomePage> {
     print("initializing");
     weatherInfo = await loadApiInfo();
 
-    Rating rating = Rating();
+    Rating rating = Rating(latLng);
 
     _insertMosquitoData(MosquitoInfo(
         location: weatherInfo[0].city,
@@ -230,12 +231,11 @@ class _HomePageState extends State<HomePage> {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
 
-    return Expanded(
-        child: Text(
+    return Text(
       '\n ${mosquitoInfo.weather}',
       style: TextStyle(
           fontStyle: FontStyle.italic, fontSize: 14, color: Colors.grey),
-    ));
+    );
   }
 
   //Retrieve the built location text for the home page with recent db values
