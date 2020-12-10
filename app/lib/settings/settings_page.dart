@@ -3,11 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:app/settings/documentation_page.dart';
 import 'package:provider/provider.dart';
 import 'package:android_intent/android_intent.dart';
+import 'package:app/main.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class SettingsPage extends StatefulWidget {
   final String title;
+  final FlutterI18nDelegate flutterI18nDelegate;
 
-  SettingsPage({Key key, this.title}) : super(key: key);
+  SettingsPage({Key key, this.title, this.flutterI18nDelegate})
+      : super(key: key);
 
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -21,6 +27,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  Locale currentLang;
   ThemeModel selectedTheme = ThemeModel();
   List<ThemeModel> _theme;
   int selectedRadio;
@@ -29,9 +36,21 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Duration.zero, () async {
+      setState(() {
+        currentLang = FlutterI18n.currentLocale(context);
+      });
+    });
     selectedRadio = 1;
     _theme = ThemeModel.getTheme();
     themeName = 'Light Mode';
+  }
+
+  changeLanguage() async {
+    currentLang =
+        currentLang.languageCode == 'en' ? Locale('fr') : Locale('en');
+    await FlutterI18n.refresh(context, currentLang);
+    setState(() {});
   }
 
   setSelectedRadioTile(int val) {
@@ -91,7 +110,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeChanger>(context);
-    String chosenLocation = ('Default (Canada)');
     setThemeName(themeProvider);
     return Scaffold(
       appBar: AppBar(
@@ -99,7 +117,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(padding: const EdgeInsets.all(10), children: <Widget>[
         ListTile(
-            title: Text('Theme'),
+            title: Text(FlutterI18n.translate(context, "settings.theme")),
             subtitle: Text('$themeName'),
             onTap: () {
               themeAlert(context, selectedRadio, themeProvider);
@@ -107,21 +125,25 @@ class _SettingsPageState extends State<SettingsPage> {
             }),
         ListTile(
             //currently the location picker is using placeholders
-            title: Text('Location'),
-            subtitle: Text(chosenLocation),
-            onTap: () {
-              locationDialog(context);
+            title: Text(FlutterI18n.translate(context, "settings.language")),
+            subtitle:
+                Text(FlutterI18n.translate(context, "settings.chosenLang")),
+            onTap: () async {
+              await changeLanguage();
+              setState(() {});
             }),
         ListTile(
             //planned to take the user to the Android System notification
             //settings where they can see all the nofication channels
-            title: Text('Manage Notifications'),
+            title:
+                Text(FlutterI18n.translate(context, "settings.notifications")),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               _openNotificationSettings();
             }),
         ListTile(
-            title: Text('Documentation'),
+            title:
+                Text(FlutterI18n.translate(context, "settings.documentation")),
             trailing: Icon(Icons.keyboard_arrow_right),
             onTap: () {
               _goToDocumentation();
@@ -188,13 +210,24 @@ Widget locationDialog(BuildContext context) {
                   children: [
                     ListTile(
                       title: Text('Australia'),
-                      onTap: () {
-                        //setState(() => chosenLocation = 'Australia')
+                      onTap: () async {
+                        print('Switching to french');
+                        Locale newLocale = Locale('fr');
+                        await FlutterI18n.refresh(context, newLocale);
+                        setState(() {
+                          newLocale = Locale('fr');
+                          FlutterI18n.refresh(context, newLocale);
+                        });
                       },
                     ),
                     ListTile(
                       title: Text('Default (Canada)'),
-                      onTap: () {},
+                      onTap: () async {
+                        print('Switching to english');
+                        Locale newLocale = Locale('en');
+                        await FlutterI18n.refresh(context, newLocale);
+                        setState(() {});
+                      },
                     ),
                     ListTile(
                       title: Text('Germany'),

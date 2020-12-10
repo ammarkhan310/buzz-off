@@ -31,38 +31,33 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final BiteListBLoC biteListBLoC = context.watch<BiteListBLoC>();
 
     return Scaffold(
-      body: Padding( 
-        padding: EdgeInsets.all(7),
+        body: Padding(
+            padding: EdgeInsets.all(7),
+            child: Column(
 
-        child: Column(
-          
-            // used to add new bites
-          children: <Widget>[
-            Text('Tap a body part below to add new entry'),
-            BiteLogger().build(context, biteListBLoC.biteList),
-            
-            Text('Refresh button updates entry || Trash button deletes entry'),
-            Expanded(
-                // creates a list view to display all the cards
-              child: ListView.builder(
-                itemCount: biteListBLoC.biteList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    // container to add some padding to make it look nice
-                    padding: const EdgeInsets.all(2.0),
-                    child: BiteCard(
-                      bite: biteListBLoC.biteList[index],
-                      isDialog: false,
-                    ).build(
-                        context), // makes a card to display each animes information
-                  );
-                },
-              )
-            ),
-          ]
-        )
-      )
-    );
+                // used to add new bites
+                children: <Widget>[
+                  Text('Tap a body part below to add new entry'),
+                  BiteLogger().build(context, biteListBLoC.biteList),
+                  Text(
+                      'Refresh button updates entry || Trash button deletes entry'),
+                  Expanded(
+                      // creates a list view to display all the cards
+                      child: ListView.builder(
+                    itemCount: biteListBLoC.biteList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        // container to add some padding to make it look nice
+                        padding: const EdgeInsets.all(2.0),
+                        child: BiteCard(
+                          bite: biteListBLoC.biteList[index],
+                          isDialog: false,
+                        ).build(
+                            context), // makes a card to display each animes information
+                      );
+                    },
+                  )),
+                ])));
   }
 
   // shows the add bite form to add a new entry
