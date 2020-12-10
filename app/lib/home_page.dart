@@ -273,7 +273,9 @@ class _HomePageState extends State<HomePage> {
           );
 
           var info = MosquitoInfo(
-              weather: weatherInfo[0].weather, location: newLoc, rating: 6);
+              weather: weatherInfo[0].weather,
+              location: newLoc,
+              rating: Rating(latLng).calculateRating(weatherInfo[0]));
           _insertMosquitoData(info);
           getRatingLocation();
           setState(() {});
