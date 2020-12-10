@@ -67,7 +67,6 @@ class _SelectProfileState extends State<SelectProfile> {
     final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     return Container(
-      color: Color.fromRGBO(245, 245, 245, 100),
       child: FutureBuilder(
         // Fetches all profiles stored on the local database
         future: profilesList.getAllProfiles(),
@@ -81,32 +80,30 @@ class _SelectProfileState extends State<SelectProfile> {
                 // Renders a profile object to the screen
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  child: index == 0
-                      // Renders profile list header
-                      ? Container(
-                          padding: EdgeInsets.only(top: 12.0),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                color: Color.fromRGBO(220, 220, 220, 100),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 16.0,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Profiles',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blueGrey),
+                    child: index == 0
+                        // Renders profile list header
+                        ? Card( 
+                          child: Container(
+                            padding: EdgeInsets.only(top: 12.0),
+                            child: Column(
+                              children: <Widget>[
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                    child: Container(
+                                      padding: EdgeInsets.all(
+                                      10
+                                      ),
+                                      child: Text(
+                                        'Profiles',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold, ),
+                                      ),
                                     ),
-                                  ],
                                 ),
-                              ),
-                            ],
-                          ),
+                              ],
+                            ),
+                          )
                         )
                       // Allows user to switch between profiles by tapping on
                       // the profile data row
@@ -129,15 +126,16 @@ class _SelectProfileState extends State<SelectProfile> {
                             children: <Widget>[
                               // Pressing the edit button allows the user to
                               // edit the selected profile
-                              Container(
-                                color: Colors.white,
-                                child: DataRowWithIconSuffix(
-                                  '${profiles[index - 1].name}',
-                                  Icons.edit,
-                                  () {
-                                    _editProfile(
-                                        context, profiles[index - 1].id);
-                                  },
+                              Card(
+                                child: Container(
+                                  child: DataRowWithIconSuffix(
+                                    '${profiles[index - 1].name}',
+                                    Icons.edit,
+                                    () {
+                                      _editProfile(
+                                          context, profiles[index - 1].id);
+                                    },
+                                  ),
                                 ),
                               ),
                               // Renders a divider
@@ -182,7 +180,6 @@ class _SelectProfileState extends State<SelectProfile> {
               header,
               style: TextStyle(
                 fontSize: 20,
-                color: Colors.blueGrey,
               ),
             ),
           ),
@@ -194,7 +191,6 @@ class _SelectProfileState extends State<SelectProfile> {
               ),
               child: Icon(
                 icon,
-                color: Colors.blueGrey,
               ),
             ),
           ),

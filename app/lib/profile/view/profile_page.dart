@@ -7,6 +7,7 @@ import 'package:app/utils.dart';
 import 'package:app/profile/view/create_edit_address.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:app/settings/themeChanger.dart';
 
 class ProfilePage extends StatefulWidget {
   // Constructor
@@ -112,29 +113,28 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           }
 
-          return Container(
-            // Fetches all address on the local database
-            child: FutureBuilder(
-              future: addressList.getAllAddresses(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List addresses = snapshot.data;
+          return FutureBuilder(
+            future: addressList.getAllAddresses(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List addresses = snapshot.data;
 
-                  return ListView.builder(
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        padding: EdgeInsets.only(
-                            left: 16.0, right: 16.0, bottom: 12.0),
-                        color: Color.fromRGBO(245, 245, 245, 100),
-                        child: Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.only(top: 12.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    DataTable(
+                return ListView.builder(
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      padding: EdgeInsets.only(
+                          left: 16.0, right: 16.0, bottom: 12.0),
+                      color: Color.fromRGBO(245, 245, 245, 100),
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(top: 12.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Card(
+                                    child: DataTable(
                                       headingRowHeight: 36.0,
                                       headingRowColor:
                                           MaterialStateColor.resolveWith(
@@ -223,14 +223,16 @@ class _ProfilePageState extends State<ProfilePage> {
                                             '${activeUserData != null ? activeUserData.country : '-'}'),
                                       ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(vertical: 8.0),
-                              ),
-                              // Renders all addresses on local database
-                              DataTable(
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                            ),
+                            // Renders all addresses on local database
+                            Card(
+                              child: DataTable(
                                 headingRowHeight: 36.0,
                                 headingRowColor: MaterialStateColor.resolveWith(
                                   (states) =>
@@ -331,19 +333,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                       ),
                                     )
                                     .toList(),
-                              )
-                            ],
-                          ),
+                              ),
+                            )
+                          ],
                         ),
-                      );
-                    },
-                    itemCount: 1,
-                  );
-                } else {
-                  return Text('Fetching Data...');
-                }
-              },
-            ),
+                      ),
+                    );
+                  },
+                  itemCount: 1,
+                );
+              } else {
+                return Text('Fetching Data...');
+              }
+            },
           );
         } else {
           return Text('Fetching Data...');

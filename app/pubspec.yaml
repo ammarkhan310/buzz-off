@@ -33,6 +33,8 @@ dependencies:
   android_intent:
   flutter_i18n:
 
+  http:
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.3
@@ -42,6 +44,9 @@ dependencies:
   path:
   provider:
   charts_flutter:
+  geolocator: 6.1.13
+  geocoding: ^1.0.5
+  flutter_map:
 
 dev_dependencies:
   flutter_test:
