@@ -6,6 +6,7 @@ import 'package:app/utils.dart';
 import '../model/bite.dart';
 import '../view/biteLogger.dart';
 import '../model/biteModel.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class StatisticsPage extends StatefulWidget {
   String title;
@@ -31,19 +32,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
     final BiteListBLoC biteListBLoC = context.watch<BiteListBLoC>();
 
     return Scaffold(
-      body: Padding( 
+      body: Padding(
         padding: EdgeInsets.all(7),
-
         child: Column(
-          
-            // used to add new bites
+          // used to add new bites
           children: <Widget>[
             Text('Tap a body part below to add new entry'),
             BiteLogger().build(context, biteListBLoC.biteList),
-            
-            Text('Refresh button updates entry || Trash button deletes entry'),
             Expanded(
-                // creates a list view to display all the cards
+              // creates a list view to display all the cards
               child: ListView.builder(
                 itemCount: biteListBLoC.biteList.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -57,11 +54,28 @@ class _StatisticsPageState extends State<StatisticsPage> {
                         context), // makes a card to display each animes information
                   );
                 },
-              )
+              ),
             ),
-          ]
-        )
-      )
+            // Renders a bar chart to show the total number of bites which were
+            // logged over the course of a week
+            Expanded(
+              child: charts.BarChart(
+                [
+                  charts.Series(
+                    id: 'dailyMosquitoLevel',
+                    colorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+                    domainFn: (gf, _) => gf.date,
+                    measureFn: (gf, _) => gf.frequency,
+                    data: _fetchDateFrequencies(biteListBLoC.biteList),
+                  ),
+                ],
+                animate: true,
+                vertical: true,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -194,4 +208,56 @@ class BiteCard extends StatelessWidget {
       }
     }
   }
+}
+
+// Frequency Object for Bar Chart
+class LevelFrequency {
+  String date;
+  int frequency;
+
+  LevelFrequency({this.date, this.frequency});
+
+  String toString() {
+    return 'PostFrequency($date, $frequency)';
+  }
+}
+
+List<LevelFrequency> _fetchDateFrequencies(data) {
+  // Fetches todays date at midnight
+  DateTime currentDate = new DateTime.now();
+  currentDate =
+      new DateTime(currentDate.year, currentDate.month, currentDate.day);
+
+  // Frequency of bites over the last week
+  var weeklyData = {
+    '${currentDate}': 0,
+    '${currentDate.subtract(Duration(days: 1))}': 0,
+    '${currentDate.subtract(Duration(days: 2))}': 0,
+    '${currentDate.subtract(Duration(days: 3))}': 0,
+    '${currentDate.subtract(Duration(days: 4))}': 0,
+    '${currentDate.subtract(Duration(days: 5))}': 0,
+    '${currentDate.subtract(Duration(days: 6))}': 0
+  };
+
+  // Calculates the number of bites that occurred each day in the last week
+  for (var i = 0; i < data.length; i++) {
+    DateTime temp_date = DateTime.parse(data[i].toMap()['dateBitten']);
+    temp_date = new DateTime(temp_date.year, temp_date.month, temp_date.day);
+    if (currentDate.difference(temp_date).inDays < 7) {
+      weeklyData[temp_date.toString()] = weeklyData[temp_date.toString()] + 1;
+    }
+  }
+
+  // Returns an array of data that is rendered to the bar chart
+  return weeklyData.keys
+      .toList()
+      .reversed
+      .map(
+        (key) => LevelFrequency(
+          date:
+              '${toShortMonthName(DateTime.parse(key).month)} ${DateTime.parse(key).day}',
+          frequency: weeklyData[key],
+        ),
+      )
+      .toList();
 }
