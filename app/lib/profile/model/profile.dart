@@ -43,6 +43,11 @@ class Profile {
       'dob': this.dob,
     };
   }
+
+  
+  String toString(){
+    return(name);
+  }
 }
 
 // Profile Model Class used to modify values in local database

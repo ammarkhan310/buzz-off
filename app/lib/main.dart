@@ -22,6 +22,7 @@ import 'package:app/notifications.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:app/profile/model/active_profile.dart';
 
 Future main() async {
   final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
@@ -171,6 +172,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final ProfileModel profileList = context.watch<ProfileModel>();
+    final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
+
     return Scaffold(
       appBar: _titles[_currentIndex]['showHeader']
           ? AppBar(
@@ -189,24 +193,55 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
-            accountEmail: Text('place_holder@buzzOff.ca'),
-            accountName: Text('Place Holder'),
-            currentAccountPicture: CircleAvatar(
-              child: Text('PH'),
-            ),
-            otherAccountsPictures: [
-              CircleAvatar(
-                child: Text('A2'),
-              ),
-              CircleAvatar(
-                child: Text('A3'),
-              ),
-            ],
+          FutureBuilder(
+            future: activeUserModel.getActiveUserId(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // Fetches profile data for the current active user
+                var activeUserId = snapshot.data.profileId;
+                var activeUserData;
+
+                if (activeUserId != null) {
+
+                  profileList.getProfileById(activeUserId).then(
+                    (profileData) {
+
+                      activeUserData = profileData;
+                      print('profile: $activeUserData');
+                    },
+                  );
+
+
+                  return UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    accountEmail: Text('place_holder@buzzOff.ca'),
+                    accountName:  Text('${activeUserData}'),
+
+                    currentAccountPicture: CircleAvatar(
+                      child: Text('PH'),
+                    ),
+
+                    otherAccountsPictures: [
+                      CircleAvatar(
+                        child: Text('A2'),
+                      ),
+                      CircleAvatar(
+                        child: Text('A3'),
+                      ),
+                    ],
+                  );
+                }
+                
+              }
+              else{
+                return Container(child: Text('loading...'));
+              }
+            }
           ),
+                    
+            
           ListTile(
             leading: Icon(Icons.account_box),
             title: Text(FlutterI18n.translate(context, "drawer.profile")),
@@ -276,3 +311,5 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 }
+
+
