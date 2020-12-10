@@ -170,6 +170,18 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  ActiveUserModel _activeUserModel = ActiveUserModel();
+
+  Future<ActiveUser> getUser() async {
+    return await _activeUserModel.getActiveUserId();
+  }
+
+  ProfileModel _profileModel = ProfileModel();
+
+  Future<Profile> getProfile(int id) async {
+    return await _profileModel.getProfileById(id);
+  }
+
   @override
   Widget build(BuildContext context) {
     final ProfileModel profileList = context.watch<ProfileModel>();
