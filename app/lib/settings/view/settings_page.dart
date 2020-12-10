@@ -1,12 +1,12 @@
-import 'package:app/settings/themeChanger.dart';
+import 'package:app/settings/model/themeChanger.dart';
 import 'package:flutter/material.dart';
-import 'package:app/settings/documentation_page.dart';
+import 'package:app/settings/view/documentation_page.dart';
 import 'package:provider/provider.dart';
 import 'package:android_intent/android_intent.dart';
-import 'package:app/main.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:app/settings/model/themeModel.dart';
 
 class SettingsPage extends StatefulWidget {
   final String title;
@@ -173,19 +173,6 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       },
     );
-  }
-}
-
-class ThemeModel {
-  String name;
-  int index;
-  ThemeModel({this.name, this.index});
-
-  static List<ThemeModel> getTheme() {
-    return <ThemeModel>[
-      ThemeModel(name: "Light Mode", index: 1),
-      ThemeModel(name: "Dark Mode", index: 2),
-    ];
   }
 }
 
