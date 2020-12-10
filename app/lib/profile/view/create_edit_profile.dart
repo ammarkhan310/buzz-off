@@ -142,185 +142,185 @@ class _CreateEditProfileState extends State<CreateEditProfile> {
       ),
       body: Form(
         key: _formKey,
-        child: Container(
-          margin: EdgeInsets.all(12.0),
-          color: Colors.white,
-          child: ListView.builder(
-            itemBuilder: (BuildContext context, int index) {
-              // Gets current key of the form element
-              String key =
-                  index < formValues.length ? formValues[index]['key'] : null;
+        child: Card(
+          child: Container(
+            margin: EdgeInsets.all(12.0),
+            child: ListView.builder(
+              itemBuilder: (BuildContext context, int index) {
+                // Gets current key of the form element
+                String key =
+                    index < formValues.length ? formValues[index]['key'] : null;
 
-              return Container(
-                padding: EdgeInsets.only(top: 24.0, left: 12.0, right: 12.0),
-                child: ListTile(
-                  title: index < formValues.length
-                      // Returns a form widget header text
-                      ? Text(
-                          formValues[index]['label'],
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey,
-                          ),
-                        )
-                      // Shows a dialog indicating that the user is about to
-                      // delete their profile
-                      : FlatButton(
-                          onPressed: widget.data != null
-                              ? () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext dialogContext) {
-                                      return AlertDialog(
-                                        title: Text(
-                                          'Delete Profile?',
-                                        ),
-                                        content: Text(
-                                          'Are you sure you want to delete ' +
-                                              'this profile?',
-                                        ),
-                                        actions: [
-                                          RaisedButton(
-                                            child: Text('Delete'),
-                                            onPressed: () async {
-                                              profileList.deleteProfileWithId(
-                                                widget.data.toMap()['id'],
-                                              );
-                                              await activeUserModel
-                                                  .getActiveUserId()
-                                                  .then(
-                                                    (activeUser) => {
-                                                      if (activeUser
-                                                              .profileId ==
-                                                          widget.data
-                                                              .toMap()['id'])
-                                                        {
-                                                          profileList
-                                                              .getAllProfiles()
-                                                              .then((profiles) {
-                                                            if (profiles
-                                                                    .length >
-                                                                0) {
-                                                              activeUserModel
-                                                                  .updateActiveUser(
-                                                                      profiles[
-                                                                              0]
-                                                                          .id);
-                                                            } else {
-                                                              activeUserModel
-                                                                  .updateActiveUser(
-                                                                      null);
-                                                            }
-                                                          })
-                                                        }
-                                                    },
-                                                  );
-                                              Navigator.of(dialogContext).pop();
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          RaisedButton(
-                                            child: Text('Cancel'),
-                                            onPressed: () {
-                                              Navigator.of(dialogContext).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                }
-                              : null,
-                          child: Text(
-                            "Delete Profile",
+                return Container(
+                  padding: EdgeInsets.only(top: 24.0, left: 12.0, right: 12.0),
+                  child: ListTile(
+                    title: index < formValues.length
+                        // Returns a form widget header text
+                        ? Text(
+                            formValues[index]['label'],
                             style: TextStyle(
-                              fontSize: 16,
-                              color: widget.data != null
-                                  ? Colors.red
-                                  : Colors.grey,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
+                        // Shows a dialog indicating that the user is about to
+                        // delete their profile
+                        : FlatButton(
+                            onPressed: widget.data != null
+                                ? () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext dialogContext) {
+                                        return AlertDialog(
+                                          title: Text(
+                                            'Delete Profile?',
+                                          ),
+                                          content: Text(
+                                            'Are you sure you want to delete ' +
+                                                'this profile?',
+                                          ),
+                                          actions: [
+                                            RaisedButton(
+                                              child: Text('Delete'),
+                                              onPressed: () async {
+                                                profileList.deleteProfileWithId(
+                                                  widget.data.toMap()['id'],
+                                                );
+                                                await activeUserModel
+                                                    .getActiveUserId()
+                                                    .then(
+                                                      (activeUser) => {
+                                                        if (activeUser
+                                                                .profileId ==
+                                                            widget.data
+                                                                .toMap()['id'])
+                                                          {
+                                                            profileList
+                                                                .getAllProfiles()
+                                                                .then((profiles) {
+                                                              if (profiles
+                                                                      .length >
+                                                                  0) {
+                                                                activeUserModel
+                                                                    .updateActiveUser(
+                                                                        profiles[
+                                                                                0]
+                                                                            .id);
+                                                              } else {
+                                                                activeUserModel
+                                                                    .updateActiveUser(
+                                                                        null);
+                                                              }
+                                                            })
+                                                          }
+                                                      },
+                                                    );
+                                                Navigator.of(dialogContext).pop();
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            RaisedButton(
+                                              child: Text('Cancel'),
+                                              onPressed: () {
+                                                Navigator.of(dialogContext).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                : null,
+                            child: Text(
+                              "Delete Profile",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: widget.data != null
+                                    ? Colors.red
+                                    : Colors.grey,
+                              ),
                             ),
                           ),
-                        ),
-                  // Renders a form input depending on the type of the
-                  // current form key
-                  subtitle: index < formValues.length
-                      ? formValues[index]['inputType'] == 'dropdown'
-                          ? DropdownButtonFormField(
-                              value: formValues[index]['value'],
-                              items: <String>[...dropdownValues[key]]
-                                  .map<DropdownMenuItem<String>>(
-                                (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
+                    // Renders a form input depending on the type of the
+                    // current form key
+                    subtitle: index < formValues.length
+                        ? formValues[index]['inputType'] == 'dropdown'
+                            ? DropdownButtonFormField(
+                                value: formValues[index]['value'],
+                                items: <String>[...dropdownValues[key]]
+                                    .map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (String value) {
+                                  formValues[index]['value'] = value;
                                 },
-                              ).toList(),
-                              onChanged: (String value) {
-                                formValues[index]['value'] = value;
-                              },
-                              validator: (String value) {
-                                if (value == null || value.isEmpty) {
-                                  return '${formValues[index]['label']} is ' +
-                                      'required';
-                                }
-                                return null;
-                              },
-                            )
-                          : formValues[index]['inputType'] == 'date'
-                              ? TextFormField(
-                                  controller: _dobController,
-                                  readOnly: true,
-                                  onTap: () {
-                                    // Displays Date Picker
-                                    showDatePicker(
-                                      context: context,
-                                      initialDate: widget.data != null
-                                          ? DateTime.parse(
-                                              formValues[index]['value'])
-                                          : new DateTime.now(),
-                                      firstDate: DateTime(1900),
-                                      lastDate: DateTime.now(),
-                                    ).then((value) {
-                                      _dobController.text =
-                                          '${toMonthName(value.month)} ' +
-                                              '${value.day}, ${value.year}';
-                                      formValues[3]['value'] =
-                                          value.toIso8601String();
-                                    });
-                                  },
-                                  decoration: InputDecoration(
-                                    suffixIcon: Icon(Icons.calendar_today),
-                                  ),
-                                  validator: (String value) {
-                                    if (value.isEmpty) {
-                                      return '${formValues[index]['label']} ' +
-                                          'is required';
-                                    }
-                                    return null;
-                                  },
-                                )
-                              : TextFormField(
-                                  initialValue: widget.data != null
-                                      ? widget.data.toMap()[key]
-                                      : '',
-                                  onSaved: (String value) {
-                                    formValues[index]['value'] = value;
-                                  },
-                                  validator: (String value) {
-                                    if (value.isEmpty) {
-                                      return '${formValues[index]['label']} ' +
-                                          'is required';
-                                    }
-                                    return null;
-                                  },
-                                )
-                      : null,
-                ),
-              );
-            },
-            itemCount: formValues.length + 1,
+                                validator: (String value) {
+                                  if (value == null || value.isEmpty) {
+                                    return '${formValues[index]['label']} is ' +
+                                        'required';
+                                  }
+                                  return null;
+                                },
+                              )
+                            : formValues[index]['inputType'] == 'date'
+                                ? TextFormField(
+                                    controller: _dobController,
+                                    readOnly: true,
+                                    onTap: () {
+                                      // Displays Date Picker
+                                      showDatePicker(
+                                        context: context,
+                                        initialDate: widget.data != null
+                                            ? DateTime.parse(
+                                                formValues[index]['value'])
+                                            : new DateTime.now(),
+                                        firstDate: DateTime(1900),
+                                        lastDate: DateTime.now(),
+                                      ).then((value) {
+                                        _dobController.text =
+                                            '${toMonthName(value.month)} ' +
+                                                '${value.day}, ${value.year}';
+                                        formValues[3]['value'] =
+                                            value.toIso8601String();
+                                      });
+                                    },
+                                    decoration: InputDecoration(
+                                      suffixIcon: Icon(Icons.calendar_today),
+                                    ),
+                                    validator: (String value) {
+                                      if (value.isEmpty) {
+                                        return '${formValues[index]['label']} ' +
+                                            'is required';
+                                      }
+                                      return null;
+                                    },
+                                  )
+                                : TextFormField(
+                                    initialValue: widget.data != null
+                                        ? widget.data.toMap()[key]
+                                        : '',
+                                    onSaved: (String value) {
+                                      formValues[index]['value'] = value;
+                                    },
+                                    validator: (String value) {
+                                      if (value.isEmpty) {
+                                        return '${formValues[index]['label']} ' +
+                                            'is required';
+                                      }
+                                      return null;
+                                    },
+                                  )
+                        : null,
+                  ),
+                );
+              },
+              itemCount: formValues.length + 1,
+            ),
           ),
         ),
       ),

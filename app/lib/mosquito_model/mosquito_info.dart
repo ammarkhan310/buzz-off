@@ -19,4 +19,8 @@ class MosquitoInfo {
       'rating': info.rating,
     };
   }
+
+  String toString() {
+    return ("City: $location. Weather conditions: $weather. Rating: $rating");
+  }
 }
