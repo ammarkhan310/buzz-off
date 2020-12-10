@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    //_updateLocationOneTime();
+    _updateLocationOneTime();
     init();
   }
 
