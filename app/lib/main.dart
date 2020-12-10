@@ -206,54 +206,46 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           FutureBuilder(
-            future: activeUserModel.getActiveUserId(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                // Fetches profile data for the current active user
-                var activeUserId = snapshot.data.profileId;
-                var activeUserData;
+              future: activeUserModel.getActiveUserId(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  // Fetches profile data for the current active user
+                  var activeUserId = snapshot.data.profileId;
+                  var activeUserData;
 
-                if (activeUserId != null) {
+                  if (activeUserId != null) {
+                    profileList.getProfileById(activeUserId).then(
+                      (profileData) {
+                        activeUserData = profileData;
+                        print('profile: $activeUserData');
+                      },
+                    );
 
-                  profileList.getProfileById(activeUserId).then(
-                    (profileData) {
-
-                      activeUserData = profileData;
-                      print('profile: $activeUserData');
-                    },
-                  );
-
-
-                  return UserAccountsDrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    accountEmail: Text('place_holder@buzzOff.ca'),
-                    accountName:  Text('${activeUserData}'),
-
-                    currentAccountPicture: CircleAvatar(
-                      child: Text('PH'),
-                    ),
-
-                    otherAccountsPictures: [
-                      CircleAvatar(
-                        child: Text('A2'),
+                    return UserAccountsDrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
                       ),
-                      CircleAvatar(
-                        child: Text('A3'),
+                      accountEmail: Text('place_holder@buzzOff.ca'),
+                      accountName: Text('${activeUserData}'),
+                      currentAccountPicture: CircleAvatar(
+                        child: Text('PH'),
                       ),
-                    ],
-                  );
+                      otherAccountsPictures: [
+                        CircleAvatar(
+                          child: Text('A2'),
+                        ),
+                        CircleAvatar(
+                          child: Text('A3'),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                } else {
+                  return LinearProgressIndicator();
                 }
-                
-              }
-              else{
-                return Container(child: Text('loading...'));
-              }
-            }
-          ),
-                    
-            
+              }),
           ListTile(
             leading: Icon(Icons.account_box),
             title: Text(FlutterI18n.translate(context, "drawer.profile")),
@@ -323,5 +315,3 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 }
-
-
