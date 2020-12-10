@@ -123,157 +123,221 @@ class _ProfilePageState extends State<ProfilePage> {
                   return ListView.builder(
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: EdgeInsets.only(
+                            left: 16.0, right: 16.0, bottom: 12.0),
                         color: Color.fromRGBO(245, 245, 245, 100),
                         child: Container(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              index == 0
-                                  // Renders profile information header
-                                  ? Container(
-                                      padding: EdgeInsets.only(top: 12.0),
-                                      child: Column(
-                                        children: <Widget>[
-                                          Container(
-                                            color: Color.fromRGBO(
-                                                220, 220, 220, 100),
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 16.0,
+                              Container(
+                                padding: EdgeInsets.only(top: 12.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    DataTable(
+                                      headingRowHeight: 36.0,
+                                      headingRowColor:
+                                          MaterialStateColor.resolveWith(
+                                        (states) =>
+                                            Color.fromRGBO(220, 220, 220, 100),
+                                      ),
+                                      dataRowColor:
+                                          MaterialStateColor.resolveWith(
+                                        (states) => Colors.white,
+                                      ),
+                                      columns: [
+                                        DataColumn(
+                                          label: Container(
+                                            width: 75,
+                                            child: Text(
+                                              'Details',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.blueGrey),
                                             ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  'Details',
+                                          ),
+                                        ),
+                                        // Allows user to quickly edit
+                                        // current active user's profile
+                                        // data
+                                        DataColumn(
+                                          label: Container(
+                                            child: Expanded(
+                                              child: FlatButton(
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                padding:
+                                                    EdgeInsets.only(left: 90.0),
+                                                child: Text(
+                                                  activeUserData != null
+                                                      ? 'Edit'
+                                                      : 'Create Profile',
                                                   style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.blueGrey),
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Theme.of(context)
+                                                        .primaryColor,
+                                                  ),
                                                 ),
-                                                // Allows user to quickly edit
-                                                // current active user's profile
-                                                // data
-                                                FlatButton(
-                                                  highlightColor:
-                                                      Colors.transparent,
-                                                  padding: EdgeInsets.only(
-                                                      left: 90.0),
-                                                  child: Text(
-                                                    activeUserData != null
-                                                        ? 'Edit'
-                                                        : 'Create Profile',
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
+                                                onPressed: () async {
+                                                  final SnackBar snackbar =
+                                                      await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          CreateEditProfile(
+                                                        title: 'Create Profile',
+                                                        data: activeUserData,
+                                                      ),
+                                                    ),
+                                                  );
+
+                                                  // Renders a snackbar
+                                                  // indicating the active
+                                                  // profile was edited
+                                                  if (snackbar != null) {
+                                                    Scaffold.of(context)
+                                                        .hideCurrentSnackBar();
+                                                    Scaffold.of(context)
+                                                        .showSnackBar(snackbar);
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                      // Renders profile information of the
+                                      // current active user to the screen
+                                      rows: <DataRow>[
+                                        DataRowComponent('Name',
+                                            '${activeUserData != null ? activeUserData.name : '-'}'),
+                                        DataRowComponent('Gender',
+                                            '${activeUserData != null ? activeUserData.gender : '-'}'),
+                                        DataRowComponent('Blood Type',
+                                            '${activeUserData != null ? activeUserData.bloodType : '-'}'),
+                                        DataRowComponent('Age',
+                                            '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
+                                        DataRowComponent('Country',
+                                            '${activeUserData != null ? activeUserData.country : '-'}'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 8.0),
+                              ),
+                              // Renders all addresses on local database
+                              DataTable(
+                                headingRowHeight: 36.0,
+                                headingRowColor: MaterialStateColor.resolveWith(
+                                  (states) =>
+                                      Color.fromRGBO(220, 220, 220, 100),
+                                ),
+                                dataRowColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.white,
+                                ),
+                                columns: [
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Container(
+                                        width: 220,
+                                        child: Text(
+                                          'Saved Addresses',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blueGrey,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Allows user to quickly edit
+                                  // current active user's profile
+                                  // data
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Container(
+                                        child: Text(
+                                          'Level',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blueGrey,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                                // Renders profile information of the
+                                // current active user to the screen
+                                rows: addresses
+                                    .map(
+                                      (data) => DataRow(
+                                        cells: [
+                                          DataCell(
+                                            Row(
+                                              children: <Widget>[
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    _editAddress(
+                                                        context, data.id);
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.only(
+                                                      right: 12.0,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.blueGrey,
                                                     ),
                                                   ),
-                                                  onPressed: () async {
-                                                    final SnackBar snackbar =
-                                                        await Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            CreateEditProfile(
-                                                          title:
-                                                              'Create Profile',
-                                                          data: activeUserData,
-                                                        ),
-                                                      ),
-                                                    );
-
-                                                    // Renders a snackbar
-                                                    // indicating the active
-                                                    // profile was edited
-                                                    if (snackbar != null) {
-                                                      Scaffold.of(context)
-                                                          .hideCurrentSnackBar();
-                                                      Scaffold.of(context)
-                                                          .showSnackBar(
-                                                              snackbar);
-                                                    }
-                                                  },
-                                                )
+                                                ),
+                                                Container(
+                                                  width: 150,
+                                                  child: Text(
+                                                    '${data.address}',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.blueGrey,
+                                                    ),
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
-                                          // Renders profile information of the
-                                          // current active user to the screen
-                                          Container(
-                                            color: Colors.white,
-                                            child: Column(
-                                              children: <Widget>[
-                                                DataRow('Name',
-                                                    '${activeUserData != null ? activeUserData.name : '-'}'),
-                                                DataRow('Gender',
-                                                    '${activeUserData != null ? activeUserData.gender : '-'}'),
-                                                DataRow('Blood Type',
-                                                    '${activeUserData != null ? activeUserData.bloodType : '-'}'),
-                                                DataRow('Age',
-                                                    '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
-                                                DataRow('Country',
-                                                    '${activeUserData != null ? activeUserData.country : '-'}'),
-                                              ],
-                                            ),
-                                          ),
-                                          // Renders Address information header
-                                          Container(
-                                            color: Color.fromRGBO(
-                                                220, 220, 220, 100),
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 8.0,
-                                              horizontal: 16.0,
-                                            ),
-                                            margin: EdgeInsets.only(top: 12),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Text(
-                                                  'Saved Addresses',
+                                          DataCell(
+                                            Expanded(
+                                              child: Container(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: Text(
+                                                  '5',
                                                   style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.blueGrey),
+                                                    fontSize: 20,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textAlign: TextAlign.right,
                                                 ),
-                                                Text(
-                                                  'Mosquito Level',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.blueGrey),
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
                                     )
-                                  // Renders all addresses on local database
-                                  : DataRowWithIconPrefix(
-                                      '${addresses[index - 1].address}',
-                                      '5',
-                                      Icons.edit,
-                                      () {
-                                        _editAddress(
-                                            context, addresses[index - 1].id);
-                                      },
-                                    )
+                                    .toList(),
+                              )
                             ],
                           ),
                         ),
                       );
                     },
-                    itemCount: addresses.length + 1,
+                    itemCount: 1,
                   );
                 } else {
                   return Text('Fetching Data...');
@@ -289,16 +353,13 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // Data row widget used in profile information
-  Widget DataRow(header, value) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 16.0,
-        horizontal: 16.0,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
+
+  DataRow DataRowComponent(header, value) {
+    return DataRow(
+      cells: [
+        DataCell(
           Container(
+            width: 130,
             padding: EdgeInsets.only(right: 8),
             child: Text(
               header,
@@ -308,8 +369,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
+        ),
+        DataCell(
           Expanded(
             child: Container(
+              padding: EdgeInsets.only(right: 16.0),
+              width: 150,
               alignment: Alignment.centerRight,
               child: Text(
                 value,
@@ -317,57 +382,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontSize: 20,
                   color: Colors.grey,
                 ),
+                textAlign: TextAlign.right,
               ),
             ),
-          )
-        ],
-      ),
-    );
-  }
-
-  // Renders a Data Row Widget used in list of addresses which includes an icon
-  Widget DataRowWithIconPrefix(header, value, icon, onTap) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 16.0,
-        horizontal: 16.0,
-      ),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              GestureDetector(
-                onTap: onTap,
-                child: Container(
-                  padding: EdgeInsets.only(
-                    right: 12.0,
-                  ),
-                  child: Icon(
-                    icon,
-                    color: Colors.blueGrey,
-                  ),
-                ),
-              ),
-              Text(
-                header,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blueGrey,
-                ),
-              ),
-            ],
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
