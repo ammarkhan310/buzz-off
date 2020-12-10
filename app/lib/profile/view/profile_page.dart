@@ -133,37 +133,33 @@ class _ProfilePageState extends State<ProfilePage> {
                                     children: <Widget>[
                                       Card(
                                         child: Container(
-                                        
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 16.0,
                                           ),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
                                                 'Details',
                                                 style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold,),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                               // Allows user to quickly edit
                                               // current active user's profile
                                               // data
                                               FlatButton(
-
-                                                padding: EdgeInsets.only(
-                                                    left: 90.0),
+                                                padding:
+                                                    EdgeInsets.only(left: 90.0),
                                                 child: Text(
                                                   activeUserData != null
                                                       ? 'Edit'
                                                       : 'Create Profile',
                                                   style: TextStyle(
                                                     fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold,
+                                                    fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
                                                 onPressed: () async {
@@ -173,8 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           CreateEditProfile(
-                                                        title:
-                                                            'Create Profile',
+                                                        title: 'Create Profile',
                                                         data: activeUserData,
                                                       ),
                                                     ),
@@ -187,8 +182,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     Scaffold.of(context)
                                                         .hideCurrentSnackBar();
                                                     Scaffold.of(context)
-                                                        .showSnackBar(
-                                                            snackbar);
+                                                        .showSnackBar(snackbar);
                                                   }
                                                 },
                                               )
@@ -226,22 +220,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                           margin: EdgeInsets.only(top: 12),
                                           child: Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Text(
                                                 'Saved Addresses',
                                                 style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold,),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                               Text(
                                                 'Mosquito Level',
                                                 style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold,),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -263,7 +256,6 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                     );
-                
                   },
                   itemCount: addresses.length + 1,
                 );
@@ -272,7 +264,6 @@ class _ProfilePageState extends State<ProfilePage> {
               }
             },
           );
-           
         } else {
           return Text('Fetching Data...');
         }

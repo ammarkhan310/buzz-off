@@ -210,24 +210,11 @@ Widget locationDialog(BuildContext context) {
                   children: [
                     ListTile(
                       title: Text('Australia'),
-                      onTap: () async {
-                        print('Switching to french');
-                        Locale newLocale = Locale('fr');
-                        await FlutterI18n.refresh(context, newLocale);
-                        setState(() {
-                          newLocale = Locale('fr');
-                          FlutterI18n.refresh(context, newLocale);
-                        });
-                      },
+                      onTap: () {},
                     ),
                     ListTile(
                       title: Text('Default (Canada)'),
-                      onTap: () async {
-                        print('Switching to english');
-                        Locale newLocale = Locale('en');
-                        await FlutterI18n.refresh(context, newLocale);
-                        setState(() {});
-                      },
+                      onTap: () {},
                     ),
                     ListTile(
                       title: Text('Germany'),
