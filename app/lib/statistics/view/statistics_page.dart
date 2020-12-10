@@ -58,6 +58,10 @@ class _StatisticsPageState extends State<StatisticsPage> {
             ),
             // Renders a bar chart to show the total number of bites which were
             // logged over the course of a week
+            Container(
+              padding: EdgeInsets.only(top: 16.0),
+              child: Text('Weekly Bites Report'),
+            ),
             Expanded(
               child: charts.BarChart(
                 [

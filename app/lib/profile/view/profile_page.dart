@@ -148,7 +148,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                       columns: [
                                         DataColumn(
                                           label: Container(
-                                            width: 75,
                                             child: Text(
                                               'Details',
                                               style: TextStyle(
@@ -167,17 +166,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                               child: FlatButton(
                                                 highlightColor:
                                                     Colors.transparent,
-                                                padding:
-                                                    EdgeInsets.only(left: 90.0),
-                                                child: Text(
-                                                  activeUserData != null
-                                                      ? 'Edit'
-                                                      : 'Create Profile',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Theme.of(context)
-                                                        .primaryColor,
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Text(
+                                                    activeUserData != null
+                                                        ? 'Edit'
+                                                        : 'Create Profile',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Theme.of(context)
+                                                          .primaryColor,
+                                                    ),
+                                                    textAlign: TextAlign.right,
                                                   ),
                                                 ),
                                                 onPressed: () async {
@@ -316,6 +319,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                           DataCell(
                                             Expanded(
                                               child: Container(
+                                                padding:
+                                                    EdgeInsets.only(right: 8),
                                                 alignment:
                                                     Alignment.centerRight,
                                                 child: Text(
@@ -362,7 +367,7 @@ class _ProfilePageState extends State<ProfilePage> {
         DataCell(
           Container(
             width: 130,
-            padding: EdgeInsets.only(right: 8),
+            padding: EdgeInsets.only(right: 16),
             child: Text(
               header,
               style: TextStyle(
@@ -375,7 +380,7 @@ class _ProfilePageState extends State<ProfilePage> {
         DataCell(
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(right: 16.0),
+              padding: EdgeInsets.only(right: 24.0),
               width: 150,
               alignment: Alignment.centerRight,
               child: Text(
