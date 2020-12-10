@@ -231,9 +231,11 @@ class _MyHomePageState extends State<MyHomePage> {
               _goToSettings();
             },
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 350.0, left: 120.0),
+          Container(
+            margin: const EdgeInsets.only(top: 350),
             child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 FlatButton(
                   child: Text('EN'),

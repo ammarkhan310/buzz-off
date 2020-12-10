@@ -5,8 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:android_intent/android_intent.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:app/settings/model/themeModel.dart';
+import 'package:app/settings/themeModel.dart';
 
 class SettingsPage extends StatefulWidget {
   final String title;
