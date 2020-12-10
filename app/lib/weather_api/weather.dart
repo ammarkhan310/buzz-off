@@ -9,7 +9,7 @@ class Weather {
     List<WeatherInfo> weatherInfo;
 
     var response = await http.get(
-        'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey');
+        'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey&units=metric');
 
     if (response.statusCode == 200) {
       weatherInfo = [];

@@ -4,6 +4,7 @@ class WeatherInfo {
   int temp;
   int humidity;
   String weather;
+  String feelsLike = ', feels like ';
 
   WeatherInfo(
       {this.temp,
@@ -14,12 +15,21 @@ class WeatherInfo {
 
   factory WeatherInfo.fromMap(Map map) {
     return WeatherInfo(
-      city: map['name'],
-      country: map['sys']['country'],
-      temp: map['main']['temp'].toInt(),
-      humidity: map['main']['humidity'],
-      weather: map['weather'][0]['main'],
-    );
+        city: map['name'],
+        country: map['sys']['country'],
+        temp: map['main']['temp'].toInt(),
+        humidity: map['main']['humidity'],
+        weather: map['weather'][0]['main'] +
+            ', ' +
+            map['weather'][0]['description'] +
+            ', feels like ' +
+            map['main']['feels_like'].round().toInt().toString() +
+            '\n' +
+            'Max temp: ' +
+            map['main']['temp_max'].round().toInt().toString() +
+            '\t    ' +
+            'Min temp: ' +
+            map['main']['temp_min'].round().toInt().toString());
   }
 
   String toString() {

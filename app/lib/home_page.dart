@@ -12,6 +12,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/weather_api/weather.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:latlong/latlong.dart';
+import 'package:app/mapPage.dart';
 
 class ExampleViewModel {
   final CustomSliderColors sliderColors;
@@ -54,10 +56,11 @@ class _HomePageState extends State<HomePage> {
   List<WeatherInfo> weatherInfo;
   String city = 'Oshawa';
   String prov = 'ON';
+  LatLng latLng;
 
   @override
-  void initState(){
-    _updateLocationOneTime();
+  void initState() {
+    //_updateLocationOneTime();
     init();
   }
 
@@ -81,9 +84,7 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.topRight,
             child: FlatButton(
               onPressed: () {
-                setState(() {
-                  
-                });
+                setState(() {});
               },
               child: Text('Refresh page'),
             ),
@@ -112,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                   'Weather Conditions:',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
-                      fontSize: 10,
+                      fontSize: 15,
                       color: Colors.grey),
                 ),
               ),
@@ -155,7 +156,22 @@ class _HomePageState extends State<HomePage> {
               width: 300,
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: getRatingLocation(),
+                child: GestureDetector(
+                  onTap: () async {
+                    final String newLoc = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MapPage(
+                          title: 'Find Location',
+                          latLng: latLng,
+                        ),
+                      ),
+                    );
+                    city = newLoc;
+                    setState(() {});
+                  },
+                  child: getRatingLocation(),
+                ),
               ),
             ),
           ),
@@ -164,42 +180,36 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void init() async{
+  void init() async {
     print("initializing");
     weatherInfo = await loadApiInfo();
 
-    _insertMosquitoData(MosquitoInfo( 
-      location: weatherInfo[0].city,
-      weather: weatherInfo[0].weather,
-      rating: 0
-    ));
+    _insertMosquitoData(MosquitoInfo(
+        location: weatherInfo[0].city,
+        weather: weatherInfo[0].weather,
+        rating: 0));
 
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
-  void _updateLocationOneTime(){
+  void _updateLocationOneTime() {
     print('update location');
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
-        .then((Position userLocation) async{
-          List<Placemark> placemarks = await placemarkFromCoordinates(
+        .then((Position userLocation) async {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
           userLocation.latitude, userLocation.longitude);
 
-        setState(() {
-          city = placemarks[0].locality;
-          init();
-          print('City: ' + city);
-        });
-        
+      setState(() {
+        city = placemarks[0].locality;
+        latLng = LatLng(userLocation.latitude, userLocation.longitude);
+        init();
+        print('City: ' + city);
+      });
     });
-
-  
   }
 
   Future<List<WeatherInfo>> loadApiInfo() async {
-    List<WeatherInfo> info =
-        await Weather().loadWeather(city, widget.apiKey);
+    List<WeatherInfo> info = await Weather().loadWeather(city, widget.apiKey);
 
     return info;
   }
@@ -236,7 +246,7 @@ class _HomePageState extends State<HomePage> {
     return Text(
       '\n ${mosquitoInfo.weather}',
       style: TextStyle(
-          fontStyle: FontStyle.italic, fontSize: 10, color: Colors.grey),
+          fontStyle: FontStyle.italic, fontSize: 13, color: Colors.grey),
     );
   }
 
@@ -265,7 +275,7 @@ class _HomePageState extends State<HomePage> {
     return Text(
       'Location: ${mosquitoInfo.location}',
       style: TextStyle(
-          fontStyle: FontStyle.italic, fontSize: 10, color: Colors.grey),
+          fontStyle: FontStyle.italic, fontSize: 18, color: Colors.grey),
     );
   }
 
