@@ -169,8 +169,32 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  ActiveUserModel _activeUserModel = ActiveUserModel();
+
+  Future<ActiveUser> getUser() async {
+    return await _activeUserModel.getActiveUserId();
+  }
+
+  ProfileModel _profileModel = ProfileModel();
+
+  Future<Profile> getProfile(int id) async {
+    return await _profileModel.getProfileById(id);
+  }
+
   @override
   Widget build(BuildContext context) {
+    ActiveUser user;
+    Profile currentProfile =
+        Profile(id: 0, name: '', gender: '', bloodType: '', dob: '');
+    getUser().then((currentUser) {
+      user = currentUser;
+
+      getProfile(user.id).then((userID) {
+        currentProfile = userID;
+      });
+
+      setState(() {});
+    });
     return Scaffold(
       appBar: _titles[_currentIndex]['showHeader']
           ? AppBar(
@@ -193,8 +217,9 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
-            accountEmail: Text('place_holder@buzzOff.ca'),
-            accountName: Text('Place Holder'),
+            accountEmail:
+                Text('${currentProfile.name}${currentProfile.dob}@gmail.com'),
+            accountName: Text('${currentProfile.name}'),
             currentAccountPicture: CircleAvatar(
               child: Text('PH'),
             ),
