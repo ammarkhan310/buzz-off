@@ -3,12 +3,14 @@ class WeatherInfo {
   String country;
   int temp;
   int humidity;
+  int rain;
   String weather;
   String feelsLike = ', feels like ';
 
   WeatherInfo(
       {this.temp,
       this.humidity,
+      this.rain,
       this.weather,
       this.city = 'NULL',
       this.country = 'NULL'});
@@ -19,16 +21,17 @@ class WeatherInfo {
         country: map['sys']['country'],
         temp: map['main']['temp'].toInt(),
         humidity: map['main']['humidity'],
+        rain: map['rain'],
         weather: map['weather'][0]['main'] +
             ', ' +
             map['weather'][0]['description'] +
-            ', feels like ' +
+            '. Feels like ' +
             map['main']['feels_like'].round().toInt().toString() +
             '\n' +
-            'Max temp: ' +
+            'Today\'s high: ' +
             map['main']['temp_max'].round().toInt().toString() +
-            '\t    ' +
-            'Min temp: ' +
+            '            ' +
+            'Today\'s low: ' +
             map['main']['temp_min'].round().toInt().toString());
   }
 

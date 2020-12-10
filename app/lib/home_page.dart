@@ -14,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:latlong/latlong.dart';
 import 'package:app/mapPage.dart';
+import 'package:app/rating.dart';
 
 class ExampleViewModel {
   final CustomSliderColors sliderColors;
@@ -153,28 +154,7 @@ class _HomePageState extends State<HomePage> {
               width: 300,
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: GestureDetector(
-                  onTap: () async {
-                    final String newLoc = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MapPage(
-                          title: 'Find Location',
-                          latLng: latLng,
-                        ),
-                      ),
-                    );
-
-                    var info = MosquitoInfo(
-                        weather: weatherInfo[0].weather,
-                        location: newLoc,
-                        rating: 6);
-                    _insertMosquitoData(info);
-                    getRatingLocation();
-                    setState(() {});
-                  },
-                  child: getRatingLocation(),
-                ),
+                child: getRatingLocation(),
               ),
             ),
           ),
@@ -187,10 +167,14 @@ class _HomePageState extends State<HomePage> {
     print("initializing");
     weatherInfo = await loadApiInfo();
 
+    Rating rating = Rating();
+
     _insertMosquitoData(MosquitoInfo(
         location: weatherInfo[0].city,
         weather: weatherInfo[0].weather,
-        rating: 0));
+        rating: rating.calculateRating(weatherInfo[0])));
+
+    rating.toString();
 
     setState(() {});
   }
@@ -246,11 +230,12 @@ class _HomePageState extends State<HomePage> {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
 
-    return Text(
+    return Expanded(
+        child: Text(
       '\n ${mosquitoInfo.weather}',
       style: TextStyle(
-          fontStyle: FontStyle.italic, fontSize: 13, color: Colors.grey),
-    );
+          fontStyle: FontStyle.italic, fontSize: 14, color: Colors.grey),
+    ));
   }
 
   //Retrieve the built location text for the home page with recent db values
@@ -275,11 +260,33 @@ class _HomePageState extends State<HomePage> {
         docReference: mosquitoInfoData.reference.toString());
 
     print('Location: ${mosquitoInfo.location}');
-    return Text(
-      'Location: ${mosquitoInfo.location}',
-      style: TextStyle(
-          fontStyle: FontStyle.italic, fontSize: 18, color: Colors.grey),
-    );
+    return FlatButton(
+        onPressed: () async {
+          final String newLoc = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MapPage(
+                title: 'Find Location',
+                latLng: latLng,
+              ),
+            ),
+          );
+
+          var info = MosquitoInfo(
+              weather: weatherInfo[0].weather, location: newLoc, rating: 6);
+          _insertMosquitoData(info);
+          getRatingLocation();
+          setState(() {});
+        },
+        color: Colors.black.withOpacity(0.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+            side: BorderSide(color: Colors.green)),
+        child: Text(
+          'Location: ${mosquitoInfo.location}',
+          style: TextStyle(
+              fontStyle: FontStyle.italic, fontSize: 18, color: Colors.grey),
+        ));
   }
 
   //Retrieve the built mosquito slider for the home page with recent db values
@@ -298,7 +305,7 @@ class _HomePageState extends State<HomePage> {
                 widget.viewModel.appearance,
                 widget.viewModel.min,
                 widget.viewModel.max,
-                snapshot.data.docs.first),
+                snapshot.data.docs.last),
           );
         }
       },
