@@ -124,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     return Container(
                       padding: EdgeInsets.only(
                           left: 16.0, right: 16.0, bottom: 12.0),
-                      color: Color.fromRGBO(245, 245, 245, 100),
+
                       child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,10 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         (states) =>
                                             Color.fromRGBO(220, 220, 220, 100),
                                       ),
-                                      dataRowColor:
-                                          MaterialStateColor.resolveWith(
-                                        (states) => Colors.white,
-                                      ),
+
                                       columns: [
                                         DataColumn(
                                           label: Container(
@@ -152,8 +149,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                               'Details',
                                               style: TextStyle(
                                                   fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.blueGrey),
+                                                  fontWeight: FontWeight.bold, 
+                                                  color: Colors.blueGrey,),
                                             ),
                                           ),
                                         ),
@@ -177,8 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       fontSize: 18,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Theme.of(context)
-                                                          .primaryColor,
+                                                      color: Colors.blueGrey,
                                                     ),
                                                     textAlign: TextAlign.right,
                                                   ),
@@ -241,9 +237,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                   (states) =>
                                       Color.fromRGBO(220, 220, 220, 100),
                                 ),
-                                dataRowColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.white,
-                                ),
                                 columns: [
                                   DataColumn(
                                     label: Expanded(
@@ -299,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     ),
                                                     child: Icon(
                                                       Icons.edit,
-                                                      color: Colors.blueGrey,
+                                                      color: Colors.grey,
                                                     ),
                                                   ),
                                                 ),
@@ -309,7 +302,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     '${data.address}',
                                                     style: TextStyle(
                                                       fontSize: 20,
-                                                      color: Colors.blueGrey,
+                                                      color: Colors.grey,
                                                     ),
                                                   ),
                                                 ),
@@ -372,7 +365,7 @@ class _ProfilePageState extends State<ProfilePage> {
               header,
               style: TextStyle(
                 fontSize: 20,
-                color: Colors.blueGrey,
+                color: Colors.grey,
               ),
             ),
           ),
@@ -387,7 +380,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 value,
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.grey,
                 ),
                 textAlign: TextAlign.right,
               ),
