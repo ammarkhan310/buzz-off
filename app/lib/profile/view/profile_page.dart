@@ -88,7 +88,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     return Container(
                       padding: EdgeInsets.only(
                           left: 16.0, right: 16.0, bottom: 12.0),
-
                       child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -112,9 +111,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                             child: Text(
                                               'Details',
                                               style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold, 
-                                                  color: Colors.blueGrey,),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blueGrey,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -138,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       fontSize: 18,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.blueGrey,
+                                                      color: Colors.lightGreen,
                                                     ),
                                                     textAlign: TextAlign.right,
                                                   ),
