@@ -54,11 +54,15 @@ class MyApp extends StatelessWidget {
 
   MyApp(this.flutterI18nDelegate);
 
+  // Variable Declaration
   String _title = '';
   String _body = '';
   String _payload = '';
 
   Future<void> _displayNotification() async {
+    // Displays a push notification to the user's device 10 seconds after they
+    // open the application, stating what the location rating and weather
+    // conditions are in their current location
     tz.initializeTimeZones();
     _notifications.init();
 
@@ -93,6 +97,8 @@ class MyApp extends StatelessWidget {
             _displayNotification();
             return MaterialApp(
               title: 'Mobile Development Group Project',
+              // Adjusts application colours to dark mode when the dark mode
+              // option is toggled on
               theme: themeProvider.getDarkMode()
                   ? ThemeData.dark()
                   : ThemeData(
@@ -106,6 +112,7 @@ class MyApp extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
               ],
               debugShowCheckedModeBanner: false,
+              // Route declaration to navigate to different screens
               routes: <String, WidgetBuilder>{
                 '/createEditProfile': (BuildContext context) {
                   return CreateEditProfile(title: 'Create/Edit Profile');
@@ -129,7 +136,7 @@ class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
-  //Array of dummy values for navigation destions
+  // Array of navigation bar values for navigation destinations
   List<NavPage> _navBarItems = [
     NavPage(title: 'Home', icon: Icons.home),
     NavPage(title: 'Statistics', icon: Icons.trending_up),
@@ -141,11 +148,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // Variable Declaration
   bool first = true;
 
   //Index for current page showing
   int _currentIndex = 0;
   Profile activeUserData;
+
+  // Profile Header object displayed in the drawer of the app
   UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
     decoration: BoxDecoration(
       color: Colors.transparent,
@@ -184,6 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  // Navigates the user to the settings page
   void _goToSettings() async {
     Navigator.push(
       context,
@@ -191,6 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Obtains the current active user profile
   ActiveUserModel _activeUserModel = ActiveUserModel();
 
   Future<ActiveUser> getUser() async {
@@ -203,6 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return await _profileModel.getProfileById(id);
   }
 
+  // Toggles the Drawer
   void setDrawerState(UserAccountsDrawerHeader newDrawerHeader) {
     if (first) {
       setState(() {
@@ -214,12 +227,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // Provider Declaration
     final ProfileModel profileList = context.watch<ProfileModel>();
     final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     return Scaffold(
       appBar: AppBar(
           title: Text(_titles[_currentIndex]['header']),
+          // Dynamically renders the app bar icons designated for each screen
+          // in the navigation bar
           actions: appBarIcons(_titles[_currentIndex]['header'], context)),
       //Hamburger menu below
       drawer: Drawer(
@@ -237,6 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
               return drawerHeader;
             },
           ),
+          // Renders each list element in the drawer
           ListTile(
             leading: Icon(Icons.account_box),
             title: Text(FlutterI18n.translate(context, "drawer.profile")),
@@ -261,6 +278,8 @@ class _MyHomePageState extends State<MyHomePage> {
               _goToSettings();
             },
           ),
+          // Localization, which allows the user to switch between english
+          // and french as the default language of the app
           Container(
             margin: const EdgeInsets.only(top: 350),
             child: Row(
@@ -290,6 +309,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       )),
+      // Dynamically renders screen from current navigation bar selection
       body: _children[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
@@ -302,6 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // Obtains the user profile for the drawer profile headers
   Future<void> getDrawerProfile(
       BuildContext context, var userId, ProfileModel profileModel) async {
     ProfileModel profileList = profileModel;
@@ -316,8 +337,8 @@ class _MyHomePageState extends State<MyHomePage> {
     buildDrawerHeader(context);
   }
 
+  // Widget definitition for the Header object rendered in the drawer
   void buildDrawerHeader(BuildContext context) {
-    print('$activeUserData');
     UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
       decoration: BoxDecoration(
         color: Theme.of(context).primaryColor,
