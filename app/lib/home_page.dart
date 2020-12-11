@@ -71,37 +71,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Stack(
         children: [
-          /*
-          FlatButton(
-            onPressed: () async {
-              List<WeatherInfo> info = await loadApiInfo();
-              for (var item in info) {
-                print(item.toString());
-              }
-            },
-            child: Text('Load api info'),
-          ),
-
-          Align(
-            alignment: Alignment.topRight,
-            child: FlatButton(
-              onPressed: () {
-                setState(() {});
-              },
-              child: Text('Refresh page'),
-            ),
-          ),
-
-          Align(
-            alignment: Alignment.topCenter,
-            child: FlatButton(
-              onPressed: () {
-                _updateLocationOneTime();
-              },
-              child: Text('Check location'),
-            ),
-          ),
-          */
           /*Label for the text box containinig the weather conditions summary
           * of the current location
           */
@@ -164,6 +133,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Initializes the application by rendereing the current mosquito rating
+  // at the user's current location
   void init() async {
     print("initializing");
     weatherInfo = await loadApiInfo();
@@ -180,6 +151,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
+  // Updates the user's previous current location with their current location
   void _updateLocationOneTime() {
     print('update location');
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
@@ -191,18 +163,18 @@ class _HomePageState extends State<HomePage> {
         city = placemarks[0].locality;
         latLng = LatLng(userLocation.latitude, userLocation.longitude);
         init();
-        print('City: ' + city);
       });
     });
   }
 
+  // Loads API information for weather
   Future<List<WeatherInfo>> loadApiInfo() async {
     List<WeatherInfo> info = await Weather().loadWeather(city, widget.apiKey);
 
     return info;
   }
 
-  //TODO - Finish inserting data from weather api
+  // Inserts mosquito data into the database
   void _insertMosquitoData(MosquitoInfo info) {
     print("Inserting ${info.toString()} into mosquito-info collection");
     MosquitoDb().insertMosquitoData(info);
@@ -259,7 +231,6 @@ class _HomePageState extends State<HomePage> {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
 
-    print('Location: ${mosquitoInfo.location}');
     return FlatButton(
         onPressed: () async {
           final String newLoc = await Navigator.push(
