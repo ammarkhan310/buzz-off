@@ -203,16 +203,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 columns: [
                                   DataColumn(
-                                    label: Expanded(
-                                      child: Container(
-                                        width: 220,
-                                        child: Text(
-                                          'Saved Addresses',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueGrey,
-                                          ),
+                                    label: Container(
+                                      width: 220,
+                                      child: Text(
+                                        'Saved Addresses',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueGrey,
                                         ),
                                       ),
                                     ),
@@ -221,17 +219,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                   // current active user's profile
                                   // data
                                   DataColumn(
-                                    label: Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          'Level',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueGrey,
-                                          ),
-                                          textAlign: TextAlign.left,
+                                    label: Container(
+                                      child: Text(
+                                        'Level',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueGrey,
                                         ),
+                                        textAlign: TextAlign.left,
                                       ),
                                     ),
                                   )
@@ -274,20 +270,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                           ),
                                           DataCell(
-                                            Expanded(
-                                              child: Container(
-                                                padding:
-                                                    EdgeInsets.only(right: 8),
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: Text(
-                                                  '5',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  textAlign: TextAlign.right,
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(right: 8),
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                '5',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.grey,
                                                 ),
+                                                textAlign: TextAlign.right,
                                               ),
                                             ),
                                           ),
@@ -335,18 +328,16 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         DataCell(
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.only(right: 24.0),
-              width: 150,
-              alignment: Alignment.centerRight,
-              child: Text(
-                value,
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.right,
+          Container(
+            padding: EdgeInsets.only(right: 24.0),
+            width: 150,
+            alignment: Alignment.centerRight,
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
               ),
+              textAlign: TextAlign.right,
             ),
           ),
         ),
