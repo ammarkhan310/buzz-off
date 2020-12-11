@@ -27,42 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
     // Renders an App bar
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('User Profile'),
-        actions: [
-          Row(
-            children: <Widget>[
-              Builder(
-                builder: (BuildContext context) {
-                  // Renders an icon in the app bar to allow the user to
-                  // switch the current active user
-                  return IconButton(
-                    padding: const EdgeInsets.only(right: 12.0, top: 4.0),
-                    icon: Icon(Icons.swap_horiz_outlined),
-                    onPressed: () async {
-                      final SnackBar snackbar = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SelectProfile(
-                            title: 'Profile Selector',
-                          ),
-                        ),
-                      );
-
-                      // Displays a snackbar indicating that the current active
-                      // user has changed
-                      if (snackbar != null) {
-                        Scaffold.of(context).hideCurrentSnackBar();
-                        Scaffold.of(context).showSnackBar(snackbar);
-                      }
-                    },
-                  );
-                },
-              )
-            ],
-          )
-        ],
-      ),
       // Renders the profile data to the screen
       body: Builder(
         builder: _profileList,
@@ -124,7 +88,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     return Container(
                       padding: EdgeInsets.only(
                           left: 16.0, right: 16.0, bottom: 12.0),
-
                       child: Container(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,9 +111,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                             child: Text(
                                               'Details',
                                               style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold, 
-                                                  color: Colors.blueGrey,),
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blueGrey,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -174,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                                       fontSize: 18,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.blueGrey,
+                                                      color: Colors.lightGreen,
                                                     ),
                                                     textAlign: TextAlign.right,
                                                   ),
@@ -239,16 +203,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 columns: [
                                   DataColumn(
-                                    label: Expanded(
-                                      child: Container(
-                                        width: 220,
-                                        child: Text(
-                                          'Saved Addresses',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueGrey,
-                                          ),
+                                    label: Container(
+                                      width: 220,
+                                      child: Text(
+                                        'Saved Addresses',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueGrey,
                                         ),
                                       ),
                                     ),
@@ -257,17 +219,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                   // current active user's profile
                                   // data
                                   DataColumn(
-                                    label: Expanded(
-                                      child: Container(
-                                        child: Text(
-                                          'Level',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blueGrey,
-                                          ),
-                                          textAlign: TextAlign.left,
+                                    label: Container(
+                                      child: Text(
+                                        'Level',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blueGrey,
                                         ),
+                                        textAlign: TextAlign.left,
                                       ),
                                     ),
                                   )
@@ -310,20 +270,17 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                           ),
                                           DataCell(
-                                            Expanded(
-                                              child: Container(
-                                                padding:
-                                                    EdgeInsets.only(right: 8),
-                                                alignment:
-                                                    Alignment.centerRight,
-                                                child: Text(
-                                                  '5',
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.grey,
-                                                  ),
-                                                  textAlign: TextAlign.right,
+                                            Container(
+                                              padding:
+                                                  EdgeInsets.only(right: 8),
+                                              alignment: Alignment.centerRight,
+                                              child: Text(
+                                                '5',
+                                                style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.grey,
                                                 ),
+                                                textAlign: TextAlign.right,
                                               ),
                                             ),
                                           ),
@@ -371,18 +328,16 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
         DataCell(
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.only(right: 24.0),
-              width: 150,
-              alignment: Alignment.centerRight,
-              child: Text(
-                value,
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-                textAlign: TextAlign.right,
+          Container(
+            padding: EdgeInsets.only(right: 24.0),
+            width: 150,
+            alignment: Alignment.centerRight,
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
               ),
+              textAlign: TextAlign.right,
             ),
           ),
         ),
