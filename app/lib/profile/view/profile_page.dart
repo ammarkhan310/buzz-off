@@ -7,7 +7,7 @@ import 'package:app/utils.dart';
 import 'package:app/profile/view/create_edit_address.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app/settings/themeChanger.dart';
+import 'package:app/settings/model/themeChanger.dart';
 
 class ProfilePage extends StatefulWidget {
   // Constructor
