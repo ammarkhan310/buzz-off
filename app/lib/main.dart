@@ -23,7 +23,6 @@ import 'package:app/notifications.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:app/profile/model/active_profile.dart';
 
 Future main() async {
   final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
