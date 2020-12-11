@@ -59,6 +59,7 @@ class MyApp extends StatelessWidget {
   String _body = '';
   String _payload = '';
 
+  // notification to display location weather and rating
   Future<void> _displayNotification() async {
     tz.initializeTimeZones();
     _notifications.init();
@@ -147,6 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
   //Index for current page showing
   int _currentIndex = 0;
   Profile activeUserData;
+  // display active user data in sidebar
   UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
     decoration: BoxDecoration(
       color: Colors.transparent,
@@ -185,6 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  // navigate to settings
   void _goToSettings() async {
     Navigator.push(
       context,
@@ -193,6 +196,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   ActiveUserModel _activeUserModel = ActiveUserModel();
+
 
   Future<ActiveUser> getUser() async {
     return await _activeUserModel.getActiveUserId();
@@ -204,6 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return await _profileModel.getProfileById(id);
   }
 
+  //reloads the drawer with userinfo
   void setDrawerState(UserAccountsDrawerHeader newDrawerHeader) {
     if(first){
       setState(() {
@@ -238,6 +243,8 @@ class _MyHomePageState extends State<MyHomePage> {
               return drawerHeader;
             },
           ),
+
+          //displays profile option
           ListTile(
             leading: Icon(Icons.account_box),
             title: Text(FlutterI18n.translate(context, "drawer.profile")),
@@ -246,6 +253,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onItemTapped(2);
             },
           ),
+
+          //displays stats option
           ListTile(
             leading: Icon(Icons.trending_up),
             title: Text(FlutterI18n.translate(context, "drawer.statistics")),
@@ -254,6 +263,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onItemTapped(1);
             },
           ),
+
+          // displays settings option
           ListTile(
             leading: Icon(Icons.settings),
             title: Text(FlutterI18n.translate(context, "drawer.settings")),
@@ -264,9 +275,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 350.0, left: 120.0),
+
+            // row for button switching languages
             child: Row(
               children: [
-                FlatButton(
+                FlatButton( // english
                   child: Text('EN'),
                   onPressed: () async {
                     print('Switching to english');
@@ -275,7 +288,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     setState(() {});
                   },
                 ),
-                FlatButton(
+                FlatButton( // french
                   child: Text('FR'),
                   onPressed: () async {
                     print('Switching to french');
@@ -290,6 +303,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       )),
       body: _children[_currentIndex],
+
+      // navigation for home, stats and profile
       bottomNavigationBar: BottomNavigationBar(
         onTap: onItemTapped, // new
         currentIndex: _currentIndex, // new
@@ -301,6 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // gets the profile needed for drawer
   Future<void> getDrawerProfile(
     BuildContext context, var userId, ProfileModel profileModel) async {
     ProfileModel profileList = profileModel;
@@ -315,6 +331,7 @@ class _MyHomePageState extends State<MyHomePage> {
     buildDrawerHeader(context);
   }
 
+  // builds the drawer to display profile
   void buildDrawerHeader(BuildContext context) {
     print('$activeUserData');
     UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
