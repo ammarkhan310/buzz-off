@@ -5,7 +5,7 @@ class DocumentationPage extends StatefulWidget {
   _DocumentationPageState createState() => _DocumentationPageState();
 }
 
-//page to show the credits, FAQ and other information about the app
+//Page to show the credits, FAQ and other information about the app
 class _DocumentationPageState extends State<DocumentationPage> {
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,10 @@ class _DocumentationPageState extends State<DocumentationPage> {
             ),
             Text(
               '\nHow do I add a bite?'
-              '\nTo add a bite, go to the statistics page and...',
+              '\nTo add a bite, go to the statistics page and select the body part where you got bitten.'
+              '\n'
+              '\nWhat does the graph show?'
+              '\nThe graph shows the number of times you were bitten each day in the past week.',
               textAlign: TextAlign.center,
             ),
           ]),

@@ -7,11 +7,14 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:app/settings/themeModel.dart';
 
+//Settings Page with option to change Theme, Language, Temperature, and manage
+//notifcations straight from Android system settings
 class SettingsPage extends StatefulWidget {
   final String title;
   final FlutterI18nDelegate flutterI18nDelegate;
+  final Function metImp;
 
-  SettingsPage({Key key, this.title, this.flutterI18nDelegate})
+  SettingsPage({Key key, this.title, this.flutterI18nDelegate, this.metImp})
       : super(key: key);
 
   @override
@@ -31,6 +34,7 @@ class _SettingsPageState extends State<SettingsPage> {
   List<ThemeModel> _theme;
   int selectedRadio;
   String themeName;
+  bool mtrImp;
 
   @override
   void initState() {
@@ -43,8 +47,15 @@ class _SettingsPageState extends State<SettingsPage> {
     selectedRadio = 1;
     _theme = ThemeModel.getTheme();
     themeName = 'Light Mode';
+    mtrImp = true;
   }
 
+  //Return the value of mtrImp which gives true if celsius selected in settings
+  bool get metImp {
+    return mtrImp;
+  }
+
+  //Check if the current language is french or english and switch to the other one
   changeLanguage() async {
     currentLang =
         currentLang.languageCode == 'en' ? Locale('fr') : Locale('en');
@@ -58,6 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  //Set the theme by calling the makeDark method
   setSelectedTheme(ThemeModel theme, ThemeChanger themeProvider) {
     setState(() {
       selectedTheme = theme;
@@ -69,6 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  //Sets the theme name for the settings UI to show which theme is selected
   setThemeName(ThemeChanger themeProvider) {
     setState(() {
       if (themeProvider.whatTheme()) {
@@ -79,6 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  //Creates the radio buttons for selecting a theme
   List<Widget> createRadioListThemes(ThemeChanger themeChanger) {
     List<Widget> widgets = [];
     for (ThemeModel theme in _theme) {
@@ -98,6 +112,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return widgets;
   }
 
+  //uses AndroidIntent to link to Android Settings
   void _openNotificationSettings() {
     final AndroidIntent intent = AndroidIntent(
       action: 'action_application_details_settings',
@@ -115,6 +130,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text('Settings'),
       ),
       body: ListView(padding: const EdgeInsets.all(10), children: <Widget>[
+        //Theme Picker
         ListTile(
             title: Text(FlutterI18n.translate(context, "settings.theme")),
             subtitle: Text('$themeName'),
@@ -122,8 +138,9 @@ class _SettingsPageState extends State<SettingsPage> {
               themeAlert(context, selectedRadio, themeProvider);
               print('Radio: $themeName');
             }),
+        //Language Picker
         ListTile(
-            //currently the location picker is using placeholders
+            //switch between english and french
             title: Text(FlutterI18n.translate(context, "settings.language")),
             subtitle:
                 Text(FlutterI18n.translate(context, "settings.chosenLang")),
@@ -131,8 +148,57 @@ class _SettingsPageState extends State<SettingsPage> {
               await changeLanguage();
               setState(() {});
             }),
+        //Temperature Picker
         ListTile(
-            //planned to take the user to the Android System notification
+            title: Text("Temperature °C/°F"),
+            onTap: () {
+              showDialog<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Temperature °C/°F'),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    content: StatefulBuilder(
+                        builder: (BuildContext context, StateSetter setState) {
+                      return Container(
+                        width: 300,
+                        child: SingleChildScrollView(
+                          child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                ListTile(
+                                  title: Text('Default (Celsius °C)'),
+                                  onTap: () {
+                                    setState(() {
+                                      mtrImp = true;
+                                    });
+                                    print('Celsius: $mtrImp');
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                ListTile(
+                                  title: Text('Fahrenheit °F'),
+                                  onTap: () {
+                                    setState(() {
+                                      mtrImp = false;
+                                    });
+                                    print('Celsius: $mtrImp');
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ]),
+                        ),
+                      );
+                    }),
+                  );
+                },
+              );
+            }),
+        //Navigating to Android settings
+        ListTile(
+            //take the user to the Android System notification
             //settings where they can see all the nofication channels
             title:
                 Text(FlutterI18n.translate(context, "settings.notifications")),
@@ -140,6 +206,7 @@ class _SettingsPageState extends State<SettingsPage> {
             onTap: () {
               _openNotificationSettings();
             }),
+        //Navigating to documentation
         ListTile(
             title:
                 Text(FlutterI18n.translate(context, "settings.documentation")),
@@ -151,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  //pops up an alert dialog that gives the option between light and dark mode for
+  //Pops up an alert dialog that gives the option between light and dark mode for
   //the app theme
   Widget themeAlert(
       BuildContext context, int selectedRadio, ThemeChanger themeChanger) {
@@ -173,52 +240,4 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
   }
-}
-
-//currently using placeholders for locations
-Widget locationDialog(BuildContext context) {
-  showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Select Country'),
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        content: StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-          return Container(
-            height: 200,
-            width: 300,
-            child: SingleChildScrollView(
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ListTile(
-                      title: Text('Australia'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: Text('Default (Canada)'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: Text('Germany'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: Text('Japan'),
-                      onTap: () {},
-                    ),
-                    ListTile(
-                      title: Text('United States'),
-                      onTap: () {},
-                    ),
-                  ]),
-            ),
-          );
-        }),
-      );
-    },
-  );
 }
