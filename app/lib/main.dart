@@ -326,7 +326,7 @@ class _MyHomePageState extends State<MyHomePage> {
         color: Theme.of(context).primaryColor,
       ),
       accountEmail: Text(
-          '${activeUserData.toString().substring(0, activeUserData.toString().length)}${DateTime.parse(activeUserData.dob).year.toString().substring(2)}@buzzOff.ca'),
+          '${activeUserData.toString()}${DateTime.parse(activeUserData.dob).year.toString().substring(2)}@buzzOff.ca'),
       accountName: Text('${activeUserData.toString()}'),
       currentAccountPicture: CircleAvatar(
         child: Text('${activeUserData.toString().substring(0, 1)}'),
