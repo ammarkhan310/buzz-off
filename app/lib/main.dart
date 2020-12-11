@@ -143,6 +143,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //Index for current page showing
   int _currentIndex = 0;
+  Profile activeUserData;
+  UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
+    decoration: BoxDecoration(
+      color: Colors.transparent,
+    ),
+    accountEmail: Text('place_holder@buzzOff.ca'),
+    accountName: Text('place_holder'),
+    currentAccountPicture: CircleAvatar(
+      child: Text('PH'),
+    ),
+    otherAccountsPictures: [
+      CircleAvatar(
+        child: Text('A2'),
+      ),
+      CircleAvatar(
+        child: Text('A3'),
+      ),
+    ],
+  );
 
   //Titles of the pages that can be shown
   final List<Map> _titles = [
@@ -182,6 +201,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return await _profileModel.getProfileById(id);
   }
 
+  void setDrawerState(UserAccountsDrawerHeader newDrawerHeader) {
+    setState(() {
+      drawerHeader = newDrawerHeader;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final ProfileModel profileList = context.watch<ProfileModel>();
@@ -206,46 +231,16 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           FutureBuilder(
-              future: activeUserModel.getActiveUserId(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  // Fetches profile data for the current active user
-                  var activeUserId = snapshot.data.profileId;
-                  var activeUserData;
-
-                  if (activeUserId != null) {
-                    profileList.getProfileById(activeUserId).then(
-                      (profileData) {
-                        activeUserData = profileData;
-                        print('profile: $activeUserData');
-                      },
-                    );
-
-                    return UserAccountsDrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      accountEmail: Text('place_holder@buzzOff.ca'),
-                      accountName: Text('${activeUserData}'),
-                      currentAccountPicture: CircleAvatar(
-                        child: Text('PH'),
-                      ),
-                      otherAccountsPictures: [
-                        CircleAvatar(
-                          child: Text('A2'),
-                        ),
-                        CircleAvatar(
-                          child: Text('A3'),
-                        ),
-                      ],
-                    );
-                  } else {
-                    return CircularProgressIndicator();
-                  }
-                } else {
-                  return LinearProgressIndicator();
-                }
-              }),
+            future: activeUserModel.getActiveUserId(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // Fetches profile data for the current active user
+                var activeUserId = snapshot.data.id;
+                getDrawerProfile(context, activeUserId, profileList);
+              }
+              return drawerHeader;
+            },
+          ),
           ListTile(
             leading: Icon(Icons.account_box),
             title: Text(FlutterI18n.translate(context, "drawer.profile")),
@@ -307,6 +302,45 @@ class _MyHomePageState extends State<MyHomePage> {
         }).toList(),
       ),
     );
+  }
+
+  Future<void> getDrawerProfile(
+      BuildContext context, var userId, ProfileModel profileModel) async {
+    ProfileModel profileList = profileModel;
+    var activeUserId = userId;
+
+    if (activeUserId != null) {
+      await profileList.getProfileById(activeUserId).then((profileData) {
+        activeUserData = profileData;
+        print('profile: $activeUserData');
+      });
+    }
+
+    buildDrawerHeader(context);
+  }
+
+  void buildDrawerHeader(BuildContext context) {
+    print('$activeUserData');
+    UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+      ),
+      accountEmail: Text(
+          '${activeUserData.toString().substring(0, activeUserData.toString().length)}${DateTime.parse(activeUserData.dob).year.toString().substring(2)}@buzzOff.ca'),
+      accountName: Text('${activeUserData.toString()}'),
+      currentAccountPicture: CircleAvatar(
+        child: Text('${activeUserData.toString().substring(0, 1)}'),
+      ),
+      otherAccountsPictures: [
+        CircleAvatar(
+          child: Text('A2'),
+        ),
+        CircleAvatar(
+          child: Text('A3'),
+        ),
+      ],
+    );
+    setDrawerState(drawerHeader);
   }
 
   void onItemTapped(int index) {
