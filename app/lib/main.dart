@@ -23,6 +23,7 @@ import 'package:app/notifications.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:app/profile/model/active_profile.dart';
 
 Future main() async {
   final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
@@ -143,6 +144,25 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //Index for current page showing
   int _currentIndex = 0;
+  Profile activeUserData;
+  UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
+    decoration: BoxDecoration(
+      color: Colors.transparent,
+    ),
+    accountEmail: Text('place_holder@buzzOff.ca'),
+    accountName: Text('place_holder'),
+    currentAccountPicture: CircleAvatar(
+      child: Text('PH'),
+    ),
+    otherAccountsPictures: [
+      CircleAvatar(
+        child: Text('A2'),
+      ),
+      CircleAvatar(
+        child: Text('A3'),
+      ),
+    ],
+  );
 
   //Titles of the pages that can be shown
   final List<Map> _titles = [
@@ -170,8 +190,29 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  ActiveUserModel _activeUserModel = ActiveUserModel();
+
+  Future<ActiveUser> getUser() async {
+    return await _activeUserModel.getActiveUserId();
+  }
+
+  ProfileModel _profileModel = ProfileModel();
+
+  Future<Profile> getProfile(int id) async {
+    return await _profileModel.getProfileById(id);
+  }
+
+  void setDrawerState(UserAccountsDrawerHeader newDrawerHeader) {
+    setState(() {
+      drawerHeader = newDrawerHeader;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final ProfileModel profileList = context.watch<ProfileModel>();
+    final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
+
     return Scaffold(
       appBar: AppBar(
           title: Text(_titles[_currentIndex]['header']),
@@ -181,23 +222,16 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          UserAccountsDrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
-            accountEmail: Text('place_holder@buzzOff.ca'),
-            accountName: Text('Place Holder'),
-            currentAccountPicture: CircleAvatar(
-              child: Text('PH'),
-            ),
-            otherAccountsPictures: [
-              CircleAvatar(
-                child: Text('A2'),
-              ),
-              CircleAvatar(
-                child: Text('A3'),
-              ),
-            ],
+          FutureBuilder(
+            future: activeUserModel.getActiveUserId(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                // Fetches profile data for the current active user
+                var activeUserId = snapshot.data.id;
+                getDrawerProfile(context, activeUserId, profileList);
+              }
+              return drawerHeader;
+            },
           ),
           ListTile(
             leading: Icon(Icons.account_box),
@@ -260,6 +294,45 @@ class _MyHomePageState extends State<MyHomePage> {
         }).toList(),
       ),
     );
+  }
+
+  Future<void> getDrawerProfile(
+      BuildContext context, var userId, ProfileModel profileModel) async {
+    ProfileModel profileList = profileModel;
+    var activeUserId = userId;
+
+    if (activeUserId != null) {
+      await profileList.getProfileById(activeUserId).then((profileData) {
+        activeUserData = profileData;
+        print('profile: $activeUserData');
+      });
+    }
+
+    buildDrawerHeader(context);
+  }
+
+  void buildDrawerHeader(BuildContext context) {
+    print('$activeUserData');
+    UserAccountsDrawerHeader drawerHeader = UserAccountsDrawerHeader(
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+      ),
+      accountEmail: Text(
+          '${activeUserData.toString()}${DateTime.parse(activeUserData.dob).year.toString().substring(2)}@buzzOff.ca'),
+      accountName: Text('${activeUserData.toString()}'),
+      currentAccountPicture: CircleAvatar(
+        child: Text('${activeUserData.toString().substring(0, 1)}'),
+      ),
+      otherAccountsPictures: [
+        CircleAvatar(
+          child: Text('A2'),
+        ),
+        CircleAvatar(
+          child: Text('A3'),
+        ),
+      ],
+    );
+    setDrawerState(drawerHeader);
   }
 
   void onItemTapped(int index) {
