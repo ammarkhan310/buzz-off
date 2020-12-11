@@ -77,15 +77,13 @@ Dark Mock Up - https://i.imgur.com/05w8HO4.png
 
 * Settings
   * Theme
-    * Currently not fully implemented
-    * Problem at the moment is that the themeChanger is called within the onTap of the 
-    * AlertDialog that asks the user to choose a theme. Since the first time the user
-    * presses it, the theme hasn't been chosen yet, nothing will happen. The user has
-    * to press on the 'Theme' tile for a 2nd time for the theme change to actually occur.
-    * This could be remedied by an 'await'
+    * Select between light and dark theme
   
-  * Location
-    * Using placeholders for the time being
+  * Language
+    * Switch between English and French
+
+  * Manage Notifications
+    * Takes the user to Android notification settings
 
   * Documentation
     * Shows the credits and other information about the app
