@@ -141,6 +141,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool first = true;
+  
   //Index for current page showing
   int _currentIndex = 0;
   Profile activeUserData;
@@ -202,9 +204,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void setDrawerState(UserAccountsDrawerHeader newDrawerHeader) {
-    setState(() {
-      drawerHeader = newDrawerHeader;
-    });
+    if(first){
+      setState(() {
+        drawerHeader = newDrawerHeader;
+        first = false;
+      });
+    }
   }
 
   @override
@@ -305,14 +310,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> getDrawerProfile(
-      BuildContext context, var userId, ProfileModel profileModel) async {
+    BuildContext context, var userId, ProfileModel profileModel) async {
     ProfileModel profileList = profileModel;
     var activeUserId = userId;
 
     if (activeUserId != null) {
       await profileList.getProfileById(activeUserId).then((profileData) {
         activeUserData = profileData;
-        print('profile: $activeUserData');
       });
     }
 
