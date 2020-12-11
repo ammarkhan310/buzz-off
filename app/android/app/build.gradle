@@ -38,10 +38,9 @@ android {
         disable 'InvalidPackage'
     }
 
-    packagingOptions {
-           
+    packagingOptions {          
         exclude "META-INF/DEPENDENCIES"
-    }
+    }  
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).

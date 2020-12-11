@@ -3,10 +3,18 @@
 */
 
 import 'package:app/mosquito_model/mosquito_info.dart';
+import 'package:app/weather_api/weather_info.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:app/mosquito_model/mosquito_db.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:app/weather_api/weather.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:latlong/latlong.dart';
+import 'package:app/mapPage.dart';
+import 'package:app/rating.dart';
 
 class ExampleViewModel {
   final CustomSliderColors sliderColors;
@@ -25,6 +33,8 @@ class ExampleViewModel {
 }
 
 class HomePage extends StatefulWidget {
+  final String apiKey = '9a5b29b67deeee8118ff67d1c94ebaf8';
+
   final ExampleViewModel viewModel =
       ExampleViewModel(sliderColors: customColors, appearance: appearance);
 
@@ -44,25 +54,54 @@ class HomePage extends StatefulWidget {
  * User location string
  */
 class _HomePageState extends State<HomePage> {
+  List<WeatherInfo> weatherInfo;
+  String city = 'Oshawa';
+  String prov = 'ON';
+  LatLng latLng;
+
+  @override
+  void initState() {
+    _updateLocationOneTime();
+    init();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Geolocator.checkPermission();
     return Scaffold(
       body: Stack(
         children: [
-          /*Test function testing cloud database insert, button appears at the top
-          *of the home page, comment out when not debugging*/
+          /*
           FlatButton(
-            onPressed: () {
-              _insertMosquitoData(
-                MosquitoInfo(
-                    docReference: '02',
-                    location: 'Toronto',
-                    weather: 'Night time & cloudy',
-                    rating: 7),
-              );
+            onPressed: () async {
+              List<WeatherInfo> info = await loadApiInfo();
+              for (var item in info) {
+                print(item.toString());
+              }
             },
-            child: Text('Test Cloud DB Insert'),
+            child: Text('Load api info'),
           ),
+
+          Align(
+            alignment: Alignment.topRight,
+            child: FlatButton(
+              onPressed: () {
+                setState(() {});
+              },
+              child: Text('Refresh page'),
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.topCenter,
+            child: FlatButton(
+              onPressed: () {
+                _updateLocationOneTime();
+              },
+              child: Text('Check location'),
+            ),
+          ),
+          */
           /*Label for the text box containinig the weather conditions summary
           * of the current location
           */
@@ -76,25 +115,24 @@ class _HomePageState extends State<HomePage> {
                   'Weather Conditions:',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
-                      fontSize: 10,
+                      fontSize: 15,
                       color: Colors.grey),
                 ),
               ),
             ),
           ),
-          //TODO - Input weather conditions based on weather variables
           Center(
             child: Container(
               height: 500,
               width: 250,
               child: Align(
                 alignment: Alignment.topCenter,
-                child: _buildLocationWeather(),
+                child: getLocationWeather(),
               ),
             ),
           ),
           //Build mosquito slider containing the current rating for the location
-          Center(child: _buildSlider()),
+          Center(child: getMosquitoSlider()),
           //Image of a mosquito displayed inside the ratings slider
           Center(
             child: Container(
@@ -111,15 +149,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           //Text displaying the ratings location
-          //TODO - Insert User's saved locations
-          //TODO - Make the text clickable
           Center(
             child: Container(
               height: 250,
               width: 300,
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: _buildRatingLocation(),
+                child: getRatingLocation(),
               ),
             ),
           ),
@@ -128,28 +164,172 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void init() async {
+    print("initializing");
+    weatherInfo = await loadApiInfo();
+
+    Rating rating = Rating(latLng);
+
+    _insertMosquitoData(MosquitoInfo(
+        location: weatherInfo[0].city,
+        weather: weatherInfo[0].weather,
+        rating: rating.calculateRating(weatherInfo[0])));
+
+    rating.toString();
+
+    setState(() {});
+  }
+
+  void _updateLocationOneTime() {
+    print('update location');
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
+        .then((Position userLocation) async {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          userLocation.latitude, userLocation.longitude);
+
+      setState(() {
+        city = placemarks[0].locality;
+        latLng = LatLng(userLocation.latitude, userLocation.longitude);
+        init();
+        print('City: ' + city);
+      });
+    });
+  }
+
+  Future<List<WeatherInfo>> loadApiInfo() async {
+    List<WeatherInfo> info = await Weather().loadWeather(city, widget.apiKey);
+
+    return info;
+  }
+
   //TODO - Finish inserting data from weather api
   void _insertMosquitoData(MosquitoInfo info) {
     print("Inserting ${info.toString()} into mosquito-info collection");
     MosquitoDb().insertMosquitoData(info);
   }
 
-  Widget _buildLocationWeather() {
-    return MosquitoDb().getLocationWeather(context);
-  }
+  /*Retrieve the built location weather description for the home page with 
+  * recent db values */
+  FutureBuilder<QuerySnapshot> getLocationWeather() {
+    print('Building home page location weather text with cloud-db instance');
 
-  Widget _buildSlider() {
-    return MosquitoDb().getMosquitoSlider(
-      context,
-      widget.viewModel.sliderColors,
-      widget.viewModel.appearance,
-      widget.viewModel.min,
-      widget.viewModel.max,
+    return FutureBuilder<QuerySnapshot>(
+      future: MosquitoDb().getMosquitoInfo(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return LinearProgressIndicator();
+        } else {
+          return _buildLocationWeather(snapshot.data.docs.last);
+        }
+      },
     );
   }
 
-  Widget _buildRatingLocation() {
-    return MosquitoDb().getRatingLocation(context);
+  //Build the locatiion weather description for homepage with recent db values
+  Widget _buildLocationWeather(DocumentSnapshot mosquitoInfoData) {
+    //Parse cloud database data
+    MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
+        docReference: mosquitoInfoData.reference.toString());
+
+    return Text(
+      '\n ${mosquitoInfo.weather}',
+      style: TextStyle(
+          fontStyle: FontStyle.italic, fontSize: 14, color: Colors.grey),
+    );
+  }
+
+  //Retrieve the built location text for the home page with recent db values
+  FutureBuilder<QuerySnapshot> getRatingLocation() {
+    print('Building home page rating location text with cloud-db instance');
+
+    return FutureBuilder<QuerySnapshot>(
+      future: MosquitoDb().getMosquitoInfo(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return LinearProgressIndicator();
+        } else {
+          return _buildLocationText(snapshot.data.docs.last);
+        }
+      },
+    );
+  }
+
+  //Build the locatiion text for the home page with recent db values
+  Widget _buildLocationText(DocumentSnapshot mosquitoInfoData) {
+    MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
+        docReference: mosquitoInfoData.reference.toString());
+
+    print('Location: ${mosquitoInfo.location}');
+    return FlatButton(
+        onPressed: () async {
+          final String newLoc = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MapPage(
+                title: 'Find Location',
+                latLng: latLng,
+              ),
+            ),
+          );
+
+          var info = MosquitoInfo(
+              weather: weatherInfo[0].weather,
+              location: newLoc,
+              rating: Rating(latLng).calculateRating(weatherInfo[0]));
+          _insertMosquitoData(info);
+          getRatingLocation();
+          setState(() {});
+        },
+        color: Colors.black.withOpacity(0.0),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+            side: BorderSide(color: Colors.green)),
+        child: Text(
+          'Location: ${mosquitoInfo.location}',
+          style: TextStyle(
+              fontStyle: FontStyle.italic, fontSize: 18, color: Colors.grey),
+        ));
+  }
+
+  //Retrieve the built mosquito slider for the home page with recent db values
+  FutureBuilder<QuerySnapshot> getMosquitoSlider() {
+    print('Building home page mosquito slider with cloud-db instance');
+
+    return FutureBuilder<QuerySnapshot>(
+      future: MosquitoDb().getMosquitoInfo(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator();
+        } else {
+          return Center(
+            child: _buildSlider(
+                widget.viewModel.sliderColors,
+                widget.viewModel.appearance,
+                widget.viewModel.min,
+                widget.viewModel.max,
+                snapshot.data.docs.last),
+          );
+        }
+      },
+    );
+  }
+
+  //Build the mosquito rating slider for the home page with recent db values
+  Widget _buildSlider(
+      CustomSliderColors sliderColor,
+      CircularSliderAppearance appearance,
+      double min,
+      double max,
+      DocumentSnapshot mosquitoInfoData) {
+    MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
+        docReference: mosquitoInfoData.reference.toString());
+
+    return SleekCircularSlider(
+      appearance: appearance,
+      min: min,
+      max: max,
+      initialValue: mosquitoInfo.rating.toDouble(),
+    );
   }
 }
 
