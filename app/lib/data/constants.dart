@@ -55,6 +55,7 @@ const countries = [
   "Burundi",
   "Cambodia",
   "Cameroon",
+  "Canada",
   "Cape Verde",
   "Cayman Islands",
   "Chad",

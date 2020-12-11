@@ -3,5 +3,12 @@
         "profile": "Profile",
         "statistics": "Statistics",
         "settings": "Settings"
+    },
+    "settings": {
+        "theme": "Theme",
+        "language": "Language",
+        "notifications": "Manage Notifications",
+        "documentation": "Documentation",
+        "chosenLang" : "Default (English)"
     }
 }

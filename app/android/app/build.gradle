@@ -30,6 +30,11 @@ android {
     compileSdkVersion 28
     buildToolsVersion '23.0.1'
 
+    packagingOptions {
+           
+        exclude "META-INF/DEPENDENCIES"
+    }
+
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }

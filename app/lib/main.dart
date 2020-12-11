@@ -2,7 +2,7 @@ import 'package:app/mosquito_model/mosquito_db.dart';
 import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/address.dart';
 import 'package:app/profile/model/profile.dart';
-import 'package:app/settings/themeChanger.dart';
+import 'package:app/settings/model/themeChanger.dart';
 import 'package:app/statistics/view/bitesChart.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
@@ -13,7 +13,7 @@ import 'package:app/profile/view/profile_selector.dart';
 import 'package:provider/provider.dart';
 import 'package:app/statistics/view/statistics_page.dart';
 import 'statistics/model/biteModel.dart';
-import 'package:app/settings/settings_page.dart';
+import 'package:app/settings/view/settings_page.dart';
 import 'package:app/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -23,7 +23,6 @@ import 'package:app/notifications.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:app/profile/model/active_profile.dart';
 
 Future main() async {
   final FlutterI18nDelegate flutterI18nDelegate = FlutterI18nDelegate(
@@ -144,7 +143,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool first = true;
-  
+
   //Index for current page showing
   int _currentIndex = 0;
   Profile activeUserData;
@@ -210,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //reloads the drawer with userinfo
   void setDrawerState(UserAccountsDrawerHeader newDrawerHeader) {
-    if(first){
+    if (first) {
       setState(() {
         drawerHeader = newDrawerHeader;
         first = false;
@@ -274,10 +273,10 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 350.0, left: 120.0),
-
-            // row for button switching languages
+            padding: const EdgeInsets.only(top: 350),
             child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 FlatButton( // english
                   child: Text('EN'),
@@ -318,7 +317,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // gets the profile needed for drawer
   Future<void> getDrawerProfile(
-    BuildContext context, var userId, ProfileModel profileModel) async {
+      BuildContext context, var userId, ProfileModel profileModel) async {
     ProfileModel profileList = profileModel;
     var activeUserId = userId;
 
