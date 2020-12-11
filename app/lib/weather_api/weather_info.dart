@@ -1,3 +1,4 @@
+// object to hold weather info
 class WeatherInfo {
   String city;
   String country;
@@ -14,7 +15,7 @@ class WeatherInfo {
       this.weather,
       this.city = 'NULL',
       this.country = 'NULL'});
-
+  
   factory WeatherInfo.fromMap(Map map) {
     return WeatherInfo(
         city: map['name'],
