@@ -3,6 +3,7 @@ import 'package:app/profile/model/active_profile.dart';
 import 'package:app/profile/model/address.dart';
 import 'package:app/profile/model/profile.dart';
 import 'package:app/settings/model/themeChanger.dart';
+import 'package:app/statistics/view/bitesChart.dart';
 import 'package:flutter/material.dart';
 import 'package:app/nav_page.dart';
 import 'package:app/profile/view/profile_page.dart';
@@ -141,6 +142,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool first = true;
+
   //Index for current page showing
   int _currentIndex = 0;
   Profile activeUserData;
@@ -165,10 +168,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //Titles of the pages that can be shown
   final List<Map> _titles = [
-    {'header': 'Buzz Off', 'showHeader': true},
-    {'header': 'Statistics', 'showHeader': true},
-    {'header': 'Profile', 'showHeader': false},
-    {'header': 'Settings', 'showHeader': true}
+    {'header': 'Buzz Off'},
+    {'header': 'Statistics'},
+    {'header': 'Profile'},
+    {'header': 'Settings'}
   ];
 
   //List of pages that can be inserted as the children for the main body
@@ -202,9 +205,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void setDrawerState(UserAccountsDrawerHeader newDrawerHeader) {
-    setState(() {
-      drawerHeader = newDrawerHeader;
-    });
+    if (first) {
+      setState(() {
+        drawerHeader = newDrawerHeader;
+        first = false;
+      });
+    }
   }
 
   @override
@@ -213,18 +219,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final ActiveUserModel activeUserModel = context.watch<ActiveUserModel>();
 
     return Scaffold(
-      appBar: _titles[_currentIndex]['showHeader']
-          ? AppBar(
-              title: Text(_titles[_currentIndex]['header']),
-              actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: () {
-                      _goToSettings();
-                    },
-                  ),
-                ])
-          : null,
+      appBar: AppBar(
+          title: Text(_titles[_currentIndex]['header']),
+          actions: appBarIcons(_titles[_currentIndex]['header'], context)),
       //Hamburger menu below
       drawer: Drawer(
           child: ListView(
@@ -314,7 +311,6 @@ class _MyHomePageState extends State<MyHomePage> {
     if (activeUserId != null) {
       await profileList.getProfileById(activeUserId).then((profileData) {
         activeUserData = profileData;
-        print('profile: $activeUserData');
       });
     }
 
@@ -349,5 +345,67 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  // Renders appbar icons based on the current screen
+  List<Widget> appBarIcons(key, context) {
+    if (key == 'Statistics') {
+      return [
+        // Allows user to view bar chart of their weekly mosquito bites
+        IconButton(
+          icon: Icon(Icons.bar_chart),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BitesChart()),
+            );
+          },
+        )
+      ];
+    } else if (key == 'Profile') {
+      return [
+        Row(
+          children: <Widget>[
+            Builder(
+              builder: (BuildContext context) {
+                // Renders an icon in the app bar to allow the user to
+                // switch the current active user
+                return IconButton(
+                  padding: const EdgeInsets.only(right: 12.0, top: 4.0),
+                  icon: Icon(Icons.swap_horiz_outlined),
+                  onPressed: () async {
+                    final SnackBar snackbar = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SelectProfile(
+                          title: 'Profile Selector',
+                        ),
+                      ),
+                    );
+
+                    // Displays a snackbar indicating that the current active
+                    // user has changed
+                    if (snackbar != null) {
+                      Scaffold.of(context).hideCurrentSnackBar();
+                      Scaffold.of(context).showSnackBar(snackbar);
+                    }
+                  },
+                );
+              },
+            )
+          ],
+        )
+      ];
+    } else {
+      // Default Settings Icon
+      return [
+        IconButton(
+          icon: Icon(Icons.settings),
+          onPressed: () {
+            _goToSettings();
+          },
+        )
+      ];
+    }
   }
 }
