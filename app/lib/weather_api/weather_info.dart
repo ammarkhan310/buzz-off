@@ -25,12 +25,13 @@ class WeatherInfo {
         weather: map['weather'][0]['main'] +
             ', ' +
             map['weather'][0]['description'] +
-            '. Feels like ' +
+            '. ' +
+            'Feels like ' +
             map['main']['feels_like'].round().toInt().toString() +
             '\n' +
             'Today\'s high: ' +
             map['main']['temp_max'].round().toInt().toString() +
-            '            ' +
+            '               ' +
             'Today\'s low: ' +
             map['main']['temp_min'].round().toInt().toString());
   }

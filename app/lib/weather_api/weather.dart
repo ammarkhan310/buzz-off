@@ -5,9 +5,11 @@ import 'dart:convert';
 import 'package:app/weather_api/weather_info.dart';
 
 class Weather {
+  //Using the homepage city field
   Future<List<WeatherInfo>> loadWeather(String city, String apiKey) async {
     List<WeatherInfo> weatherInfo;
 
+    //Return the current weather according to the city with units in metric
     var response = await http.get(
         'https://api.openweathermap.org/data/2.5/weather?q=$city&appid=$apiKey&units=metric');
 

@@ -54,20 +54,26 @@ class HomePage extends StatefulWidget {
  * User location string
  */
 class _HomePageState extends State<HomePage> {
+  //Default values
   List<WeatherInfo> weatherInfo;
   String city = 'Oshawa';
   String prov = 'ON';
-  LatLng latLng;
+  LatLng latLng = LatLng(0, 0);
 
   @override
   void initState() {
-    _updateLocationOneTime();
+    getWeather();
     init();
+  }
+
+  void update() {
+    _updateLocationOneTime();
   }
 
   @override
   Widget build(BuildContext context) {
     Geolocator.checkPermission();
+    update();
     return Scaffold(
       body: Stack(
         children: [
@@ -115,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                   'Weather Conditions:',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
-                      fontSize: 15,
+                      fontSize: 20,
                       color: Colors.grey),
                 ),
               ),
@@ -153,6 +159,7 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               height: 250,
               width: 300,
+              padding: EdgeInsets.only(top: 40),
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: getRatingLocation(),
@@ -166,40 +173,48 @@ class _HomePageState extends State<HomePage> {
 
   void init() async {
     print("initializing");
-    weatherInfo = await loadApiInfo();
-
-    Rating rating = Rating(latLng);
-
-    _insertMosquitoData(MosquitoInfo(
-        location: weatherInfo[0].city,
-        weather: weatherInfo[0].weather,
-        rating: rating.calculateRating(weatherInfo[0])));
-
-    rating.toString();
-
+    Geolocator.checkPermission();
+    await _updateLocationOneTime();
     setState(() {});
   }
 
-  void _updateLocationOneTime() {
+  void getWeather() {
+    loadWeather();
+  }
+
+  void loadWeather() async {
+    print('loading weather');
+  }
+
+  Future<void> _updateLocationOneTime() async {
     print('update location');
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best)
         .then((Position userLocation) async {
       List<Placemark> placemarks = await placemarkFromCoordinates(
           userLocation.latitude, userLocation.longitude);
 
-      setState(() {
+      void setLocation() async {
         city = placemarks[0].locality;
         latLng = LatLng(userLocation.latitude, userLocation.longitude);
-        init();
         print('City: ' + city);
-      });
+        Rating rating = Rating(latLng);
+        weatherInfo = await loadApiInfo().then((value) {
+          print('$value');
+          city = city;
+          _insertMosquitoData(MosquitoInfo(
+              location: city,
+              weather: weatherInfo[0].weather,
+              rating: rating.calculateRating(weatherInfo[0])));
+        });
+      }
+
+      setLocation();
     });
   }
 
   Future<List<WeatherInfo>> loadApiInfo() async {
-    List<WeatherInfo> info = await Weather().loadWeather(city, widget.apiKey);
-
-    return info;
+    print('Queried weather city: $city');
+    return await Weather().loadWeather(city, widget.apiKey);
   }
 
   //TODO - Finish inserting data from weather api
@@ -234,7 +249,7 @@ class _HomePageState extends State<HomePage> {
     return Text(
       '\n ${mosquitoInfo.weather}',
       style: TextStyle(
-          fontStyle: FontStyle.italic, fontSize: 14, color: Colors.grey),
+          fontStyle: FontStyle.italic, fontSize: 15, color: Colors.grey),
     );
   }
 
@@ -259,7 +274,7 @@ class _HomePageState extends State<HomePage> {
     MosquitoInfo mosquitoInfo = MosquitoInfo.fromMap(mosquitoInfoData.data(),
         docReference: mosquitoInfoData.reference.toString());
 
-    print('Location: ${mosquitoInfo.location}');
+    print('Location Text area: ${city}');
     return FlatButton(
         onPressed: () async {
           final String newLoc = await Navigator.push(
@@ -285,9 +300,9 @@ class _HomePageState extends State<HomePage> {
             borderRadius: BorderRadius.circular(18.0),
             side: BorderSide(color: Colors.green)),
         child: Text(
-          'Location: ${mosquitoInfo.location}',
+          'Location Text area: ${city}',
           style: TextStyle(
-              fontStyle: FontStyle.italic, fontSize: 18, color: Colors.grey),
+              fontStyle: FontStyle.italic, fontSize: 20, color: Colors.grey),
         ));
   }
 
