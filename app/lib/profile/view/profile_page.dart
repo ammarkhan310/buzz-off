@@ -27,42 +27,6 @@ class _ProfilePageState extends State<ProfilePage> {
     // Renders an App bar
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('User Profile'),
-        actions: [
-          Row(
-            children: <Widget>[
-              Builder(
-                builder: (BuildContext context) {
-                  // Renders an icon in the app bar to allow the user to
-                  // switch the current active user
-                  return IconButton(
-                    padding: const EdgeInsets.only(right: 12.0, top: 4.0),
-                    icon: Icon(Icons.swap_horiz_outlined),
-                    onPressed: () async {
-                      final SnackBar snackbar = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SelectProfile(
-                            title: 'Profile Selector',
-                          ),
-                        ),
-                      );
-
-                      // Displays a snackbar indicating that the current active
-                      // user has changed
-                      if (snackbar != null) {
-                        Scaffold.of(context).hideCurrentSnackBar();
-                        Scaffold.of(context).showSnackBar(snackbar);
-                      }
-                    },
-                  );
-                },
-              )
-            ],
-          )
-        ],
-      ),
       // Renders the profile data to the screen
       body: Builder(
         builder: _profileList,
