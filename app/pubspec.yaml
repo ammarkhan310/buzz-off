@@ -43,6 +43,7 @@ dependencies:
   sqflite:
   path:
   provider:
+  charts_flutter:
   geolocator: 6.1.13
   geocoding: ^1.0.5
   flutter_map:

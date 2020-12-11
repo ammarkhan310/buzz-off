@@ -7,7 +7,7 @@ import 'package:app/utils.dart';
 import 'package:app/profile/view/create_edit_address.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:app/settings/model/themeChanger.dart';
+import 'package:app/settings/themeChanger.dart';
 
 class ProfilePage extends StatefulWidget {
   // Constructor
@@ -122,44 +122,61 @@ class _ProfilePageState extends State<ProfilePage> {
                 return ListView.builder(
                   itemBuilder: (BuildContext context, int index) {
                     return Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          index == 0
-                              // Renders profile information header
-                              ? Container(
-                                  padding: EdgeInsets.only(top: 12.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      Card(
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 16.0,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text(
-                                                'Details',
-                                                style: TextStyle(
+                      padding: EdgeInsets.only(
+                          left: 16.0, right: 16.0, bottom: 12.0),
+
+                      child: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(top: 12.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Card(
+                                    child: DataTable(
+                                      headingRowHeight: 36.0,
+                                      headingRowColor:
+                                          MaterialStateColor.resolveWith(
+                                        (states) =>
+                                            Color.fromRGBO(220, 220, 220, 100),
+                                      ),
+
+                                      columns: [
+                                        DataColumn(
+                                          label: Container(
+                                            child: Text(
+                                              'Details',
+                                              style: TextStyle(
                                                   fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              // Allows user to quickly edit
-                                              // current active user's profile
-                                              // data
-                                              FlatButton(
-                                                padding:
-                                                    EdgeInsets.only(left: 90.0),
-                                                child: Text(
-                                                  activeUserData != null
-                                                      ? 'Edit'
-                                                      : 'Create Profile',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
+                                                  fontWeight: FontWeight.bold, 
+                                                  color: Colors.blueGrey,),
+                                            ),
+                                          ),
+                                        ),
+                                        // Allows user to quickly edit
+                                        // current active user's profile
+                                        // data
+                                        DataColumn(
+                                          label: Container(
+                                            child: Expanded(
+                                              child: FlatButton(
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                child: Align(
+                                                  alignment:
+                                                      Alignment.centerRight,
+                                                  child: Text(
+                                                    activeUserData != null
+                                                        ? 'Edit'
+                                                        : 'Create Profile',
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.blueGrey,
+                                                    ),
+                                                    textAlign: TextAlign.right,
                                                   ),
                                                 ),
                                                 onPressed: () async {
@@ -185,79 +202,143 @@ class _ProfilePageState extends State<ProfilePage> {
                                                         .showSnackBar(snackbar);
                                                   }
                                                 },
-                                              )
-                                            ],
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                        )
+                                      ],
                                       // Renders profile information of the
                                       // current active user to the screen
-                                      Card(
-                                        child: Container(
-                                          child: Column(
-                                            children: <Widget>[
-                                              DataRow('Name',
-                                                  '${activeUserData != null ? activeUserData.name : '-'}'),
-                                              DataRow('Gender',
-                                                  '${activeUserData != null ? activeUserData.gender : '-'}'),
-                                              DataRow('Blood Type',
-                                                  '${activeUserData != null ? activeUserData.bloodType : '-'}'),
-                                              DataRow('Age',
-                                                  '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
-                                              DataRow('Country',
-                                                  '${activeUserData != null ? activeUserData.country : '-'}'),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      // Renders Address information header
-                                      Card(
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 8.0,
-                                            horizontal: 16.0,
-                                          ),
-                                          margin: EdgeInsets.only(top: 12),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text(
-                                                'Saved Addresses',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              Text(
-                                                'Mosquito Level',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                      rows: <DataRow>[
+                                        DataRowComponent('Name',
+                                            '${activeUserData != null ? activeUserData.name : '-'}'),
+                                        DataRowComponent('Gender',
+                                            '${activeUserData != null ? activeUserData.gender : '-'}'),
+                                        DataRowComponent('Blood Type',
+                                            '${activeUserData != null ? activeUserData.bloodType : '-'}'),
+                                        DataRowComponent('Age',
+                                            '${activeUserData != null ? calculateAge(DateTime.parse(activeUserData.dob)).toString() : '-'}'),
+                                        DataRowComponent('Country',
+                                            '${activeUserData != null ? activeUserData.country : '-'}'),
+                                      ],
+                                    ),
                                   ),
-                                )
-                              // Renders all addresses on local database
-                              : DataRowWithIconPrefix(
-                                  '${addresses[index - 1].address}',
-                                  '5',
-                                  Icons.edit,
-                                  () {
-                                    _editAddress(
-                                        context, addresses[index - 1].id);
-                                  },
-                                )
-                        ],
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(vertical: 8.0),
+                            ),
+                            // Renders all addresses on local database
+                            Card(
+                              child: DataTable(
+                                headingRowHeight: 36.0,
+                                headingRowColor: MaterialStateColor.resolveWith(
+                                  (states) =>
+                                      Color.fromRGBO(220, 220, 220, 100),
+                                ),
+                                columns: [
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Container(
+                                        width: 220,
+                                        child: Text(
+                                          'Saved Addresses',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blueGrey,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // Allows user to quickly edit
+                                  // current active user's profile
+                                  // data
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Container(
+                                        child: Text(
+                                          'Level',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blueGrey,
+                                          ),
+                                          textAlign: TextAlign.left,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                                // Renders profile information of the
+                                // current active user to the screen
+                                rows: addresses
+                                    .map(
+                                      (data) => DataRow(
+                                        cells: [
+                                          DataCell(
+                                            Row(
+                                              children: <Widget>[
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    _editAddress(
+                                                        context, data.id);
+                                                  },
+                                                  child: Container(
+                                                    padding: EdgeInsets.only(
+                                                      right: 12.0,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.edit,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: 150,
+                                                  child: Text(
+                                                    '${data.address}',
+                                                    style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          DataCell(
+                                            Expanded(
+                                              child: Container(
+                                                padding:
+                                                    EdgeInsets.only(right: 8),
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: Text(
+                                                  '5',
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textAlign: TextAlign.right,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   },
-                  itemCount: addresses.length + 1,
+                  itemCount: 1,
                 );
               } else {
                 return Text('Fetching Data...');
@@ -272,84 +353,40 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   // Data row widget used in profile information
-  Widget DataRow(header, value) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 16.0,
-        horizontal: 16.0,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
+
+  DataRow DataRowComponent(header, value) {
+    return DataRow(
+      cells: [
+        DataCell(
           Container(
-            padding: EdgeInsets.only(right: 8),
+            width: 130,
+            padding: EdgeInsets.only(right: 16),
             child: Text(
               header,
               style: TextStyle(
                 fontSize: 20,
+                color: Colors.grey,
               ),
             ),
           ),
+        ),
+        DataCell(
           Expanded(
             child: Container(
+              padding: EdgeInsets.only(right: 24.0),
+              width: 150,
               alignment: Alignment.centerRight,
               child: Text(
                 value,
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.grey,
                 ),
+                textAlign: TextAlign.right,
               ),
             ),
-          )
-        ],
-      ),
-    );
-  }
-
-  // Renders a Data Row Widget used in list of addresses which includes an icon
-  Widget DataRowWithIconPrefix(header, value, icon, onTap) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        vertical: 16.0,
-        horizontal: 16.0,
-      ),
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              GestureDetector(
-                onTap: onTap,
-                child: Container(
-                  padding: EdgeInsets.only(
-                    right: 12.0,
-                  ),
-                  child: Icon(
-                    icon,
-                    color: Colors.blueGrey,
-                  ),
-                ),
-              ),
-              Text(
-                header,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blueGrey,
-                ),
-              ),
-            ],
           ),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.grey,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
